@@ -4,18 +4,33 @@
 	padding: 15px;
 	border: none;
 	box-sizing: border-box;
+	position: relative;
 }
 
 .card-img {
 	width: 100%;
-	box-shadow: 1px 1px 4px 2px;
+	box-shadow: 1px 1px 4px 2px #444;
 	cursor: pointer;
 	background: var(--login-btn);
 	transition: 0.3s;
 }
 
 .card-img:hover {
-	box-shadow: 2px 2px 5px 3px;
+	box-shadow: 2px 2px 5px 3px #444;
+}
+
+.card-qty {
+	padding: 10px;
+	background: var(--navbar-bg);
+	border: 2px solid var(--login-btn);
+	border-radius: 15px;
+	font-weight: bold;
+	font-size: 14px;
+	color: #fff;
+	position: absolute;
+	top: 5px;
+	right: 5px;
+	box-shadow: 1px 1px 4px 2px #444;
 }
 
 @media (max-width: 1300px) {

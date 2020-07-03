@@ -25,7 +25,8 @@ class Collection extends React.Component {
 			},
 			filterCount: 0,
 			cards: [],
-			mobileFilters: false
+			mobileFilters: false,
+			loading: true
 		};
 		this.updateFilters = this.updateFilters.bind(this);
 		this.updateSort = this.updateSort.bind(this);
@@ -233,7 +234,8 @@ class Collection extends React.Component {
 					        	}
 					        }
 						this.setState({
-							cards: cards
+							cards: cards,
+							loading: false
 						});
 		        		allCards = cards;
 					}.bind(this),
@@ -257,7 +259,7 @@ class Collection extends React.Component {
 				</div>
 				<div className='collection-container'>
 					<CollectionFilter updateFilters={this.updateFilters} mobileFilters={this.state.mobileFilters} hideMobileFilters={this.hideMobileFilters}/>
-					<CollectionList cards={this.state.cards} updateSort={this.updateSort} filterCount={this.state.filterCount} showMobileFilters={this.showMobileFilters}/>
+					<CollectionList cards={this.state.cards} loading={this.state.loading} updateSort={this.updateSort} filterCount={this.state.filterCount} showMobileFilters={this.showMobileFilters}/>
 				</div>
 			</div>
 		);

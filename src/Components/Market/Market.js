@@ -5,7 +5,6 @@ import MarketList from './MarketList/MarketList';
 import $ from 'jquery';
 
 var allCards = [];
-var cards = [];
 var distinctCards = [];
 
 class Market extends React.Component {
@@ -24,7 +23,8 @@ class Market extends React.Component {
 			},
 			filterCount: 0,
 			cards: [],
-			mobileFilters: false
+			mobileFilters: false,
+			loading: true
 		};
 		this.updateFilters = this.updateFilters.bind(this);
 		this.updateSort = this.updateSort.bind(this);
@@ -160,6 +160,7 @@ class Market extends React.Component {
 			jsonpCallback: 'testing',
 			dataType: 'json',
 			success: function(cardDetails) {
+				let cards = [];
 				$.ajax({
 					type: 'GET',
 		  			url: "https://steemmonsters.com/market/for_sale_grouped",
@@ -177,6 +178,7 @@ class Market extends React.Component {
 				          	let rarity = cardData.rarity === 1 ? 'Common' : cardData.rarity === 2 ? 'Rare' : cardData.rarity === 3 ? 'Epic' : 'Legendary';
 				          	let element = cardData.color === 'Red' ? 'Fire' : cardData.color === 'Blue' ? 'Water' : cardData.color === 'Green' ? 'Earth' : cardData.color === 'White' ? 'Life' : cardData.color === 'Black' ? 'Death' : cardData.color === 'Gold' ? 'Dragon' : 'Neutral';
 				          	let lvl = 1;
+				          	let qty = forSaleCards[l].qty;
 				          	let img = 'https://d36mxiodymuqjm.cloudfront.net/cards_by_level/' + edition.toLowerCase() + '/' + name.replace(' ', '%20') + '_lv1';
 				          	img += gold ? '_gold.png' : '.png';
 			            	cards.push({
@@ -189,11 +191,13 @@ class Market extends React.Component {
 				              	distinctID: distinctID,
 				              	gold: gold,
 				              	img: img,
-				              	mana: cardData.stats.mana[0]
+				              	mana: cardData.stats.mana[0],
+				              	qty: qty
 				          	});
 					    }
 						this.setState({
-							cards: cards
+							cards: cards,
+							loading: false
 						});
 		        		allCards = cards;
 					}.bind(this),
@@ -217,7 +221,7 @@ class Market extends React.Component {
 				</div>
 				<div className='market-container'>
 					<MarketFilter updateFilters={this.updateFilters} mobileFilters={this.state.mobileFilters} hideMobileFilters={this.hideMobileFilters}/>
-					<MarketList cards={this.state.cards} updateSort={this.updateSort} filterCount={this.state.filterCount} showMobileFilters={this.showMobileFilters}/>
+					<MarketList cards={this.state.cards} loading={this.state.loading} updateSort={this.updateSort} filterCount={this.state.filterCount} showMobileFilters={this.showMobileFilters}/>
 				</div>
 			</div>
 	    );

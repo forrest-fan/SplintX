@@ -30,11 +30,13 @@ class MarketList extends React.Component {
           </select>
         </div>
       	<div className='marketList'>
-	         {this.props.cards.length === 0 ?
-              <p className='market-noCards'>No cards were found. Please update the filters.</p> : 
-              this.props.cards.map(card => {
-                return (<MarketCard info={card} />);
-              })
+	        {this.props.loading ?
+	        	<div className='loader'></div> :
+	        this.props.cards.length === 0 ?
+              	<p className='market-noCards'>No cards were found. Please update the filters.</p> : 
+              	this.props.cards.map(card => {
+                	return (<MarketCard info={card} />);
+              	})
            }
 	      </div>
       </div>
