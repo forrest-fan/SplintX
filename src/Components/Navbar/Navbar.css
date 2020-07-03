@@ -1,0 +1,149 @@
+.navbar {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	background: var(--navbar-bg);
+	z-index: 1;
+	box-shadow: 0px 3px 6px 0px #333;
+}
+
+.navbar-title {
+	color: var(--navbar-txt-main);
+	display: inline-block;
+	position: absolute;
+	top: 50%;
+	left: 25px;
+	transform: translateY(-50%);
+	font-size: 20px;
+	font-weight: bold;
+}
+
+.navbar-links-container {
+	float: right;
+	display: inline-block;
+	margin-right: 20px;
+}
+
+.nav-item {
+	display: inline-block;
+	padding: 0px 10px;
+	color: var(--navbar-txt-light);
+	font-size: 16px;
+	cursor: pointer;
+}
+
+.nav-item-small {
+	display: none;
+	padding: 0px 10px;
+	color: var(--navbar-txt-light);
+	font-size: 16px;
+	cursor: pointer;
+}
+
+.active {
+	color: var(--navbar-txt-main);
+}
+
+.bars-btn {
+	padding: 6px 10px;
+	margin-left: 10px;
+	border: 1.5px solid var(--login-btn);
+	color: var(--login-btn);
+	border-radius: 5px;
+	font-size: 15px;
+	transition: 0.3s;
+}
+
+.bars-btn:hover {
+	background: var(--login-btn);
+	color: var(--navbar-bg);
+}
+
+.login-btn {
+	padding: 6px 10px;
+	margin-left: 10px;
+	border: 1.5px solid var(--login-btn);
+	color: var(--login-btn);
+	border-radius: 5px;
+	font-size: 15px;
+	transition: 0.3s;
+}
+
+.login-btn:hover {
+	background: var(--login-btn);
+	color: var(--navbar-bg);
+}
+
+.sidebar-overlay {
+	background: rgba(0, 0, 0, 0.4);
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vh;
+	height: 100vh;
+	z-index: 3;
+}
+
+.nav-sidebar {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 250px;
+	height: 100vh;
+	padding: 20px;
+	box-sizing: border-box;
+	background: #fff;
+	box-shadow: 2px 2px 3px 1px #333;
+	z-index: 5;
+	transition: 0.3s;
+	display: none;
+}
+
+.nav-sidebar-container {
+	padding: 0;
+	list-style-type: none;
+}
+
+.nav-item-side {
+	margin: 0;
+	padding: 15px;
+	font-weight: bold;
+	font-size: 18px;
+	letter-spacing: 0.5px;
+	color: var(--navbar-bg);
+}
+
+.login-side {
+	text-align: center;
+	background-color: var(--login-btn);
+	border-radius: 15px;
+	margin: 5px 15px;
+}
+
+@media (max-width: 750px) {
+	.nav-item {
+		display: none;
+	}
+
+	.nav-item-small {
+		display: inline-block;
+	}
+
+	.navbar-title {
+		left: 50%;
+		transform: translate(-50%, -50%);
+	}
+
+	.nav-sidebar {
+		display: block;
+	}
+
+	.show-sidebar {
+		transform: translateX(0px);
+	}
+
+	.hide-sidebar {
+		transform: translateX(-260px);
+	}
+}

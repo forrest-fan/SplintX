@@ -1,0 +1,141 @@
+#scanner {
+	margin: 10px 5% 0 5%;
+}
+
+#scanner h1 {
+	font-size: 30px;
+}
+
+.scanner-container {
+	background: #2e2b27;
+	margin: 25px;
+	padding: 25px 50px;
+	color: #e3ac64;
+	border-radius: 10px 10px 0 0;
+	box-shadow: 2px 2px 4px 1px #555;	
+}
+
+.scanner-container hr {
+	border-bottom: 1px solid #8a6c43;
+	margin-top: 10px;
+}
+
+.scanner-header {
+	overflow: auto;
+}
+
+.scanner-header h2 {
+	font-size: 26px;
+	display: inline-block;
+	float: left;
+	margin: 0;
+}
+
+.add-scanner-btn {
+	display: inline-block;
+	float: right;
+	text-align: center;
+	background-color: transparent;
+	border: 2px solid #e3ac64;
+	color: #e3ac64;
+	padding: 4px 12px;
+	font-size: 14px;
+	vertical-align: top;
+	border-radius: 15px;
+	transition: color 0.3s, background-color 0.3s;
+}
+
+.add-scanner-btn:hover {
+	cursor: pointer;
+	background-color: #e3ac64;
+	color: #2e2b27;
+}
+
+.scanner-table {
+	width: 100%;
+}
+
+.scanner-table tr th {
+	background-color: #e3ac64;
+	color: #2e2b27;
+	text-align: center;
+	border: 1px solid #8a6c43;
+}
+
+.scanner-table tr th:first-of-type {
+	border-radius: 10px 0 0 0;
+	border: none;
+}
+
+.scanner-table tr th:last-of-type { 
+	border-radius: 0 10px 0 0;
+	border: none;
+}
+
+.scanner-table td {
+	padding: 5px 10px;
+	border: 1px solid #8a6c43;
+}
+
+.add-scanner-modal {
+	position: absolute;
+	width: 100vw;
+	height: 100vh;
+	top: 0;
+	left: 0;
+	background: rgba(0,0,0,0.4);
+}
+
+.add-scanner-content {
+	position: absolute;
+	text-align: center;
+	width: 80%;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	background: #fff;
+	padding: 20px;
+	border-radius: 20px;
+}
+
+.close-modal {
+	position: absolute;
+	right: 10px;
+	top: 5px;
+	font-size: 20px;
+	font-weight: bold;
+	color: #000;
+	transition: color 0.3s;
+}
+
+.close-modal:hover {
+	cursor: pointer;
+	color: #f00;
+}
+
+.scanner-form {
+	display: block;
+	margin: 25px 0;
+}
+
+.scanner-form label {
+	font-weight: bold;
+}
+
+.scanner-form input {
+	margin-bottom: 5px;
+	margin-right: 5px;
+}
+
+.scanner-form #submit {
+	border: none;
+	background-color: #e3ac64;
+	padding: 6px 14px;
+	cursor: pointer;
+}
+
+.scanner-col {
+	display: inline-block;
+	width: 49%;
+	text-align: left;
+}

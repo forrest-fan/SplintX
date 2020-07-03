@@ -1,0 +1,11 @@
+:root {
+	--navbar-bg: #0d2140;
+	--navbar-txt-main: #fff;
+	--navbar-txt-light: #a3b2c9;
+	--login-btn: #eba82d;
+	--input-focus: #eba82d;
+}
+
+body {
+	font-family: Source Sans Pro;
+}

@@ -1,0 +1,187 @@
+#battle-chain {
+	margin: 10px 5% 0 5%;
+}
+
+#battle-chain h1 {
+	font-size: 30px;
+}
+
+.search-container {
+	margin: 0 auto;
+	width: 70%;
+	padding: 20px 0px;
+}
+
+.search-input {
+	display: inline-block;
+	width: 85%;
+	margin: 0;
+	padding: 5px 8px;
+	border-radius: 10px 0 0 10px;
+	outline: none;
+	border: 2px solid #2e2b27;
+	border-right: none;
+	transition: border-color 0.3s
+}
+
+.search-input:focus {
+	border-color: #e3ac64;
+}
+
+.search-btn {
+	display: inline-block;
+	width: 14%;
+	text-align: center;
+	margin: 0;
+	padding: 7px 10px;
+	background-color: #2e2b27;
+	border-radius: 0 10px 10px 0;
+	color: #e3ac64;
+	transition: background-color 0.3s, color 0.3s;
+}
+
+.search-btn:hover {
+	cursor: pointer;
+	background-color: #e3ac64;
+	color: #2e2b27;
+}
+
+.stats-container {
+	background: #2e2b27;
+	margin: 0 25px;
+	padding: 25px 50px;
+	color: #e3ac64;
+	border-radius: 10px 10px 0 0;
+	box-shadow: 2px 2px 4px 1px #555;
+}
+
+.stats-header {
+	overflow: auto;
+}
+
+.stats-container hr {
+	border-bottom: 1px solid #8a6c43;
+	margin-top: 0;
+}
+
+.stats-container h2 {
+	font-size: 26px;
+	display: inline-block;
+	float: left;
+}
+
+.username {
+	display: inline-block;
+	float: right;
+	font-weight: normal;
+	font-size: 20px;
+	vertical-align: middle
+}
+
+.stats-overview {
+	margin: 0 25px;
+}
+
+.stats-container h3 {
+	font-size: 20px;
+}
+
+.overview-stat {
+	display: inline-block;
+	width: 24%;
+	text-align: center;
+	color: #fff;
+}
+
+.overview-stat h4 {
+	font-size: 28px;
+}
+
+.overview-stat p {
+	font-size: 16px;
+	font-stretch: expanded;
+	letter-spacing: 1px;
+	color: #e3ac64;
+}
+
+.battle-log {
+	margin: 0 25px;
+}
+
+.battle {
+	margin: 10px 25px;
+	color: #fff;
+}
+
+.battle h4 {
+	font-size: 20px;
+	margin: 1.5em 0;
+	text-align: center;
+}
+
+.win {
+	color: #81de96;
+	font-weight: bold;
+}
+
+.win-cards {
+	background-color: #81de96;
+}
+
+.loss {
+	color: #de8181;
+	font-weight: bold;
+}
+
+.loss-cards {
+	background-color: #de8181;
+}
+
+.own-cards {
+	width: 45%;
+	border-radius: 15px;
+	padding: 5px;
+	box-sizing: border-box;
+	display: inline-block;
+}
+
+.vs {
+	width: 9%;
+	display: inline-block;
+	text-align: center;
+	vertical-align: top;
+	font-size: 20px;
+	font-weight: bold;
+	color: #e3ac64;
+}
+
+.opponent-cards {
+	width: 45%;
+	border-radius: 15px;
+	padding: 5px;
+	box-sizing: border-box;
+	display: inline-block;
+}
+
+.battle-card {
+	height: 0;
+	width: 12%;
+	padding-top: 10%;
+	margin-left: 5px;
+	margin-right: 5px;
+	background-size: 170%;
+	background-position: center 15%;
+	border-radius: 50%;
+	display: inline-block;
+}
+
+.battle-stat {
+	display: inline-block;
+	width: 24%;
+	text-align: center;
+	padding: 25px 0px;
+}
+
+.battle-stat p {
+	font-size: 18px;
+}

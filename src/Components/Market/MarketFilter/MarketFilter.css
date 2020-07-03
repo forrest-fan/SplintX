@@ -1,0 +1,215 @@
+.market-filter-pane {
+	text-align: left;
+	padding: 10px;
+	display: inline-block;
+	width: 250px;
+	box-sizing: border-box;
+	transition: 0.3s;
+}
+
+.exit-btn {
+	display: none;
+	font-size: 15px;
+	color: #333;
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	transition: 0.3s;
+	cursor: pointer;
+}
+
+.exit-btn:hover {
+	color: #d43d3d;
+}
+
+.market-filter-search {
+	padding: 4px;
+	border: none;
+	border-bottom: 1px solid var(--navbar-bg);
+	transition: 0.3s;
+	margin: 5px 0px;
+	margin-bottom: 10px;
+	width: 90%;
+	font-size: 14px;
+	background-image: url('./search.png');
+	background-repeat: no-repeat;
+	background-position: right center;
+	background-size: auto 50%;
+}
+
+.market-filter-search:focus {
+	outline: none;
+	border-bottom: 1px solid var(--input-focus);
+}
+
+.market-filter-header {
+	font-size: 22px;
+	margin: 0.4em 0;
+}
+
+.market-activeFilters-container {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.market-activeFilter {
+	margin: 3px 10px 3px 0;
+	padding: 4px 8px;
+	border: 1.5px solid var(--navbar-bg);
+	border-radius: 8px;
+	color: var(--navbar-bg);
+	cursor: pointer;
+	transition: 0.3s;
+	font-weight: bold;
+	font-size: 14px;
+}
+
+.market-activeFilter:hover {
+	color: #fff;
+	background-color: #d64545;
+	border-color: #d64545;
+}
+
+.market-clearFilters {
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+.market-filter-section {
+	margin: 10px;
+}
+
+.market-filter-section-header {
+	font-weight: bold;
+	font-size: 16px;
+	letter-spacing: 1px;
+	margin: 0;
+}
+
+.market-filter-selection {
+	margin: 0.5em 0 0.5em 7px;
+	font-size: 16px;
+	cursor: pointer;
+}
+
+.remove-filter-x {
+	float: right;
+	margin-right: 40px;
+	font-size: 12px;
+}
+
+.gold-icon {
+	font-size: 12px;
+	margin-right: 10px;
+	vertical-align: middle;
+	color: #e89c05;	
+}
+
+.type-icon {
+	font-family: Odibee Sans;
+	font-size: 18px;
+	margin-right: 10px;
+	vertical-align: middle;
+	font-style: normal;
+}
+
+.rarity-icon {
+	font-size: 12px;
+	margin-right: 10px;
+	vertical-align: middle;
+}
+
+.common {
+	color: #8792a3;
+}
+
+.rare {
+	color: #3077e6;
+}
+
+.epic {
+	color: #8622e3;
+}
+
+.legendary {
+	color: #e0ac1d;
+}
+
+.edition-icon {
+	font-family: Odibee Sans;
+	font-size: 18px;
+	margin-right: 10px;
+	vertical-align: middle;
+	font-style: normal;
+}
+
+.element-icon {
+	font-size: 12px;
+	margin-right: 10px;
+	vertical-align: middle;
+}
+
+.fire {
+	color: #e0611d;
+}
+
+.water {
+	color: #17ace3;
+}
+
+.earth {
+	color: #12a336;
+}
+
+.life {
+	color: #ebd80c;
+}
+
+.death {
+	color: #521280;
+}
+
+.neutral {
+	color: #939aa3;
+}
+
+@media (max-width: 900px) {
+	.market-filter-pane {
+		width: 200px;
+		padding: 5px;
+	}
+}
+
+@media (max-width: 750px) {
+	.market-filter-pane {
+		position: fixed;
+		left: 0;
+		top: 0;
+		padding: 15px;
+		padding-top: 30px;
+		width: 250px;
+		height: 100vh;
+		z-index: 4;
+		background: #fff;
+		box-shadow: 2px 2px 3px 1px #555;
+		overflow: auto;
+	}
+
+	.market-filter-pane::-webkit-scrollbar {
+	    width: 5px;
+		padding: 2px;
+	}
+
+	.market-filter-pane::-webkit-scrollbar-track {
+		background: #fff;
+	}
+
+	.market-filter-pane::-webkit-scrollbar-thumb {
+	    border-radius: 10px;
+	    background-color: rgba(0, 0, 0, 0.5);
+	}
+
+	.exit-btn {
+		display: block;
+	}
+}

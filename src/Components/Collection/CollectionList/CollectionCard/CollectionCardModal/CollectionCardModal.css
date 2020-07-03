@@ -1,0 +1,46 @@
+.cardModal {
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 100vw;
+	height: 100vh;
+}
+
+.cardModal-overlay {
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.4);
+	z-index: 6;
+}
+
+.cardModal-content {
+	position: fixed;
+	left: 50%;
+	top: 50%;
+	min-width: 70%;
+	min-height: 70%;
+	transform: translate(-50%, -50%);
+	background: #fff;
+	border-radius: 15px;
+	z-index: 7;
+}
+
+.cardModal-exit {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	font-size: 15px;
+	cursor: pointer;
+	transition: 0.3s;
+}
+
+.cardModal-exit:hover {
+	color: #d43d3d;
+}
+
+.cardModal-content h2 {
+	text-align: center;
+}

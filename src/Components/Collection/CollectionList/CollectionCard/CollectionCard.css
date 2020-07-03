@@ -1,0 +1,39 @@
+.card {
+	display: block;
+	width: 19%;
+	padding: 15px;
+	border: none;
+	box-sizing: border-box;
+}
+
+.card-img {
+	width: 100%;
+	box-shadow: 1px 1px 4px 2px;
+	cursor: pointer;
+	background: var(--login-btn);
+	transition: 0.3s;
+}
+
+.card-img:hover {
+	box-shadow: 2px 2px 5px 3px;
+}
+
+@media (max-width: 1300px) {
+	.card {
+		width: 24%;
+	}
+}
+
+@media (max-width: 1050px) {
+	.card {
+		width: 33%;
+		padding: 10px;
+	}
+}
+
+@media (max-width: 575px) {
+	.card {
+		width: 49%;
+		padding: 5px;
+	}
+}

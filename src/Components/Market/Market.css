@@ -1,0 +1,33 @@
+#market {
+	margin: 0 60px;
+}
+
+.market-header {
+	padding-top: 80px;
+}
+
+.market-header h2 {
+	font-size: 30px;
+	font-weight: bold;
+	margin: 0.3em 5px;
+}
+
+.market-header hr {
+	border-bottom: 1px solid #768fb5;
+}
+
+.market-container {
+	display: flex;
+}
+
+@media (max-width: 900px) {
+	#market {
+		margin: 0 30px;
+	}
+}
+
+@media (max-width: 500px) {
+	#market {
+		margin: 0 5px;
+	}
+}
