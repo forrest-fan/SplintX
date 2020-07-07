@@ -1,0 +1,138 @@
+.market-cardModal {
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 100vw;
+	height: 100vh;
+	z-index: 7;
+}
+
+.market-cardModal-overlay {
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.4);
+}
+
+.market-cardModal-content {
+	padding: 20px;
+	box-sizing: border-box;
+	position: fixed;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	width: 80vw;
+	height: 80vh;
+	background: #fff;
+	border-radius: 15px;
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.market-cardModal-exit {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	font-size: 15px;
+	cursor: pointer;
+	transition: 0.3s;
+}
+
+.market-cardModal-exit:hover {
+	color: #d43d3d;
+}
+
+.market-cardModal-content h2 {
+	text-align: center;
+	width: 100%;
+}
+
+.market-cardModal-img-container {
+	padding: 10px;
+	box-sizing: border-box;
+	vertical-align: top;
+}
+
+.market-cardModal-img {
+	height: 60vh;
+}
+
+.market-cardModal-info-container {
+	flex-grow: 1;
+}
+
+.market-cardModal-table-container {
+	padding: 10px;
+	box-sizing: border-box;
+	max-height: 50vh;
+	overflow-y: auto;
+}
+
+.market-cardModal-table-container::-webkit-scrollbar {
+    width: 5px;
+	padding: 2px;
+	cursor: pointer;
+}
+
+.market-cardModal-table-container::-webkit-scrollbar-track {
+	background: #ddd;
+	border-radius: 5px;
+}
+
+.market-cardModal-table-container::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+}
+
+.market-cardModal-table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.market-cardModal-table-header {
+	background: var(--navbar-bg);
+	color: var(--login-btn);
+	font-weight: bold;
+	font-size: 18px;
+	border: none;
+}
+
+.market-cardModal-table-header th{
+	padding: 7px 0px;
+}
+
+.market-cardModal-table-sortIcon {
+	margin-left: 5px;
+	font-size: 10px;
+}
+
+.market-cardModal-table-data tr {
+	border-top: 1px solid #ccc;
+}
+
+.market-cardModal-table-data td{
+	padding: 4px 7px;
+}
+
+.market-cardModal-table-add input {
+	cursor: pointer;
+}
+
+.market-cardModal-table-data-seller {
+	text-align: left;
+}
+
+.market-cardModal-table-data-uid {
+	text-align: center;
+}
+
+.market-cardModal-table-data-lvl {
+	text-align: center;
+}
+
+.market-cardModal-table-data-price {
+	text-align: right;
+}

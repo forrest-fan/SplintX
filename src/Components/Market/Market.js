@@ -156,14 +156,14 @@ class Market extends React.Component {
 	componentDidMount() {
 		$.ajax({
 			type: 'GET',
-			url: 'https://game-api.splinterlands.io/cards/get_details',
+			url: 'https://game-api.splinterlands.com/cards/get_details',
 			jsonpCallback: 'testing',
 			dataType: 'json',
 			success: function(cardDetails) {
 				let cards = [];
 				$.ajax({
 					type: 'GET',
-		  			url: "https://steemmonsters.com/market/for_sale_grouped",
+		  			url: "https://game-api.splinterlands.com/market/for_sale_grouped",
 		  			jsonpCallback: 'testing',
 		  			dataType: 'json',
 					success: function(forSaleCards) {

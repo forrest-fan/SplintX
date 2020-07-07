@@ -8,6 +8,8 @@ import $ from 'jquery';
 var allCards = [];
 var distinctCards = [];
 var cards = [];
+const lvlXP = [[20,60,160,360,760,1560,2560,4560,7560],[100,300,700,1500,2500,4500,8500],[250,750,1750,3750,7750],[1000,3000,7000]];
+const newLvlXP = [[1,5,14,30,60,100,150,220,300,400],[1,5,14,25,40,60,85,115],[1,4,10,20,32,46],[1,3,6,11]];
 
 class Collection extends React.Component {
 	constructor(props) {
@@ -180,59 +182,60 @@ class Collection extends React.Component {
 				          	let element = cardData.color === 'Red' ? 'Fire' : cardData.color === 'Blue' ? 'Water' : cardData.color === 'Green' ? 'Earth' : cardData.color === 'White' ? 'Life' : cardData.color === 'Black' ? 'Death' : cardData.color === 'Gold' ? 'Dragon' : 'Neutral';
 				          	let xp = Eelement.cards[l].xp;
 				          	let lvl = 1;
-				          	let lvlXP = [[20,60,160,360,760,1560,2560,4560,7560],[100,300,700,1500,2500,4500,8500],[250,750,1750,3750,7750],[1000,3000,7000]];
-				          	for (let i = 0; i < lvlXP[cardData.rarity - 1].length; i++) {
-				          		if (xp > lvlXP[cardData.rarity - 1][i]) {
-				          			lvl = i + 2;
+							let xpRates = edition === 'Untamed' || (edition === 'Reward' && detailID >= 225) ? newLvlXP : lvlXP;
+							let increment = edition === 'Untamed' || (edition === 'Reward' && detailID >= 225) ? 1 : 2;
+							for (let i = xpRates[cardData.rarity - 1].length - 1; i >= 0; i--) {
+				          		if (xp >= xpRates[cardData.rarity - 1][i]) {
+				          			lvl = i + increment;
 				          			break;
 				          		}
 				          	}
-				          	let img = 'https://d36mxiodymuqjm.cloudfront.net/cards_by_level/' + edition.toLowerCase() + '/' + name.replace(' ', '%20') + '_lv1';
+				          	let img = 'https://d36mxiodymuqjm.cloudfront.net/cards_by_level/' + edition.toLowerCase() + '/' + name.replace(' ', '%20') + '_lv' + lvl;
 				          	img += gold ? '_gold.png' : '.png';
 				          	if (distinctCards.includes(distinctID)) {
 				            	for (let i = 0; i < cards.length; i++) {
 				            		let card = cards[i];
 				              		if (card.distinctID === distinctID) {
-				                			card.gold = card.gold || gold;
-				                			card.count += 1;
-				                			card.lvlHigh = lvl > card.lvlHigh ? lvl : card.lvlHigh;
-				                			card.lvlCount[lvl - 1] += 1;
-				                			card.img = 'https://d36mxiodymuqjm.cloudfront.net/cards_by_level/' + edition.toLowerCase() + '/' + name.replace(' ', '%20') + '_lv' + card.lvlHigh;
-				          					card.img += card.gold ? '_gold.png' : '.png';
-				          					card.mana = type === 'Monster' ? cardData.stats.mana[card.lvlHigh - 1] || 0 : cardData.stats.mana;
-						              		card.hp = (cardData.stats.health[card.lvlHigh - 1] + cardData.stats.armor[card.lvlHigh - 1]) || 0;
-						              		card.speed = cardData.stats.speed[card.lvlHigh - 1] || 0;
-						              		cards[i] = card;
-						              		break;
-				              			}
-				           			}	
-					         	} else {
-					         		let lvlCount = [];
-					         		for (let i = 0; i < lvlXP[cardData.rarity - 1].length + 1; i++) {
-					         			lvlCount.push(0);
-					         		}
-					         		lvlCount[lvl - 1] += 1;
-					            	cards.push({
-					              		name: name,
-					              		rarity: rarity,
-						              	edition: edition,
-						              	element: element,
-						              	type: type,
-						              	detailID: detailID,
-						              	distinctID: distinctID,
-						              	gold: gold,
-						              	img: img,
-						              	count: 1,
-						              	lvlHigh: lvl,
-						              	lvlCount: lvlCount,
-						              	mana: type === 'Monster' ? cardData.stats.mana[lvl - 1] || 0 : cardData.stats.mana,
-						              	hp: (cardData.stats.health[lvl - 1] + cardData.stats.armor[lvl - 1]) || 0,
-						              	speed: cardData.stats.speed[lvl - 1] || 0
-									 						//attack: cardData.stats.attack[cardData.stats.attack.length - 1] !== 0 ? cardData.stats.attack[cardData.stats.attack.length - 1] : cardData.stats.ranged[cardData.stats.ranged.length - 1] !== 0 ? cardData.stats.ranged[cardData.stats.ranged.length - 1] : cardData.stats.magic[cardData.stats.magic.length - 1] !== 0 ? cardData.stats.magic[cardData.stats.magic.length - 1] !== 0
-									});
-					            	distinctCards.push(distinctID);
-					        	}
-					        }
+			                			card.gold = card.gold || gold;
+			                			card.count += 1;
+			                			card.lvlHigh = lvl > card.lvlHigh ? lvl : card.lvlHigh;
+			                			card.lvlCount[lvl - 1] += 1;
+			                			card.img = 'https://d36mxiodymuqjm.cloudfront.net/cards_by_level/' + edition.toLowerCase() + '/' + name.replace(' ', '%20') + '_lv' + card.lvlHigh;
+			          					card.img += card.gold ? '_gold.png' : '.png';
+			          					card.mana = type === 'Monster' ? cardData.stats.mana[card.lvlHigh - 1] || 0 : cardData.stats.mana;
+					              		card.hp = (cardData.stats.health[card.lvlHigh - 1] + cardData.stats.armor[card.lvlHigh - 1]) || 0;
+					              		card.speed = cardData.stats.speed[card.lvlHigh - 1] || 0;
+					              		cards[i] = card;
+					              		break;
+			              			}
+			           			}	
+				         	} else {
+				         		let lvlCount = [];
+				         		for (let i = 0; i < lvlXP[cardData.rarity - 1].length + 1; i++) {
+				         			lvlCount.push(0);
+				         		}
+				         		lvlCount[lvl - 1] += 1;
+				            	cards.push({
+				              		name: name,
+				              		rarity: rarity,
+					              	edition: edition,
+					              	element: element,
+					              	type: type,
+					              	detailID: detailID,
+					              	distinctID: distinctID,
+					              	gold: gold,
+					              	img: img,
+					              	count: 1,
+					              	lvlHigh: lvl,
+					              	lvlCount: lvlCount,
+					              	mana: type === 'Monster' ? cardData.stats.mana[lvl - 1] || 0 : cardData.stats.mana,
+					              	hp: (cardData.stats.health[lvl - 1] + cardData.stats.armor[lvl - 1]) || 0,
+					              	speed: cardData.stats.speed[lvl - 1] || 0
+								 						//attack: cardData.stats.attack[cardData.stats.attack.length - 1] !== 0 ? cardData.stats.attack[cardData.stats.attack.length - 1] : cardData.stats.ranged[cardData.stats.ranged.length - 1] !== 0 ? cardData.stats.ranged[cardData.stats.ranged.length - 1] : cardData.stats.magic[cardData.stats.magic.length - 1] !== 0 ? cardData.stats.magic[cardData.stats.magic.length - 1] !== 0
+								});
+			            		distinctCards.push(distinctID);
+				        	}
+					    }
 						this.setState({
 							cards: cards,
 							loading: false
