@@ -23,6 +23,23 @@ class MarketCart extends React.Component {
 	fillOrder() {
 		// Felix transaction code goes here
 		let cart = this.props.cart;
+		//alert("buyCard function");
+	        var items = [], price = 0;
+	        for(var i = 0; i < cart.length; ++i) {
+	           items.push(cart[i].marketid);
+	           price += cart[i].buy_price;
+	        }
+	        var json = {
+	           items: items,
+		   price: price,
+		   market: "splintx",
+		   currency: "USD",
+		   app: "splintXApp"
+	  	};
+	  	var myJSON = JSON.stringify(json);
+	  	hive_keychain.requestCustomJson(localStorage.getItem('username'), "sm_market_purchase", "Active", myJSON, "Buy Card(s)", function(response) {
+	    	    console.log(response);
+	  	});
 	}
 
 	componentDidMount() {
