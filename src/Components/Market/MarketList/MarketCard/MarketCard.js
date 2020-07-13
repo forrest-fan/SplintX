@@ -23,7 +23,7 @@ class MarketCard extends React.Component {
 	    	<div className='card' id={this.props.info.distinctID}>
 	    		<img className='card-img' src={this.props.info.img} onClick={this.toggleModal}/>
 	    		<div className='card-qty'>{this.props.info.qty}</div>
-	    		{this.state.renderModal ? <MarketCardModal info={this.props.info} closeModal={this.toggleModal}/> : ''}
+	    		{this.state.renderModal ? <MarketCardModal info={this.props.info} closeModal={this.toggleModal} cart={this.props.cart} addToCart={this.props.addToCart} /> : ''}
 	    	</div>
 	    );
 	}

@@ -2,6 +2,7 @@ import React from 'react';
 import './Market.css';
 import MarketFilter from './MarketFilter/MarketFilter';
 import MarketList from './MarketList/MarketList';
+import MarketCart from './MarketCart/MarketCart';
 import $ from 'jquery';
 
 var allCards = [];
@@ -24,12 +25,17 @@ class Market extends React.Component {
 			filterCount: 0,
 			cards: [],
 			mobileFilters: false,
-			loading: true
+			loading: true,
+			cart: [],
+			renderCart: false
 		};
 		this.updateFilters = this.updateFilters.bind(this);
 		this.updateSort = this.updateSort.bind(this);
 		this.showMobileFilters = this.showMobileFilters.bind(this);
 		this.hideMobileFilters = this.hideMobileFilters.bind(this);
+		this.addToCart = this.addToCart.bind(this);
+		this.removeItem = this.removeItem.bind(this);
+		this.toggleCart = this.toggleCart.bind(this);
 	}
 
 	updateFilters(filter, category, action) {
@@ -153,6 +159,30 @@ class Market extends React.Component {
 		this.setState({mobileFilters: false});
 	}
 
+	addToCart(selectedCardsArr) {
+		this.setState({
+			cart: this.state.cart.concat(selectedCardsArr)
+		})
+	}
+
+	removeItem(item) {
+		let cart = this.state.cart;
+		for (let i = 0; i < cart.length; i++) {
+			if (item.uid === cart[i].uid) {
+				cart.splice(i, 1);
+			}
+		}
+		this.setState({
+			cart: cart
+		})
+	}
+
+	toggleCart() {
+		this.setState({
+			renderCart: this.state.renderCart ? false : true
+		});
+	}
+
 	componentDidMount() {
 		$.ajax({
 			type: 'GET',
@@ -221,8 +251,11 @@ class Market extends React.Component {
 				</div>
 				<div className='market-container'>
 					<MarketFilter updateFilters={this.updateFilters} mobileFilters={this.state.mobileFilters} hideMobileFilters={this.hideMobileFilters}/>
-					<MarketList cards={this.state.cards} loading={this.state.loading} updateSort={this.updateSort} filterCount={this.state.filterCount} showMobileFilters={this.showMobileFilters}/>
+					<MarketList cart={this.state.cart} addToCart={this.addToCart} cards={this.state.cards} loading={this.state.loading} updateSort={this.updateSort} filterCount={this.state.filterCount} showMobileFilters={this.showMobileFilters}/>	
 				</div>
+				<div className='market-cart-btn' onClick={this.toggleCart}><i className='fas fa-shopping-cart'></i></div>
+				{this.state.cart.length !== 0 ? <div className='market-cart-count'><p>{this.state.cart.length}</p></div> : ''}
+				{this.state.renderCart ? <MarketCart cart={this.state.cart} removeItem={this.removeItem} closeCart={this.toggleCart} /> : ''}
 			</div>
 	    );
 	}

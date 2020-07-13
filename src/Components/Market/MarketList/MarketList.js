@@ -35,7 +35,7 @@ class MarketList extends React.Component {
 	        this.props.cards.length === 0 ?
               	<p className='market-noCards'>No cards were found. Please update the filters.</p> : 
               	this.props.cards.map(card => {
-                	return (<MarketCard info={card} />);
+                	return (<MarketCard info={card} cart={this.props.cart} addToCart={this.props.addToCart} />);
               	})
            }
 	      </div>

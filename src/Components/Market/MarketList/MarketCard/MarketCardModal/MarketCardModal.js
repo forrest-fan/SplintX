@@ -17,8 +17,9 @@ class MarketCardModal extends React.Component {
 		super(props);
 		this.state = {
 			forSale: [],
-			inCart: [],
-			sortMethod: 'default'
+			selected: [],
+			sortMethod: 'default',
+			loading: true
 		};
 		this.updateSort = this.updateSort.bind(this);
 	}
@@ -79,9 +80,12 @@ class MarketCardModal extends React.Component {
 	      					uid: listing.uid,
 	      					buy_price: listing.buy_price,
 	      					lvl: lvl,
-	      					currency: listing.currency
+	      					currency: listing.currency,
+	      					market_id: listing.market_id,
+	      					name: this.props.info.name
 	      				});
-		  			})
+		  			}),
+		  			loading: false
 		  		});
 		  	}.bind(this),
 		  	error: function(e) {
@@ -91,6 +95,7 @@ class MarketCardModal extends React.Component {
 	}
 
 	render() {
+		const matchUID = this.props.cart.map(item => {return item.uid});
 	    return (
 	    	<div className='market-cardModal'>
 	    		<div className='market-cardModal-overlay' onClick={this.props.closeModal}></div>
@@ -107,47 +112,63 @@ class MarketCardModal extends React.Component {
 		    					<thead className='market-cardModal-table-header'>
 		    						<tr>
 		    							<th></th>
-		    							<th>Seller</th>
-		    							<th>Card ID</th>
 		    							<th onClick={() => {
 		    								this.state.sortMethod === 'lvlDec' ? this.updateSort('lvlAsc') : this.updateSort('lvlDec');
 		    							}} style={{cursor: 'pointer'}}>Level  <i className={'market-cardModal-table-sortIcon ' + (this.state.sortMethod === 'lvlAsc' ? 'fas fa-caret-up' : this.state.sortMethod === 'lvlDec' ? 'fas fa-caret-down' : '')}></i></th>
 		    							<th onClick={() => {
 		    								this.state.sortMethod === 'priceAsc' ? this.updateSort('priceDec') : this.updateSort('priceAsc');
 		    							}} style={{cursor: 'pointer'}}>Price <i className={'market-cardModal-table-sortIcon ' + (this.state.sortMethod === 'priceAsc' ? 'fas fa-caret-up' : this.state.sortMethod === 'priceDec' ? 'fas fa-caret-down' : '')}></i></th>
+		    							<th>Seller</th>
+		    							<th>Card ID</th>
 		    						</tr>
 		    					</thead>
+		    					{this.state.loading ? '' :
 		    					<tbody className='market-cardModal-table-data'>
 		    						{this.state.forSale.map(listing => {
 		    							
 		    							return(
 		    								<tr>
 		    									<td className='market-cardModal-table-add'><input type='checkbox' onClick={() => {
-		    										let inCart = this.state.inCart;
-		    										if (!inCart.includes(listing)) {
-		    											inCart.push(listing);
+		    										let selected = this.state.selected;
+		    										if (!selected.includes(listing)) {
+		    											selected.push(listing);
 		    										} else {
-		    											for (let i = 0; i < inCart.length; i++) {
-		    												if (inCart[i].uid === listing.uid) {
-		    													inCart.splice(i, 1);
+		    											for (let i = 0; i < selected.length; i++) {
+		    												if (selected[i].uid === listing.uid) {
+		    													selected.splice(i, 1);
 		    												}
 		    											}
 		    										}
-		    										this.setState({inCart: inCart});
-		    									}}/></td>
-		    									<td className='market-cardModal-table-data-seller'>{listing.seller}</td>
-		    									<td className='market-cardModal-table-data-uid'>{listing.uid}</td>
+		    										this.setState({selected: selected});
+		    									}} disabled={matchUID.includes(listing.uid)}/></td>
 		    									<td className='market-cardModal-table-data-lvl'>{listing.lvl}</td>
 		    									<td className='market-cardModal-table-data-price'>{Number(listing.buy_price).toFixed(2) + ' ' + listing.currency}</td>
+		    									<td className='market-cardModal-table-data-seller'>{listing.seller}</td>
+		    									<td className='market-cardModal-table-data-uid'>{listing.uid}</td>
 		    								</tr>
 		    							);
 		    						})}
-		    					</tbody>
+		    					</tbody> }
 		    				</table>
+		    				{this.state.loading ? <div className='loader-modal-container'><div className='loader-modal'></div></div> : ''}
 		    			</div>
-		    			<p>Cards In Cart: {this.state.inCart.length}, Total: ${sumProp(this.state.inCart, 'buy_price').toFixed(2)} USD</p>
+		    			
+		    			<div className='market-cardModal-addToCart'>
+		    				<span>{this.state.selected.length} {this.props.info.name} Card{this.state.selected.length === 1 ? '' : 's'} Selected, Total: ${sumProp(this.state.selected, 'buy_price').toFixed(2)} USD</span>
+	    					<button className='market-cardModal-addToCart-btn' onClick={() => {
+	    						let selectedArr = this.state.selected;
+	    						let toast = document.getElementById('market-cardModal-toast');
+	    						this.setState({selected: []});
+	    						this.props.addToCart(selectedArr);
+	    						toast.className = 'show';
+	    						setTimeout(() => {toast.className = toast.className.replace('show', '')}, 3000)
+	    					}} disabled={this.state.selected.length === 0}>Add to Cart</button>
+	    				</div>
 	    			</div>
 	    		</div>
+				<div id='market-cardModal-toast'>
+					<i className='fas fa-check'></i>Successfully added to cart!
+				</div>
 	    	</div>
 	    );
 	}

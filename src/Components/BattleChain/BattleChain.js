@@ -2,12 +2,13 @@ import React from 'react';
 import './BattleChain.css';
 import BattleStats from './BattleStats/BattleStats';
 import BattleLog from './BattleLog/BattleLog';
+import $ from 'jquery';
 
 $.ajax({
     type: 'GET',
     url: 'https://game-api.splinterlands.com/players/details?name=notswizz',
     jsonCallback: 'testing',
-    dataType: 'json'
+    dataType: 'json',
     success: function(json) {
         let rating = json.rating;
         let league;
@@ -44,7 +45,7 @@ $.ajax({
         } else if (rating >= 4700) {
             league = 'Champion I';
         }
-        $.ajax({
+        /*$.ajax({
             type: 'GET',
             url: "https://game-api.splinterlands.com/battle/history?player=notswizz",
             jsonpCallback: 'testing',
@@ -82,8 +83,8 @@ $.ajax({
                         //console.log(text.team1.player + "\'s Monsters: ");
                         for (let t1 = 0; t1 < team1L; ++t1) {
                             var add = {
-                                img: '';
-                            }
+                                img: ''
+                            };
                             add.img = text.team1.monsters[t1].uid;
                             data.ownCards.push(text.team1.monsters[t1].uid);
                             //needs to be the pictures of the monsters
@@ -92,8 +93,8 @@ $.ajax({
                         //console.log(text.team2.player + "\'s Monsters: ");
                         for (let t2 = 0; t2 < team2L; ++t2) {
                             var add = {
-                                img: '';
-                            }
+                                img: ''
+                            };
                             add.img = text.team2.monsters[t2].uid;
                             data.opponentCards.push(add);
                         }
@@ -109,18 +110,18 @@ $.ajax({
                         //console.log(text.team1.player + "\'s Monsters: ");
                         for (let t1 = 0; t1 < team2L; ++t1) {
                             var add = {
-                                img: '';
-                            }
+                                img: ''
+                            };
                             add.img = text.team2.monsters[t1].uid;
                             data.ownCards.push(add.img);
                             //needs to be the pictures of the monsters
                         }
                         //console.log("\n");
                         //console.log(text.team2.player + "\'s Monsters: ");
-                        for (let t2 = 0; t2 < team1L; ++t1) {
+                        for (let t2 = 0; t2 < team1L; ++t2) {
                             var add = {
-                                img: '';
-                            }
+                                img: ''
+                            };
                             add.img = text.team1.monsters[t2].uid;
                             data.opponentCards.push(add);
                         }
@@ -360,7 +361,7 @@ $.ajax({
             // 		img: 'https://steemmonsters.s3.amazonaws.com/cards_untamed/Horny%20Toad.png'
             // 	}]
             // }]
-        }
+        }*/
     },
     error: function(e) {
         console.log(e.message);
@@ -383,8 +384,8 @@ class BattleChain extends React.Component {
 			      <h2 className='stats-title'>Statistics</h2><h3 className='username'>@username</h3>
 			    </div>
 			    <hr/>
-			    <BattleStats stats={stats}/>
-			    <BattleLog battles={stats.last5}/>
+			    <BattleStats />
+			    <BattleLog />
 			  </div>
 			</div>
 		);
