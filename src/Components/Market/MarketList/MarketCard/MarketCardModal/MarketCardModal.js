@@ -140,7 +140,7 @@ class MarketCardModal extends React.Component {
 		    											}
 		    										}
 		    										this.setState({selected: selected});
-		    									}} disabled={matchUID.includes(listing.uid)}/></td>
+		    									}} disabled={matchUID.includes(listing.uid)} checked={this.state.selected.includes(listing)}/></td>
 		    									<td className='market-cardModal-table-data-lvl'>{listing.lvl}</td>
 		    									<td className='market-cardModal-table-data-price'>{Number(listing.buy_price).toFixed(2) + ' ' + listing.currency}</td>
 		    									<td className='market-cardModal-table-data-seller'>{listing.seller}</td>
