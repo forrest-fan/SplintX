@@ -11,8 +11,9 @@ var distinctCards = [];
 class Market extends React.Component {
 	constructor(props) {
 		super(props);
-		
-        //console.log("cards: " + cards);
+		if (!localStorage.getItem('cart')) {
+			localStorage.setItem('cart', JSON.stringify([]));
+		}
 		this.state = {
 			filters: {
 				search: [''],
@@ -26,7 +27,7 @@ class Market extends React.Component {
 			cards: [],
 			mobileFilters: false,
 			loading: true,
-			cart: [],
+			cart: JSON.parse(localStorage.getItem('cart')),
 			renderCart: false
 		};
 		this.updateFilters = this.updateFilters.bind(this);
@@ -160,8 +161,10 @@ class Market extends React.Component {
 	}
 
 	addToCart(selectedCardsArr) {
+		let newCart = this.state.cart.concat(selectedCardsArr)
+		localStorage.setItem('cart', JSON.stringify(newCart));
 		this.setState({
-			cart: this.state.cart.concat(selectedCardsArr)
+			cart: newCart
 		})
 	}
 
@@ -172,6 +175,7 @@ class Market extends React.Component {
 				cart.splice(i, 1);
 			}
 		}
+		localStorage.setItem('cart', JSON.stringify(cart));
 		this.setState({
 			cart: cart
 		})

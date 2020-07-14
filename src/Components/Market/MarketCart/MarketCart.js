@@ -1,12 +1,21 @@
 import React from 'react';
 import './MarketCart.css';
 import $ from 'jquery';
+
 const sumProp = (array, prop) => {
 	let sum = 0;
 	for (let i = 0; i < array.length; i++) {
 		sum += Number(array[i][prop]);
 	}
 	return sum;
+}
+
+function isLoggedIn() {
+  if(localStorage.getItem('username')) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 class MarketCart extends React.Component {
@@ -21,8 +30,14 @@ class MarketCart extends React.Component {
 	}
 	
 	fillOrder() {
-		// Felix transaction code goes here
-		let cart = this.props.cart;
+		if (isLoggedIn()) {
+			// Felix transaction code goes here
+			let cart = this.props.cart;
+		} else {
+			let toast = document.getElementById('cart-login-prompt-toast');
+		    toast.className = 'show';
+		    setTimeout(() => {toast.className = toast.className.replace('show', '')}, 3000)
+		}
 	}
 
 	componentDidMount() {
@@ -88,6 +103,9 @@ class MarketCart extends React.Component {
 	    				<button onClick={this.fillOrder} disabled={this.props.cart.length === 0}>Checkout - {this.state.totalDEC.toFixed(3)} DEC</button>
 	    			</div>
 	    		</div>
+	    		<div id='cart-login-prompt-toast'>
+		          <i className='fas fa-times'></i>Please login to make a purchase.
+		        </div>
 	    	</div>
 	    );
 	}
