@@ -37,6 +37,7 @@ class Market extends React.Component {
 		this.addToCart = this.addToCart.bind(this);
 		this.removeItem = this.removeItem.bind(this);
 		this.toggleCart = this.toggleCart.bind(this);
+		this.clearCart = this.clearCart.bind(this);
 	}
 
 	updateFilters(filter, category, action) {
@@ -181,6 +182,14 @@ class Market extends React.Component {
 		})
 	}
 
+	clearCart() {
+		let cart = [];
+		localStorage.setItem('cart', JSON.stringify(cart));
+		this.setState({
+			cart: cart
+		});
+	}
+
 	toggleCart() {
 		this.setState({
 			renderCart: this.state.renderCart ? false : true
@@ -259,7 +268,7 @@ class Market extends React.Component {
 				</div>
 				<div className='market-cart-btn' onClick={this.toggleCart}><i className='fas fa-shopping-cart'></i></div>
 				{this.state.cart.length !== 0 ? <div className='market-cart-count'><p>{this.state.cart.length}</p></div> : ''}
-				{this.state.renderCart ? <MarketCart cart={this.state.cart} removeItem={this.removeItem} closeCart={this.toggleCart} /> : ''}
+				{this.state.renderCart ? <MarketCart cart={this.state.cart} removeItem={this.removeItem} closeCart={this.toggleCart} clearCart={this.clearCart} /> : ''}
 			</div>
 	    );
 	}

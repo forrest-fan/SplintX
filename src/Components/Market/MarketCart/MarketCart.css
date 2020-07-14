@@ -50,6 +50,16 @@
 	text-align: center;
 }
 
+.cart-clear {
+	text-decoration: underline;
+	cursor: pointer;
+	transition: 0.3s;
+}
+
+.cart-clear:hover {
+	color: #d43d3d;
+}
+
 .cart-table {
 	width: 100%;
 	max-height: 40vh;

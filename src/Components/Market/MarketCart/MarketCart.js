@@ -22,6 +22,7 @@ class MarketCart extends React.Component {
 	constructor(props) {
 		super(props);
 		this.fillOrder = this.fillOrder.bind(this);
+		this.clearCart = this.clearCart.bind(this);
 		this.state = {
 			totalDEC: 0,
 			DECexchange: 0,
@@ -38,6 +39,14 @@ class MarketCart extends React.Component {
 		    toast.className = 'show';
 		    setTimeout(() => {toast.className = toast.className.replace('show', '')}, 3000)
 		}
+	}
+
+	clearCart() {
+		this.setState({
+			totalDEC: 0,
+			totalUSD: 0
+		});
+		this.props.clearCart();
 	}
 
 	componentDidMount() {
@@ -67,7 +76,7 @@ class MarketCart extends React.Component {
 	    		<div className='cart-content' >
         			<div className='cart-exit' onClick={this.props.closeCart}><i className='fas fa-times'></i></div>
 	    			<h2>My Cart</h2>
-	    			<p>You have {this.props.cart.length} item{this.props.cart.length !== 1 ? 's' : ''} in your cart.</p>
+	    			<p>You have {this.props.cart.length} item{this.props.cart.length !== 1 ? 's' : ''} in your cart. <span className='cart-clear' onClick={this.clearCart}>Clear Cart</span></p>
 	    			<table className='cart-table'>
 	    				<thead>
 	    					<tr>
