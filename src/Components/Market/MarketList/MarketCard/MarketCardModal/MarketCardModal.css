@@ -245,5 +245,11 @@
 	.market-cardModal-table-container {
 		white-space: nowrap;
 		overflow-x: auto;
+		height: 45vh;
+	}
+
+	.market-cardModal-addToCart-btn {
+		display: block;
+		margin: 5px 0px;
 	}
 }

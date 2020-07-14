@@ -8,15 +8,25 @@ import BattleChain from './Components/BattleChain/BattleChain';
 import Scanner from './Components/Scanner/Scanner';
 import Collection from './Components/Collection/Collection';
 
+function isLoggedIn() {
+  if(localStorage.getItem('username')) {
+    return true;
+  } else {
+    return false;
+  }
+}
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      page: 'market'
+      page: 'market',
+      username: localStorage.getItem('username') || '',
+      loggedIn: isLoggedIn()
     };
     this.renderPage = this.renderPage.bind(this);
     this.updatePage = this.updatePage.bind(this);
+    this.login = this.login.bind(this);
   }
 
   updatePage(newPage) {
@@ -24,64 +34,38 @@ class App extends React.Component {
       page: newPage
     });
   }
-  //calls the Log in function when the page is first loaded to check if user is logged in.
-  window.onload = isLoggedIn();
 
-  function isLoggedIn() {
-    if(localStorage.getItem('username')) {
-      //signed in
-      $('#username').replaceWith("<div id=\"loggedin\">You are logged in as: "+ localStorage.getItem('username') +"</div>");
-      document.getElementById("button").innerHTML = "Log Out";
-      document.getElementById("button").onclick = logout;
+  login(username) {
+    var loggedIn;
+    if (username === '') {
+      loggedIn = false;
+    } else {
+      loggedIn = true;
     }
-  }
-
-  function login() {
-    var username = document.getElementById("username").value;
-    //alert(username);
-    message = username + Date.now();
-    if(window.hive_keychain) {
-      //alert("has keychain");
-      hive_keychain.requestSignBuffer(username, message, "Posting", function(response) {
-        console.log(response);
-        var success = response["success"];
-        if (success) {
-          localStorage.setItem('username', username);
-          $('#username').replaceWith("<div id=\"loggedin\">You are logged in as: "+ localStorage.getItem('username') +"</div>");
-          document.getElementById("button").innerHTML = "Log Out";
-          document.getElementById("button").onclick = logout;
-       }
-     })
-   }
-   return false;
-  }
-  function logout() {
-    //alert("logged out");
-    $('#loggedin').replaceWith("<input type=\"text\" class=\"form-control\" placeholder=\"Hive Username\" id=\"username\">");
-    //document.getElementById("username").value = "";
-    document.getElementById("button").innerHTML = "Log In";
-    document.getElementById("button").onclick = login;
-    localStorage.removeItem("username");
+    this.setState({
+      username: username,
+      loggedIn: loggedIn
+    });
   }
 
   renderPage(page) {
     if (page === 'market') {
-      return <Market / > ;
+      return <Market /> ;
     } else if (page === 'collection') {
-      return <Collection / >
+      return <Collection loggedIn={this.state.loggedIn}/>
     } else if (page === 'packs') {
-      return <Packs / >
+      return <Packs />
     } else if (page === 'battlechain') {
-      return <BattleChain / >
+      return <BattleChain />
     } else if (page === 'scanner') {
-      return <Scanner / >
+      return <Scanner />
     }
   }
 
   render() {
     return ( 
       <div className = "App" >
-        <Navbar active = {this.state.page} updatePage = {this.updatePage}/>
+        <Navbar active = {this.state.page} updatePage={this.updatePage} login={this.login} loggedIn={this.state.loggedIn}/>
         {this.renderPage(this.state.page)}
       </div>
     );

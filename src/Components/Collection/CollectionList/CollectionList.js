@@ -31,7 +31,7 @@ class CollectionList extends React.Component {
         </div>
       	<div className='collectionList'>
 	         {this.props.loading ?
-            <div className='loader'></div> :
+            <div className='loader-container'><div className='loader'></div></div> :
             this.props.cards.length === 0 ?
               <p className='collection-noCards'>No cards were found. Please update the filters.</p> : 
               this.props.cards.map(card => {
