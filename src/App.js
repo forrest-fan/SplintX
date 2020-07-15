@@ -8,15 +8,25 @@ import BattleChain from './Components/BattleChain/BattleChain';
 import Scanner from './Components/Scanner/Scanner';
 import Collection from './Components/Collection/Collection';
 
+function isLoggedIn() {
+  if(localStorage.getItem('username')) {
+    return true;
+  } else {
+    return false;
+  }
+}
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      page: 'market'
+      page: 'market',
+      username: localStorage.getItem('username') || '',
+      loggedIn: isLoggedIn()
     };
     this.renderPage = this.renderPage.bind(this);
     this.updatePage = this.updatePage.bind(this);
+    this.login = this.login.bind(this);
   }
 
   updatePage(newPage) {
@@ -25,24 +35,37 @@ class App extends React.Component {
     });
   }
 
+  login(username) {
+    var loggedIn;
+    if (username === '') {
+      loggedIn = false;
+    } else {
+      loggedIn = true;
+    }
+    this.setState({
+      username: username,
+      loggedIn: loggedIn
+    });
+  }
+
   renderPage(page) {
     if (page === 'market') {
-      return <Market / > ;
+      return <Market /> ;
     } else if (page === 'collection') {
-      return <Collection / >
+      return <Collection loggedIn={this.state.loggedIn}/>
     } else if (page === 'packs') {
-      return <Packs / >
+      return <Packs />
     } else if (page === 'battlechain') {
-      return <BattleChain / >
+      return <BattleChain />
     } else if (page === 'scanner') {
-      return <Scanner / >
+      return <Scanner />
     }
   }
 
   render() {
     return ( 
       <div className = "App" >
-        <Navbar active = {this.state.page} updatePage = {this.updatePage}/>
+        <Navbar active = {this.state.page} updatePage={this.updatePage} login={this.login} loggedIn={this.state.loggedIn}/>
         {this.renderPage(this.state.page)}
       </div>
     );

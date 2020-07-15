@@ -48,6 +48,13 @@
 	flex: auto;
 }
 
+.loader-container {
+  	position: absolute;
+  	left: 50%;
+  	transform: translateX(-50%);
+  	margin-top: 50px;
+}
+
 .loader {
 	display: block;
 	border: 12px solid #eee; /* Light grey */
@@ -56,10 +63,6 @@
   	width: 80px;
   	height: 80px;
   	animation: spin 2s linear infinite;
-  	position: absolute;
-  	left: 50%;
-  	transform: translateX(-50%);
-  	margin-top: 50px;
 }
 
 @keyframes spin {

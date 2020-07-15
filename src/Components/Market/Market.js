@@ -11,8 +11,9 @@ var distinctCards = [];
 class Market extends React.Component {
 	constructor(props) {
 		super(props);
-		
-        //console.log("cards: " + cards);
+		if (!localStorage.getItem('cart')) {
+			localStorage.setItem('cart', JSON.stringify([]));
+		}
 		this.state = {
 			filters: {
 				search: [''],
@@ -26,7 +27,7 @@ class Market extends React.Component {
 			cards: [],
 			mobileFilters: false,
 			loading: true,
-			cart: [],
+			cart: JSON.parse(localStorage.getItem('cart')),
 			renderCart: false
 		};
 		this.updateFilters = this.updateFilters.bind(this);
@@ -36,6 +37,7 @@ class Market extends React.Component {
 		this.addToCart = this.addToCart.bind(this);
 		this.removeItem = this.removeItem.bind(this);
 		this.toggleCart = this.toggleCart.bind(this);
+		this.clearCart = this.clearCart.bind(this);
 	}
 
 	updateFilters(filter, category, action) {
@@ -160,8 +162,10 @@ class Market extends React.Component {
 	}
 
 	addToCart(selectedCardsArr) {
+		let newCart = this.state.cart.concat(selectedCardsArr)
+		localStorage.setItem('cart', JSON.stringify(newCart));
 		this.setState({
-			cart: this.state.cart.concat(selectedCardsArr)
+			cart: newCart
 		})
 	}
 
@@ -172,9 +176,18 @@ class Market extends React.Component {
 				cart.splice(i, 1);
 			}
 		}
+		localStorage.setItem('cart', JSON.stringify(cart));
 		this.setState({
 			cart: cart
 		})
+	}
+
+	clearCart() {
+		let cart = [];
+		localStorage.setItem('cart', JSON.stringify(cart));
+		this.setState({
+			cart: cart
+		});
 	}
 
 	toggleCart() {
@@ -255,7 +268,7 @@ class Market extends React.Component {
 				</div>
 				<div className='market-cart-btn' onClick={this.toggleCart}><i className='fas fa-shopping-cart'></i></div>
 				{this.state.cart.length !== 0 ? <div className='market-cart-count'><p>{this.state.cart.length}</p></div> : ''}
-				{this.state.renderCart ? <MarketCart cart={this.state.cart} removeItem={this.removeItem} closeCart={this.toggleCart} /> : ''}
+				{this.state.renderCart ? <MarketCart cart={this.state.cart} removeItem={this.removeItem} closeCart={this.toggleCart} clearCart={this.clearCart} /> : ''}
 			</div>
 	    );
 	}

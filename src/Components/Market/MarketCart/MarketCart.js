@@ -1,6 +1,7 @@
 import React from 'react';
 import './MarketCart.css';
 import $ from 'jquery';
+
 const sumProp = (array, prop) => {
 	let sum = 0;
 	for (let i = 0; i < array.length; i++) {
@@ -9,10 +10,19 @@ const sumProp = (array, prop) => {
 	return sum;
 }
 
+function isLoggedIn() {
+  if(localStorage.getItem('username')) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 class MarketCart extends React.Component {
 	constructor(props) {
 		super(props);
 		this.fillOrder = this.fillOrder.bind(this);
+		this.clearCart = this.clearCart.bind(this);
 		this.state = {
 			totalDEC: 0,
 			DECexchange: 0,
@@ -48,6 +58,14 @@ class MarketCart extends React.Component {
 		}
 	}
 
+	clearCart() {
+		this.setState({
+			totalDEC: 0,
+			totalUSD: 0
+		});
+		this.props.clearCart();
+	}
+
 	componentDidMount() {
 		$.ajax({
 			type: 'GET',
@@ -75,7 +93,7 @@ class MarketCart extends React.Component {
 	    		<div className='cart-content' >
         			<div className='cart-exit' onClick={this.props.closeCart}><i className='fas fa-times'></i></div>
 	    			<h2>My Cart</h2>
-	    			<p>You have {this.props.cart.length} item{this.props.cart.length !== 1 ? 's' : ''} in your cart.</p>
+	    			<p>You have {this.props.cart.length} item{this.props.cart.length !== 1 ? 's' : ''} in your cart. <span className='cart-clear' onClick={this.clearCart}>Clear Cart</span></p>
 	    			<table className='cart-table'>
 	    				<thead>
 	    					<tr>
@@ -111,6 +129,9 @@ class MarketCart extends React.Component {
 	    				<button onClick={this.fillOrder} disabled={this.props.cart.length === 0}>Checkout - {this.state.totalDEC.toFixed(3)} DEC</button>
 	    			</div>
 	    		</div>
+	    		<div id='cart-login-prompt-toast'>
+		          <i className='fas fa-times'></i>Please login to make a purchase.
+		        </div>
 	    	</div>
 	    );
 	}

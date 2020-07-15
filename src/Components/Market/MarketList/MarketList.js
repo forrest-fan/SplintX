@@ -31,7 +31,7 @@ class MarketList extends React.Component {
         </div>
       	<div className='marketList'>
 	        {this.props.loading ?
-	        	<div className='loader'></div> :
+	        	<div className='loader-container'><div className='loader'></div></div> :
 	        this.props.cards.length === 0 ?
               	<p className='market-noCards'>No cards were found. Please update the filters.</p> : 
               	this.props.cards.map(card => {

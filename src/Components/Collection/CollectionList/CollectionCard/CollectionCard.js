@@ -22,7 +22,7 @@ class CollectionCard extends React.Component {
 	render() {
 	    return (
 	    	<div className='card' id={this.props.info.distinctID}>
-	    		<img className='card-img' src={this.props.info.img} onClick={this.toggleModal}/>
+	    		<img className='card-img' src={this.props.info.img}/>
 	    		{this.props.info.count > 1 ? <div className='card-qty'>{this.props.info.count}</div> : ''}
 	    		{this.state.renderModal ? <CollectionCardModal info={this.props.info} closeModal={this.toggleModal}/> : <div></div>}
 	    	</div>
