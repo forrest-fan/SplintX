@@ -114,7 +114,7 @@ class MarketCardModal extends React.Component {
 		    							<th></th>
 		    							<th onClick={() => {
 		    								this.state.sortMethod === 'lvlDec' ? this.updateSort('lvlAsc') : this.updateSort('lvlDec');
-		    							}} style={{cursor: 'pointer'}}>Level  <i className={'market-cardModal-table-sortIcon ' + (this.state.sortMethod === 'lvlAsc' ? 'fas fa-caret-up' : this.state.sortMethod === 'lvlDec' ? 'fas fa-caret-down' : '')}></i></th>
+		    							}} style={{cursor: 'pointer'}}>Level <i className={'market-cardModal-table-sortIcon ' + (this.state.sortMethod === 'lvlAsc' ? 'fas fa-caret-up' : this.state.sortMethod === 'lvlDec' ? 'fas fa-caret-down' : '')}></i></th>
 		    							<th onClick={() => {
 		    								this.state.sortMethod === 'priceAsc' ? this.updateSort('priceDec') : this.updateSort('priceAsc');
 		    							}} style={{cursor: 'pointer'}}>Price <i className={'market-cardModal-table-sortIcon ' + (this.state.sortMethod === 'priceAsc' ? 'fas fa-caret-up' : this.state.sortMethod === 'priceDec' ? 'fas fa-caret-down' : '')}></i></th>
@@ -130,15 +130,19 @@ class MarketCardModal extends React.Component {
 		    								<tr>
 		    									<td className='market-cardModal-table-add'><input type='checkbox' onClick={() => {
 		    										let selected = this.state.selected;
-		    										if (!selected.includes(listing)) {
-		    											selected.push(listing);
-		    										} else {
+		    										if (selected.length >= 45 && !selected.includes(listing)) {
+		    											let toast = document.getElementById('market-cardModal-tooMany-toast');
+		    											toast.className = 'show';
+		    											setTimeout(() => {toast.className = toast.className.replace('show', '')}, 3000);
+		    										} else if (selected.includes(listing)) {
 		    											for (let i = 0; i < selected.length; i++) {
 		    												if (selected[i].uid === listing.uid) {
 		    													selected.splice(i, 1);
 		    												}
 		    											}
-		    										}
+		    										} else {
+		    											selected.push(listing);
+		    										}		    										
 		    										this.setState({selected: selected});
 		    									}} disabled={matchUID.includes(listing.uid)} checked={this.state.selected.includes(listing)}/></td>
 		    									<td className='market-cardModal-table-data-lvl'>{listing.lvl}</td>
@@ -168,6 +172,9 @@ class MarketCardModal extends React.Component {
 	    		</div>
 				<div id='market-cardModal-toast'>
 					<i className='fas fa-check'></i>Successfully added to cart!
+				</div>
+				<div id='market-cardModal-tooMany-toast'>
+					<i className='fas fa-times'></i>You have already selected the limit of 45 cards.
 				</div>
 	    	</div>
 	    );

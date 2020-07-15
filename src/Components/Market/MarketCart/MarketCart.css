@@ -21,6 +21,7 @@
 	left: 50%;
 	top: 50%;
 	min-width: 70%;
+	max-width: 80%;
 	min-height: 70%;
 	transform: translate(-50%, -50%);
 	background: #fff;
@@ -60,9 +61,34 @@
 	color: #d43d3d;
 }
 
+.cart-table-container {
+	padding: 10px;
+	box-sizing: border-box;
+	height: 40vh;
+	overflow-y: auto;
+	position: relative;
+}
+
+.cart-table-container::-webkit-scrollbar {
+	width: 5px;
+    height: 5px;
+	padding: 2px;
+	cursor: pointer;
+}
+
+.cart-table-container::-webkit-scrollbar-track {
+	background: #ddd;
+	border-radius: 5px;
+}
+
+.cart-table-container::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+}
+
 .cart-table {
 	width: 100%;
-	max-height: 40vh;
 	border-collapse: collapse;
 }
 
@@ -148,6 +174,33 @@
 	animation: fadein 0.5s, fadeout 0.5s 2.5s;
 }
 
+#cart-tooMany-toast {
+	visibility: hidden;
+	position: fixed;
+	bottom: 20px;
+	left: 50%;
+	transform: translateX(-50%);
+	text-align: center;
+	background: #d43d3d;
+	color: #fff;
+	padding: 15px 25px;
+	z-index: 10;
+	font-size: 17px;
+	border-radius: 15px;
+	box-shadow: 2px 2px 6px 1px #333;
+}
+
+#cart-tooMany-toast i {
+	font-size: 22px;
+	vertical-align: middle;
+	margin-right: 15px;
+}
+
+#cart-tooMany-toast.show {
+	visibility: visible;
+	animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
 @keyframes fadein {
   from {bottom: 0; opacity: 0;}
   to {bottom: 20px; opacity: 1;}
@@ -156,4 +209,12 @@
 @keyframes fadeout {
   from {bottom: 20px; opacity: 1;}
   to {bottom: 0; opacity: 0;}
+}
+
+@media (max-width: 700px) {
+	.cart-table-container {
+		white-space: nowrap;
+		overflow-x: auto;
+		height: 40vh;
+	}
 }

@@ -32,9 +32,8 @@ class MarketCart extends React.Component {
 	
 	fillOrder() {
 		// Felix transaction code goes here
-		if (isLoggedIn()) {
-			let cart = this.props.cart;
-			let jsonRequest = {
+		if (isLoggedIn() && this.props.cart.length <= 45) {
+			let jsonRequest = JSON.stringify({
 				items: this.props.cart.map(card => {
 					return card.market_id;
 				}),
@@ -42,10 +41,14 @@ class MarketCart extends React.Component {
 				market: 'splintx',
 				currency: 'USD',
 				app: 'splintXApp'
-			}
-			window.hive_keychain.requestCustomJson(localStorage.getItem('username'), "sm_market_purchase", "Active", JSON.stringify(jsonRequest), "Buy Card(s)", function(response) {
+			});
+			window.hive_keychain.requestCustomJson(localStorage.getItem('username'), "sm_market_purchase", "Active", jsonRequest, "Buy Card(s)", function(response) {
 			    console.log(response);
 			});
+		} else if (this.props.cart.length > 45 ) {
+			let toast = document.getElementById('cart-tooMany-toast');
+    		toast.className = 'show';
+       		setTimeout(() => {toast.className = toast.className.replace('show', '')}, 3000)
 		} else {
 			let toast = document.getElementById('cart-login-prompt-toast');
     		toast.className = 'show';
@@ -89,36 +92,38 @@ class MarketCart extends React.Component {
         			<div className='cart-exit' onClick={this.props.closeCart}><i className='fas fa-times'></i></div>
 	    			<h2>My Cart</h2>
 	    			<p>You have {this.props.cart.length} item{this.props.cart.length !== 1 ? 's' : ''} in your cart. <span className='cart-clear' onClick={this.clearCart}>Clear Cart</span></p>
-	    			<table className='cart-table'>
-	    				<thead>
-	    					<tr>
-	    						<th>Card Name</th>
-	    						<th>Card ID</th>
-	    						<th>Level</th>
-	    						<th>Price</th>
-	    						<th></th>
-	    					</tr>
-	    				</thead>
-	    				<tbody>
-	    					{this.props.cart.map(card => {
-	    						return (
-	    							<tr>
-	    								<td>{card.name}</td>
-	    								<td style={{textAlign: 'center'}}>{card.uid}</td>
-	    								<td style={{textAlign: 'center'}}>{card.lvl}</td>
-	    								<td style={{textAlign: 'right'}}>$ {Number(card.buy_price).toFixed(2) + ' ' + card.currency}</td>
-	    								<td className='cart-remove-item' onClick={() => {
-	    									this.setState({
-	    										totalUSD: this.state.totalUSD - card.buy_price,
-	    										totalDEC: (this.state.totalUSD - card.buy_price) / this.state.DECexchange
-	    									})
-	    									this.props.removeItem(card);
-	    								}}>Remove</td>
-	    							</tr>
-	    						);
-	    					})}
-	    				</tbody>
-	    			</table>
+	    			<div className='cart-table-container'>
+		    			<table className='cart-table'>
+		    				<thead>
+		    					<tr>
+		    						<th>Card Name</th>
+		    						<th>Card ID</th>
+		    						<th>Level</th>
+		    						<th>Price</th>
+		    						<th></th>
+		    					</tr>
+		    				</thead>
+		    				<tbody>
+		    					{this.props.cart.map(card => {
+		    						return (
+		    							<tr>
+		    								<td>{card.name}</td>
+		    								<td style={{textAlign: 'center'}}>{card.uid}</td>
+		    								<td style={{textAlign: 'center'}}>{card.lvl}</td>
+		    								<td style={{textAlign: 'right'}}>$ {Number(card.buy_price).toFixed(2) + ' ' + card.currency}</td>
+		    								<td className='cart-remove-item' onClick={() => {
+		    									this.setState({
+		    										totalUSD: this.state.totalUSD - card.buy_price,
+		    										totalDEC: (this.state.totalUSD - card.buy_price) / this.state.DECexchange
+		    									})
+		    									this.props.removeItem(card);
+		    								}}>Remove</td>
+		    							</tr>
+		    						);
+		    					})}
+		    				</tbody>
+		    			</table>
+		    		</div>
 	    			<div className='cart-summary'>
 	    				<p>Total: ${this.state.totalUSD.toFixed(2)}</p>
 	    				<button onClick={this.fillOrder} disabled={this.props.cart.length === 0}>Checkout - {this.state.totalDEC.toFixed(3)} DEC</button>
@@ -127,6 +132,9 @@ class MarketCart extends React.Component {
 	    		<div id='cart-login-prompt-toast'>
 		          <i className='fas fa-times'></i>Please login to make a purchase.
 		        </div>
+				<div id='cart-tooMany-toast'>
+					<i className='fas fa-times'></i>You have over 45 cards in your cart.
+				</div>
 	    	</div>
 	    );
 	}
