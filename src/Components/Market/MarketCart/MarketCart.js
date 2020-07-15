@@ -43,16 +43,23 @@ class MarketCart extends React.Component {
 				app: 'splintXApp'
 			});
 			window.hive_keychain.requestCustomJson(localStorage.getItem('username'), "sm_market_purchase", "Active", jsonRequest, "Buy Card(s)", function(response) {
-			    console.log(response);
+			    let toast = document.getElementById('cart-purchased-toast');
+	    		toast.className = 'show';
+	       		setTimeout(() => {toast.className = toast.className.replace('show', '')}, 3000);
+			    this.setState({
+					totalDEC: 0,
+					totalUSD: 0
+				});
+				this.props.clearCart();
 			});
 		} else if (this.props.cart.length > 45 ) {
 			let toast = document.getElementById('cart-tooMany-toast');
     		toast.className = 'show';
-       		setTimeout(() => {toast.className = toast.className.replace('show', '')}, 3000)
+       		setTimeout(() => {toast.className = toast.className.replace('show', '')}, 3000);
 		} else {
 			let toast = document.getElementById('cart-login-prompt-toast');
     		toast.className = 'show';
-       		setTimeout(() => {toast.className = toast.className.replace('show', '')}, 3000)
+       		setTimeout(() => {toast.className = toast.className.replace('show', '')}, 3000);
 		}
 	}
 
@@ -129,6 +136,9 @@ class MarketCart extends React.Component {
 	    				<button onClick={this.fillOrder} disabled={this.props.cart.length === 0}>Checkout - {this.state.totalDEC.toFixed(3)} DEC</button>
 	    			</div>
 	    		</div>
+	    		<div id='cart-purchased-toast'>
+					<i className='fas fa-check'></i>Successfully purchased!
+				</div>
 	    		<div id='cart-login-prompt-toast'>
 		          <i className='fas fa-times'></i>Please login to make a purchase.
 		        </div>
