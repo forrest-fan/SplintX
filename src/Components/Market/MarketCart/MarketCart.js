@@ -34,27 +34,22 @@ class MarketCart extends React.Component {
 		// Felix transaction code goes here
 		if (isLoggedIn()) {
 			let cart = this.props.cart;
-			//alert("buyCard function");
-			var items = [], price = 0;
-			for(var i = 0; i < cart.length; ++i) {
-			   items.push(cart[i].marketid);
-			   price += cart[i].buy_price;
+			let jsonRequest = {
+				items: this.props.cart.map(card => {
+					return card.market_id;
+				}),
+				price: this.state.totalUSD,
+				market: 'splintx',
+				currency: 'USD',
+				app: 'splintXApp'
 			}
-			var json = {
-			   items: items,
-			   price: price,
-			   market: "splintx",
-			   currency: "USD",
-			   app: "splintXApp"
-			};
-			var myJSON = JSON.stringify(json);
-			hive_keychain.requestCustomJson(localStorage.getItem('username'), "sm_market_purchase", "Active", myJSON, "Buy Card(s)", function(response) {
+			window.hive_keychain.requestCustomJson(localStorage.getItem('username'), "sm_market_purchase", "Active", JSON.stringify(jsonRequest), "Buy Card(s)", function(response) {
 			    console.log(response);
 			});
 		} else {
 			let toast = document.getElementById('cart-login-prompt-toast');
-            		toast.className = 'show';
-           		setTimeout(() => {toast.className = toast.className.replace('show', '')}, 3000)
+    		toast.className = 'show';
+       		setTimeout(() => {toast.className = toast.className.replace('show', '')}, 3000)
 		}
 	}
 
