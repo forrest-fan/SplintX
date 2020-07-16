@@ -6,8 +6,6 @@ import $ from 'jquery';
 
 //const cardIDs = ['C4-182-PPIL8I33XC', 'C3-217-WOC46R14KW', 'C1-1-C0KFFOTWSW', 'C1-1-BSOGK0WS3K'];
 var allCards = [];
-var cards = [];
-var distinctCards = [];
 const lvlXP = [[20,60,160,360,760,1560,2560,4560,7560],[100,300,700,1500,2500,4500,8500],[250,750,1750,3750,7750],[1000,3000,7000]];
 const newLvlXP = [[1,5,14,30,60,100,150,220,300,400],[1,5,14,25,40,60,85,115],[1,4,10,20,32,46],[1,3,6,11]];
 
@@ -160,6 +158,8 @@ class Collection extends React.Component {
 
 	componentDidMount() {
 		if (this.props.loggedIn) {
+			let cards = [];
+			let distinctCards = [];
 			$.ajax({
 				type: 'GET',
 				url: 'https://game-api.splinterlands.io/cards/get_details',
@@ -259,6 +259,8 @@ class Collection extends React.Component {
 	componentDidUpdate(prevProps) {
 		if (this.props.loggedIn !== prevProps.loggedIn) {
 			if (this.props.loggedIn) {
+				let cards = [];
+				let distinctCards = [];
 				$.ajax({
 					type: 'GET',
 					url: 'https://game-api.splinterlands.io/cards/get_details',
@@ -354,8 +356,8 @@ class Collection extends React.Component {
 				});
 			} else {
 				allCards = [];
-				cards = [];
-				distinctCards = [];
+				let cards = [];
+				let distinctCards = [];
 				this.setState({cards: []});
 			}
 		}
