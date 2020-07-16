@@ -19,6 +19,10 @@
 	font-weight: bold;
 }
 
+.navbar-x-accent {
+	color: var(--login-btn);
+}
+
 .navbar-links-container {
 	float: right;
 	display: inline-block;

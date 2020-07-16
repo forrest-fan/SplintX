@@ -51,7 +51,7 @@ class MarketCart extends React.Component {
 					totalUSD: 0
 				});
 				this.props.clearCart();
-			});
+			}.bind(this));
 		} else if (this.props.cart.length > 45 ) {
 			let toast = document.getElementById('cart-tooMany-toast');
     		toast.className = 'show';

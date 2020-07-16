@@ -47,7 +47,7 @@ class Navbar extends React.Component {
   render() {
     return(
       <nav className="navbar" id='test'>
-        <div className="navbar-title" href="">SplintX</div>
+        <div className="navbar-title" href="">Splint<span className='navbar-x-accent'>X</span></div>
         <div className="navbar-links-container">
           <ul className="">
             {Object.keys(pages).map(navItem => {
