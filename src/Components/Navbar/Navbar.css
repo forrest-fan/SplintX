@@ -65,31 +65,24 @@
 }
 
 .DECbalance {
-	cursor: default;
-	color: var(--login-btn);
-	padding: 6px 10px 6px 0px;
-	border: 1.5px solid var(--login-btn);
-	border-radius: 5px;
-}
-
-.DECbalance span {
-	margin-right: 15px;
-	font-weight: bold;
-	padding: 6px 10px;
-	background: var(--login-btn);
-	color: var(--navbar-bg);
-}
-
-.DECbalance-small {
 	position: fixed;
 	z-index: 1;
 	top: 65px;
 	right: 0;
 	background: var(--login-btn);
-	padding: 10px 16px;
+	padding: 10px 20px 10px 10px;
 	font-weight: bold;
 	border-radius: 0px 0px 0px 15px;
 	box-shadow: 0px 3px 6px 0px #333;
+}
+
+.DECbalance img {
+	margin-right: 4px;
+	vertical-align: middle;
+}
+
+.DECbalance span {
+	vertical-align: middle;
 }
 
 .login-btn {

@@ -1,6 +1,7 @@
 import React from 'react';
 import './Navbar.css';
 import LoginModal from './LoginModal/LoginModal';
+import crystal from './crystal.png';
 
 const pages = {
   market: 'Market',
@@ -47,7 +48,7 @@ class Navbar extends React.Component {
   render() {
     return(
       <nav>
-        {this.props.loggedIn ? <div className='DECbalance-small'>{this.props.balance} DEC</div> : ''}
+        {this.props.loggedIn ? <div className='DECbalance'><img src={crystal} height='25px' /><span>{this.props.balance} DEC</span></div> : ''}
         <div className="navbar">
           <div className="navbar-title" href="">Splint<span className='navbar-x-accent'>X</span></div>
           <div className="navbar-links-container">
