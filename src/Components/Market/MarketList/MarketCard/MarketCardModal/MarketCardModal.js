@@ -61,6 +61,7 @@ class MarketCardModal extends React.Component {
 			jsonpCallback: 'testing',
 		  	dataType: 'json',
 		  	success: function(saleData) {
+				saleData.sort((a, b) => parseFloat(a.buy_price) / parseFloat(a.xp) === parseFloat(b.buy_price) / parseFloat(b.xp) ? parseFloat(a.buy_price) === parseFloat(b.buy_price) ? parseFloat(a.xp) - parseFloat(b.xp) : parseFloat(a.buy_price) - parseFloat(b.buy_price) : parseFloat(a.buy_price) / parseFloat(a.xp) - parseFloat(b.buy_price) / parseFloat(b.xp));
 		  		this.setState({
 		  			forSale: forSale = saleData.map(listing => {
 			  			let rarity = this.props.info.rarity === 'Common' ? 1 : this.props.info.rarity === 'Rare' ? 2 : this.props.info.rarity === 'Epic' ? 3 : 4;
