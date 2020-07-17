@@ -46,48 +46,51 @@ class Navbar extends React.Component {
 
   render() {
     return(
-      <nav className="navbar" id='test'>
-        <div className="navbar-title" href="">Splint<span className='navbar-x-accent'>X</span></div>
-        <div className="navbar-links-container">
-          <ul className="">
-            {Object.keys(pages).map(navItem => {
-              let navClass = 'nav-item';
-              if (navItem === this.props.active) {
-                navClass += ' active';
-              }
-              return (
-                <li className={navClass}>
-                  <a className="nav-link" onClick={() => {this.props.updatePage(navItem)}}>{pages[navItem]}</a>
-                </li>
-              );
-            })}
-            {this.props.loggedIn ? 
-              <div className="login-btn nav-item" onClick={this.handleLogout}>Logout</div> :
-              <div className="login-btn nav-item" onClick={this.toggleLogin}>Login</div> }
-            <div className="bars-btn nav-item-small" onClick={this.openSidebar}><i className='fas fa-bars'></i></div>
-          </ul>
-           <div className='sidebar-overlay' style={{display: 'none'}} onClick={this.closeSidebar} id='sidebarOverlay'></div>
-           <div className='nav-sidebar hide-sidebar' id='navSidebar'>
-            <div className='exit-btn' onClick={this.closeSidebar}><i className='fas fa-times'></i></div>
-            <ul className="nav-sidebar-container">
+      <nav>
+        {this.props.loggedIn ? <div className='DECbalance-small'>{this.props.balance} DEC</div> : ''}
+        <div className="navbar">
+          <div className="navbar-title" href="">Splint<span className='navbar-x-accent'>X</span></div>
+          <div className="navbar-links-container">
+            <ul className="">
               {Object.keys(pages).map(navItem => {
+                let navClass = 'nav-item';
+                if (navItem === this.props.active) {
+                  navClass += ' active';
+                }
                 return (
-                  <li className='nav-item-side'>
-                    <a className="nav-link" onClick={() => {
-                      this.closeSidebar();
-                      this.props.updatePage(navItem);
-                    }}>{pages[navItem].toUpperCase()}</a>
+                  <li className={navClass}>
+                    <a className="nav-link" onClick={() => {this.props.updatePage(navItem)}}>{pages[navItem]}</a>
                   </li>
                 );
               })}
-              {this.props.loggedIn ? 
-                <li className='nav-item-side login-side' onClick={this.handleLogout}>
-                  LOGOUT
-                </li> :
-                <li className='nav-item-side login-side' onClick={this.toggleLogin}>
-                  LOGIN
-                </li> }
+              {this.props.loggedIn ?                   
+                  <div className="login-btn nav-item" onClick={this.handleLogout}>Logout</div> :
+                <div className="login-btn nav-item" onClick={this.toggleLogin}>Login</div> }
+              <div className="bars-btn nav-item-small" onClick={this.openSidebar}><i className='fas fa-bars'></i></div>
             </ul>
+             <div className='sidebar-overlay' style={{display: 'none'}} onClick={this.closeSidebar} id='sidebarOverlay'></div>
+             <div className='nav-sidebar hide-sidebar' id='navSidebar'>
+              <div className='exit-btn' onClick={this.closeSidebar}><i className='fas fa-times'></i></div>
+              <ul className="nav-sidebar-container">
+                {Object.keys(pages).map(navItem => {
+                  return (
+                    <li className='nav-item-side'>
+                      <a className="nav-link" onClick={() => {
+                        this.closeSidebar();
+                        this.props.updatePage(navItem);
+                      }}>{pages[navItem].toUpperCase()}</a>
+                    </li>
+                  );
+                })}
+                {this.props.loggedIn ?
+                  <li className='nav-item-side login-side' onClick={this.handleLogout}>
+                    LOGOUT
+                  </li> :
+                  <li className='nav-item-side login-side' onClick={this.toggleLogin}>
+                    LOGIN
+                  </li> }
+              </ul>
+            </div>
           </div>
         </div>
         {this.state.renderLogin ? <LoginModal login={this.props.login} closeModal={this.toggleLogin}/> : ''}
