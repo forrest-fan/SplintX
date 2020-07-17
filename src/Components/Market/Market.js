@@ -268,7 +268,7 @@ class Market extends React.Component {
 				</div>
 				<div className='market-cart-btn' onClick={this.toggleCart}><i className='fas fa-shopping-cart'></i></div>
 				{this.state.cart.length !== 0 ? <div className='market-cart-count'><p>{this.state.cart.length}</p></div> : ''}
-				{this.state.renderCart ? <MarketCart cart={this.state.cart} removeItem={this.removeItem} closeCart={this.toggleCart} clearCart={this.clearCart} /> : ''}
+				{this.state.renderCart ? <MarketCart cart={this.state.cart} removeItem={this.removeItem} closeCart={this.toggleCart} clearCart={this.clearCart}  updateBalance={this.props.updateBalance} /> : ''}
 			</div>
 	    );
 	}
