@@ -88,7 +88,7 @@ class App extends React.Component {
     }
   }
 
-  componentDidUpdate(prevState) {
+  componentDidUpdate(prevProps, prevState) {
     if (this.state.loggedIn !== prevState.loggedIn) {
       if (this.state.loggedIn) {
         $.ajax({
