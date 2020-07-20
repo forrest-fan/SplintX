@@ -99,8 +99,22 @@ class App extends React.Component {
         error: function(e) {
           console.log('There was an error getting the card details');
         }
+      }); 
+    } else {
+      $.ajax({
+        type: 'GET',
+        url: 'https://game-api.splinterlands.com/cards/get_details',
+        jsonpCallback: 'testing',
+        success: function(cardDetails) {
+          this.setState({
+            page: 'market',
+            cardDetails: cardDetails
+          });
+        }.bind(this),
+        error: function(e) {
+          console.log('There was an error getting the card details');
+        }
       });
-      
     }
   }
 
