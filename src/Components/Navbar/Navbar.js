@@ -65,7 +65,7 @@ class Navbar extends React.Component {
                 );
               })}
               {this.props.loggedIn ?                   
-                  <div className="login-btn nav-item" onClick={this.handleLogout}>Logout</div> :
+                  <div className="login-btn nav-item" onClick={this.handleLogout}>Logout from {localStorage.getItem('username')}</div> :
                 <div className="login-btn nav-item" onClick={this.toggleLogin}>Login</div> }
               <div className="bars-btn nav-item-small" onClick={this.openSidebar}><i className='fas fa-bars'></i></div>
             </ul>
@@ -73,6 +73,7 @@ class Navbar extends React.Component {
              <div className='nav-sidebar hide-sidebar' id='navSidebar'>
               <div className='exit-btn' onClick={this.closeSidebar}><i className='fas fa-times'></i></div>
               <ul className="nav-sidebar-container">
+                <li className='nav-item-side'>Hi {localStorage.getItem('username')}!</li>
                 {Object.keys(pages).map(navItem => {
                   return (
                     <li className='nav-item-side'>

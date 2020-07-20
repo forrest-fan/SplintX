@@ -148,6 +148,14 @@ class Market extends React.Component {
 			cards.sort((a, b) => {
 				return b.mana - a.mana;
 			})
+		} else if (method === 'priceAsc') {
+			cards.sort((a, b) => {
+				return a.lowPrice - b.lowPrice;
+			}) 
+		} else if (method === 'priceDec') {
+			cards.sort((a, b) => {
+				return b.lowPrice - a.lowPrice;
+			}) 
 		}
 
 		this.setState({cards: cards});
@@ -229,7 +237,9 @@ class Market extends React.Component {
 		              	gold: gold,
 		              	img: img,
 		              	mana: cardData.stats.mana[0],
-		              	qty: qty
+		              	qty: qty,
+		              	lowPrice: forSaleCards[l].low_price,
+		              	lowPriceBCX: forSaleCards[l].low_price_bcx
 		          	});
 			    }
 				this.setState({

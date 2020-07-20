@@ -27,6 +27,8 @@ class MarketList extends React.Component {
             <option value='za'>Name: Z - A</option>
             <option value='manaAsc'>Mana: Low - High</option>
             <option value='manaDes'>Mana: High - Low</option>
+            <option value='priceAsc'>Price: Low - High</option>
+            <option value='priceDec'>Price: High - Low</option>
           </select>
         </div>
       	<div className='marketList'>
