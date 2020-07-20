@@ -21,10 +21,11 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      page: 'market',
+      page: '',
       username: localStorage.getItem('username') || '',
       loggedIn: isLoggedIn(),
-      DECbalance: null
+      DECbalance: null,
+      cardDetails: null
     };
     this.renderPage = this.renderPage.bind(this);
     this.updatePage = this.updatePage.bind(this);
@@ -53,9 +54,9 @@ class App extends React.Component {
 
   renderPage(page) {
     if (page === 'market') {
-      return <Market updateBalance={this.updateBalance}/> ;
+      return <Market updateBalance={this.updateBalance} cardDetails={this.state.cardDetails}/> ;
     } else if (page === 'collection') {
-      return <Collection loggedIn={this.state.loggedIn}/>
+      return <Collection loggedIn={this.state.loggedIn} cardDetails={this.state.cardDetails}/>
     } else if (page === 'packs') {
       return <Packs />
     } else if (page === 'battlechain') {
@@ -69,26 +70,41 @@ class App extends React.Component {
     if (this.state.loggedIn) {
       $.ajax({
         type: 'GET',
-        url: 'https://game-api.splinterlands.com/players/balances?username=' + this.state.username,
+        url: 'https://game-api.splinterlands.com/cards/get_details',
         jsonpCallback: 'testing',
-        dataType: 'json',
-        success: function(balances) {
-          let DECbalance = 0;
-          for (let i = 0; i < balances.length; i++) {
-            if (balances[i].token === 'DEC') {
-              DECbalance = balances[i].balance;
+        success: function(cardDetails) {
+          $.ajax({
+            type: 'GET',
+            url: 'https://game-api.splinterlands.com/players/balances?username=' + this.state.username,
+            jsonpCallback: 'testing',
+            dataType: 'json',
+            success: function(balances) {
+              let DECbalance = 0;
+              for (let i = 0; i < balances.length; i++) {
+                if (balances[i].token === 'DEC') {
+                  DECbalance = balances[i].balance;
+                }
+              }
+              this.setState({
+                page: 'market',
+                DECbalance: DECbalance,
+                cardDetails: cardDetails
+              });
+            }.bind(this),
+            error: function(e) {
+              console.log('There was an error getting the DEC balance');
             }
-          }
-          this.setState({DECbalance: DECbalance});
+          }); 
         }.bind(this),
         error: function(e) {
-          console.log('There was an error getting the DEC balance');
+          console.log('There was an error getting the card details');
         }
       });
+      
     }
   }
 
-  componentDidUpdate(prevState) {
+  componentDidUpdate(prevProps, prevState) {
     if (this.state.loggedIn !== prevState.loggedIn) {
       if (this.state.loggedIn) {
         $.ajax({
