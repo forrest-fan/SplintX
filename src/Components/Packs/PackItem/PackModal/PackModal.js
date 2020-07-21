@@ -5,6 +5,13 @@ class PackModal extends React.Component {
 		super(props);
 		this.state = {totalPrice: this.props.item.price};
 		this.updatePrice = this.updatePrice.bind(this);
+		this.buyPack = this.buyPack.bind(this);
+	}
+
+	buyPack() {
+		let totalPrice = this.state.totalPrice;
+		console.log(totalPrice);
+		// Buy code goes here
 	}
 
 	updatePrice(e) {
@@ -25,7 +32,7 @@ class PackModal extends React.Component {
 		        <span><strong>Buy: </strong></span>
 		        {this.props.item.acceptedCurrencies.map(currency => {
 		        	let btnClass = 'buy-btn ' + currency + '-price';
-		        	return (<span className={btnClass}>{this.state.totalPrice.toLocaleString()} {currency}</span>);
+		        	return (<span className={btnClass} onClick={this.buyPack} style={{cursor:'pointer'}}>{this.state.totalPrice.toLocaleString()} {currency}</span>);
 		        })}
 		      </div>
 		    </div>
