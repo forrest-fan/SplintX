@@ -5,9 +5,6 @@ import MarketList from './MarketList/MarketList';
 import MarketCart from './MarketCart/MarketCart';
 import $ from 'jquery';
 
-var allCards = [];
-var distinctCards = [];
-
 class Market extends React.Component {
 	constructor(props) {
 		super(props);
@@ -73,6 +70,7 @@ class Market extends React.Component {
 		}
 
 		let cards = [];
+		let allCards = JSON.parse(sessionStorage.getItem('forSaleGrouped'));
 		allCards.map(card => {
 			let rarityPass = true;
 			let editionPass = true;
@@ -251,7 +249,6 @@ class Market extends React.Component {
 						cards: cards,
 						loading: false
 					});
-	        		allCards = cards;
 				}.bind(this),
 				error: function(e) {
 	      			console.log('There was an error retrieving your cards.');
