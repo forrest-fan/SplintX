@@ -40,7 +40,7 @@ class MarketCart extends React.Component {
 				price: this.state.totalUSD,
 				market: 'splintx',
 				currency: 'USD',
-				app: 'splintXApp'
+				app: 'SplintXApp'
 			});
 			window.hive_keychain.requestCustomJson(localStorage.getItem('username'), "sm_market_purchase", "Active", jsonRequest, "Buy Card(s)", function(response) {
 			    let toast = document.getElementById('cart-purchased-toast');
