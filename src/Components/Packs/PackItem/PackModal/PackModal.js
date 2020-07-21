@@ -9,13 +9,24 @@ class PackModal extends React.Component {
 	}
 
 	buyPack() {
-		let totalPrice = this.state.totalPrice;
-		console.log(totalPrice);
-		// Buy code goes here
+		let totalPrice = this.state.totalPrice / 2000;
+		alert("buyPack function");
+  		var json = JSON.stringify({
+    		type: "booster_pack",
+   			qty: totalPrice,
+    		currency: "DEC",
+    		market: "splintx",
+    		app: "SplintXApp"
+  		});	
+		window.hive_keychain.requestCustomJson(localStorage.getItem('username'), "sm_purchase", "Active", json, "Booster Pack Purchase", function (response) {
+		  console.log(response);
+		});
+		this.props.updateBalance();
 	}
 
 	updatePrice(e) {
 		let quantity = e.target.value;
+		console.log(quantity);
 		this.setState({totalPrice: quantity * this.props.item.price}); 
 	}
 
