@@ -60,7 +60,7 @@ class App extends React.Component {
     } else if (page === 'packs') {
       return <Packs />
     } else if (page === 'battlechain') {
-      return <BattleChain />
+      return <BattleChain loggedIn={this.state.loggedIn}/>
     } else if (page === 'scanner') {
       return <Scanner />
     }
@@ -82,7 +82,7 @@ class App extends React.Component {
               }
             }
             this.setState({
-              page: 'market',
+              page: 'battlechain',
               DECbalance: DECbalance,
               cardDetails: JSON.parse(sessionStorage.getItem('cardDetails'))
             });
@@ -93,7 +93,7 @@ class App extends React.Component {
         }); 
       } else {
         this.setState({
-          page: 'market',
+          page: 'battlechain',
           cardDetails: JSON.parse(sessionStorage.getItem('cardDetails'))
         });
       }
@@ -118,7 +118,7 @@ class App extends React.Component {
                 }
                 sessionStorage.setItem('cardDetails', JSON.stringify(cardDetails));
                 this.setState({
-                  page: 'market',
+                  page: 'battlechain',
                   DECbalance: DECbalance,
                   cardDetails: cardDetails
                 });
@@ -140,7 +140,7 @@ class App extends React.Component {
           success: function(cardDetails) {
             sessionStorage.setItem('cardDetails', JSON.stringify(cardDetails));
             this.setState({
-              page: 'market',
+              page: 'battlechain',
               cardDetails: cardDetails
             });
           }.bind(this),
