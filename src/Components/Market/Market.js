@@ -131,7 +131,7 @@ class Market extends React.Component {
 				} else {
 					return 1;
 				}
-			})
+			});
 		} else if (method === 'za') {
 			cards.sort((a, b) => {
 				if (a.name < b.name) {
@@ -139,23 +139,26 @@ class Market extends React.Component {
 				} else {
 					return -1;
 				}
-			})
+			});
 		} else if (method === 'manaAsc') {
 			cards.sort((a, b) => {
-				return a.mana - b.mana;
-			})
+				return Number(a.mana) - Number(b.mana);
+			});
+			console.log(cards.map(card => {
+				return card.mana;
+			}));
 		} else if (method === 'manaDes') {
 			cards.sort((a, b) => {
-				return b.mana - a.mana;
-			})
+				return Number(b.mana) - Number(a.mana);
+			});
 		} else if (method === 'priceAsc') {
 			cards.sort((a, b) => {
 				return a.lowPrice - b.lowPrice;
-			}) 
+			});
 		} else if (method === 'priceDec') {
 			cards.sort((a, b) => {
 				return b.lowPrice - a.lowPrice;
-			}) 
+			}); 
 		}
 
 		this.setState({cards: cards});
@@ -237,7 +240,7 @@ class Market extends React.Component {
 			              	distinctID: distinctID,
 			              	gold: gold,
 			              	img: img,
-			              	mana: cardData.stats.mana[0],
+			              	mana: type === 'Monster' ? cardData.stats.mana[0] : cardData.stats.mana,
 			              	qty: qty,
 			              	lowPrice: forSaleCards[l].low_price,
 			              	lowPriceBCX: forSaleCards[l].low_price_bcx
