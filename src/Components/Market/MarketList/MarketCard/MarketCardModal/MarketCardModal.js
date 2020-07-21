@@ -20,7 +20,7 @@ class MarketCardModal extends React.Component {
 		this.state = {
 			forSale: [],
 			selected: [],
-			sortMethod: 'default',
+			sortMethod: 'priceBcxAsc',
 			loading: true
 		};
 		this.updateSort = this.updateSort.bind(this);
@@ -85,15 +85,15 @@ class MarketCardModal extends React.Component {
 
 		if (this.props.info.edition === 'Alpha') {
 			if (this.props.info.gold) {
-				return xp / alpha_gold_xp[rarity - 1];
+				return Math.floor(xp / alpha_gold_xp[rarity - 1]);
 			} else {
-				return 1 + (xp / alpha_xp[rarity - 1]);
+				return Math.floor(1 + (xp / alpha_xp[rarity - 1]));
 			}
 		} else {
 			if (this.props.info.gold) {
-				return xp / beta_gold_xp[rarity - 1];
+				return Math.floor(xp / beta_gold_xp[rarity - 1]);
 			} else {
-				return 1 + (xp / beta_xp[rarity - 1]);
+				return Math.floor(1 + (xp / beta_xp[rarity - 1]));
 			}
 		}
 	}

@@ -244,6 +244,19 @@ class Market extends React.Component {
 			              	lowPriceBCX: forSaleCards[l].low_price_bcx
 			          	});
 				    }
+				    cards.sort((a, b) => {
+				    	if (a.element < b.element) {
+				    		return -1;
+				    	} else if (a.element > b.element) {
+				    		return 1;
+				    	} else {
+				    		if (a.gold) {
+				    			return 1;
+				    		} else {
+				    			return -1;
+				    		}
+				    	}
+				    });
 				    sessionStorage.setItem('forSaleGrouped', JSON.stringify(cards));
 					this.setState({
 						cards: cards,
