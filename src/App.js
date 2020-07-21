@@ -67,54 +67,88 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    if (this.state.loggedIn) {
-      $.ajax({
-        type: 'GET',
-        url: 'https://game-api.splinterlands.com/cards/get_details',
-        jsonpCallback: 'testing',
-        success: function(cardDetails) {
-          $.ajax({
-            type: 'GET',
-            url: 'https://game-api.splinterlands.com/players/balances?username=' + this.state.username,
-            jsonpCallback: 'testing',
-            dataType: 'json',
-            success: function(balances) {
-              let DECbalance = 0;
-              for (let i = 0; i < balances.length; i++) {
-                if (balances[i].token === 'DEC') {
-                  DECbalance = balances[i].balance;
-                }
+    if (sessionStorage.getItem('cardDetails')) {
+      if (this.state.loggedIn) {
+        $.ajax({
+          type: 'GET',
+          url: 'https://game-api.splinterlands.com/players/balances?username=' + this.state.username,
+          jsonpCallback: 'testing',
+          dataType: 'json',
+          success: function(balances) {
+            let DECbalance = 0;
+            for (let i = 0; i < balances.length; i++) {
+              if (balances[i].token === 'DEC') {
+                DECbalance = balances[i].balance;
               }
-              this.setState({
-                page: 'market',
-                DECbalance: DECbalance,
-                cardDetails: cardDetails
-              });
-            }.bind(this),
-            error: function(e) {
-              console.log('There was an error getting the DEC balance');
             }
-          }); 
-        }.bind(this),
-        error: function(e) {
-          console.log('There was an error getting the card details');
-        }
-      }); 
+            this.setState({
+              page: 'market',
+              DECbalance: DECbalance,
+              cardDetails: JSON.parse(sessionStorage.getItem('cardDetails'))
+            });
+          }.bind(this),
+          error: function(e) {
+            console.log('There was an error getting the DEC balance');
+          }
+        }); 
+      } else {
+        this.setState({
+          page: 'market',
+          cardDetails: JSON.parse(sessionStorage.getItem('cardDetails'))
+        });
+      }
     } else {
-      $.ajax({
-        type: 'GET',
-        url: 'https://game-api.splinterlands.com/cards/get_details',
-        jsonpCallback: 'testing',
-        success: function(cardDetails) {
-          this.setState({
-            page: 'market',
-            cardDetails: cardDetails
-          });
-        }.bind(this),
-        error: function(e) {
-          console.log('There was an error getting the card details');
-        }
-      });
+      if (this.state.loggedIn) {
+        $.ajax({
+          type: 'GET',
+          url: 'https://game-api.splinterlands.com/cards/get_details',
+          jsonpCallback: 'testing',
+          success: function(cardDetails) {
+            $.ajax({
+              type: 'GET',
+              url: 'https://game-api.splinterlands.com/players/balances?username=' + this.state.username,
+              jsonpCallback: 'testing',
+              dataType: 'json',
+              success: function(balances) {
+                let DECbalance = 0;
+                for (let i = 0; i < balances.length; i++) {
+                  if (balances[i].token === 'DEC') {
+                    DECbalance = balances[i].balance;
+                  }
+                }
+                sessionStorage.setItem('cardDetails', JSON.stringify(cardDetails));
+                this.setState({
+                  page: 'market',
+                  DECbalance: DECbalance,
+                  cardDetails: cardDetails
+                });
+              }.bind(this),
+              error: function(e) {
+                console.log('There was an error getting the DEC balance');
+              }
+            }); 
+          }.bind(this),
+          error: function(e) {
+            console.log('There was an error getting the card details');
+          }
+        }); 
+      } else {
+        $.ajax({
+          type: 'GET',
+          url: 'https://game-api.splinterlands.com/cards/get_details',
+          jsonpCallback: 'testing',
+          success: function(cardDetails) {
+            sessionStorage.setItem('cardDetails', JSON.stringify(cardDetails));
+            this.setState({
+              page: 'market',
+              cardDetails: cardDetails
+            });
+          }.bind(this),
+          error: function(e) {
+            console.log('There was an error getting the card details');
+          }
+        });
+      }
     }
   }
 

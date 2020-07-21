@@ -131,7 +131,7 @@ class Market extends React.Component {
 				} else {
 					return 1;
 				}
-			})
+			});
 		} else if (method === 'za') {
 			cards.sort((a, b) => {
 				if (a.name < b.name) {
@@ -139,15 +139,26 @@ class Market extends React.Component {
 				} else {
 					return -1;
 				}
-			})
+			});
 		} else if (method === 'manaAsc') {
 			cards.sort((a, b) => {
-				return a.mana - b.mana;
-			})
+				return Number(a.mana) - Number(b.mana);
+			});
+			console.log(cards.map(card => {
+				return card.mana;
+			}));
 		} else if (method === 'manaDes') {
 			cards.sort((a, b) => {
-				return b.mana - a.mana;
-			})
+				return Number(b.mana) - Number(a.mana);
+			});
+		} else if (method === 'priceAsc') {
+			cards.sort((a, b) => {
+				return a.lowPrice - b.lowPrice;
+			});
+		} else if (method === 'priceDec') {
+			cards.sort((a, b) => {
+				return b.lowPrice - a.lowPrice;
+			}); 
 		}
 
 		this.setState({cards: cards});
@@ -197,51 +208,62 @@ class Market extends React.Component {
 	}
 
 	componentDidMount() {
-		let cards = [];
-		$.ajax({
-			type: 'GET',
-  			url: "https://game-api.splinterlands.com/market/for_sale_grouped",
-  			jsonpCallback: 'testing',
-  			dataType: 'json',
-			success: function(forSaleCards) {
-				for(var l = 0; l < forSaleCards.length; l++) {
-				    var detailID = forSaleCards[l].card_detail_id;
-		            let cardData = this.props.cardDetails[detailID - 1];
-		          	let gold = forSaleCards[l].gold;
-		          	let edition = forSaleCards[l].edition === 0 ? 'Alpha' : forSaleCards[l].edition === 1 ? 'Beta' : forSaleCards[l].edition === 3 ? 'Reward' : forSaleCards[l].edition === 4 ? 'Untamed' : 'Promo';
-		          	let distinctID = gold ? 'G' : 'C' + forSaleCards[l].edition + detailID;
-		          	let name = cardData.name;
-		          	let type = cardData.type;
-		          	let rarity = cardData.rarity === 1 ? 'Common' : cardData.rarity === 2 ? 'Rare' : cardData.rarity === 3 ? 'Epic' : 'Legendary';
-		          	let element = cardData.color === 'Red' ? 'Fire' : cardData.color === 'Blue' ? 'Water' : cardData.color === 'Green' ? 'Earth' : cardData.color === 'White' ? 'Life' : cardData.color === 'Black' ? 'Death' : cardData.color === 'Gold' ? 'Dragon' : 'Neutral';
-		          	let lvl = 1;
-		          	let qty = forSaleCards[l].qty;
-		          	let img = 'https://d36mxiodymuqjm.cloudfront.net/cards_by_level/' + edition.toLowerCase() + '/' + name.replace(' ', '%20') + '_lv1';
-		          	img += gold ? '_gold.png' : '.png';
-	            	cards.push({
-	              		name: name,
-	              		rarity: rarity,
-		              	edition: edition,
-		              	element: element,
-		              	type: type,
-		              	detailID: detailID,
-		              	distinctID: distinctID,
-		              	gold: gold,
-		              	img: img,
-		              	mana: cardData.stats.mana[0],
-		              	qty: qty
-		          	});
-			    }
-				this.setState({
-					cards: cards,
-					loading: false
-				});
-        		allCards = cards;
-			}.bind(this),
-			error: function(e) {
-      			console.log('There was an error retrieving your cards.');
-  			}
-		});
+		if (!sessionStorage.getItem('forSaleGrouped')) {
+			let cards = [];
+			$.ajax({
+				type: 'GET',
+	  			url: "https://game-api.splinterlands.com/market/for_sale_grouped",
+	  			jsonpCallback: 'testing',
+	  			dataType: 'json',
+				success: function(forSaleCards) {
+					for(var l = 0; l < forSaleCards.length; l++) {
+					    var detailID = forSaleCards[l].card_detail_id;
+			            let cardData = this.props.cardDetails[detailID - 1];
+			          	let gold = forSaleCards[l].gold;
+			          	let edition = forSaleCards[l].edition === 0 ? 'Alpha' : forSaleCards[l].edition === 1 ? 'Beta' : forSaleCards[l].edition === 3 ? 'Reward' : forSaleCards[l].edition === 4 ? 'Untamed' : 'Promo';
+			          	let distinctID = gold ? 'G' : 'C' + forSaleCards[l].edition + detailID;
+			          	let name = cardData.name;
+			          	let type = cardData.type;
+			          	let rarity = cardData.rarity === 1 ? 'Common' : cardData.rarity === 2 ? 'Rare' : cardData.rarity === 3 ? 'Epic' : 'Legendary';
+			          	let element = cardData.color === 'Red' ? 'Fire' : cardData.color === 'Blue' ? 'Water' : cardData.color === 'Green' ? 'Earth' : cardData.color === 'White' ? 'Life' : cardData.color === 'Black' ? 'Death' : cardData.color === 'Gold' ? 'Dragon' : 'Neutral';
+			          	let lvl = 1;
+			          	let qty = forSaleCards[l].qty;
+			          	let img = 'https://d36mxiodymuqjm.cloudfront.net/cards_by_level/' + edition.toLowerCase() + '/' + name.replace(' ', '%20') + '_lv1';
+			          	img += gold ? '_gold.png' : '.png';
+		            	cards.push({
+		              		name: name,
+		              		rarity: rarity,
+			              	edition: edition,
+			              	element: element,
+			              	type: type,
+			              	detailID: detailID,
+			              	distinctID: distinctID,
+			              	gold: gold,
+			              	img: img,
+			              	mana: type === 'Monster' ? cardData.stats.mana[0] : cardData.stats.mana,
+			              	qty: qty,
+			              	lowPrice: forSaleCards[l].low_price,
+			              	lowPriceBCX: forSaleCards[l].low_price_bcx
+			          	});
+				    }
+				    sessionStorage.setItem('forSaleGrouped', JSON.stringify(cards));
+					this.setState({
+						cards: cards,
+						loading: false
+					});
+	        		allCards = cards;
+				}.bind(this),
+				error: function(e) {
+	      			console.log('There was an error retrieving your cards.');
+	  			}
+			});
+		} else {
+			let cards = JSON.parse(sessionStorage.getItem('forSaleGrouped'));
+			this.setState({
+				cards: cards,
+				loading: false
+			});
+		}
 	}
 
 	render() {
