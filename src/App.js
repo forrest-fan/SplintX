@@ -82,7 +82,7 @@ class App extends React.Component {
               }
             }
             this.setState({
-              page: 'battlechain',
+              page: 'market',
               DECbalance: DECbalance,
               cardDetails: JSON.parse(sessionStorage.getItem('cardDetails'))
             });
@@ -93,7 +93,7 @@ class App extends React.Component {
         }); 
       } else {
         this.setState({
-          page: 'battlechain',
+          page: 'market',
           cardDetails: JSON.parse(sessionStorage.getItem('cardDetails'))
         });
       }
@@ -118,7 +118,7 @@ class App extends React.Component {
                 }
                 sessionStorage.setItem('cardDetails', JSON.stringify(cardDetails));
                 this.setState({
-                  page: 'battlechain',
+                  page: 'market',
                   DECbalance: DECbalance,
                   cardDetails: cardDetails
                 });
@@ -140,7 +140,7 @@ class App extends React.Component {
           success: function(cardDetails) {
             sessionStorage.setItem('cardDetails', JSON.stringify(cardDetails));
             this.setState({
-              page: 'battlechain',
+              page: 'market',
               cardDetails: cardDetails
             });
           }.bind(this),
