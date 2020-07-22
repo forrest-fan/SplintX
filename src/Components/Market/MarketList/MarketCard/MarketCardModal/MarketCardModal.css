@@ -60,8 +60,16 @@
 }
 
 .market-cardModal-info-container {
-	flex-grow: 1;
+	flex: 1;
 	max-width: 100%;
+}
+
+.market-cardModal-multiselect .card-count {
+	width: 35px;
+}
+
+.market-cardModal-multiselect .bcx {
+	width: 45px;
 }
 
 .loader-modal-container {

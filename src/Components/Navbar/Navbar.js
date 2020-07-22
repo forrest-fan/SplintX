@@ -5,9 +5,7 @@ import crystal from './crystal.png';
 
 const pages = {
   market: 'Market',
-  collection: 'My Collection',
-  battlechain: 'BattleChain',
-  packs: 'Packs'
+  collection: 'My Collection'
 };
 
 class Navbar extends React.Component {

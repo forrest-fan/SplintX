@@ -1,5 +1,4 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 import Navbar from './Components/Navbar/Navbar';
 import Market from './Components/Market/Market';
@@ -82,7 +81,7 @@ class App extends React.Component {
               }
             }
             this.setState({
-              page: 'battlechain',
+              page: 'market',
               DECbalance: DECbalance,
               cardDetails: JSON.parse(sessionStorage.getItem('cardDetails'))
             });
@@ -93,7 +92,7 @@ class App extends React.Component {
         }); 
       } else {
         this.setState({
-          page: 'battlechain',
+          page: 'market',
           cardDetails: JSON.parse(sessionStorage.getItem('cardDetails'))
         });
       }
@@ -118,7 +117,7 @@ class App extends React.Component {
                 }
                 sessionStorage.setItem('cardDetails', JSON.stringify(cardDetails));
                 this.setState({
-                  page: 'battlechain',
+                  page: 'market',
                   DECbalance: DECbalance,
                   cardDetails: cardDetails
                 });
@@ -140,7 +139,7 @@ class App extends React.Component {
           success: function(cardDetails) {
             sessionStorage.setItem('cardDetails', JSON.stringify(cardDetails));
             this.setState({
-              page: 'battlechain',
+              page: 'market',
               cardDetails: cardDetails
             });
           }.bind(this),

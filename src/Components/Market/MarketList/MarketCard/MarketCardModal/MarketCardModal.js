@@ -161,6 +161,7 @@ class MarketCardModal extends React.Component {
 	    			</div>
 	    			<div className='market-cardModal-info-container'>
 		    			<h3>Cards For Sale</h3>
+		    			
 		    			<div className='market-cardModal-table-container'>
 		    				<table className='market-cardModal-table'>
 		    					<thead className='market-cardModal-table-header'>

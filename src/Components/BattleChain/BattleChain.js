@@ -424,13 +424,25 @@ class BattleChain extends React.Component {
                     } else if (rating >= 4700) {
                         league = 'Champion I';
                     }
-                    this.setState({
-                        wins: stats.wins,
-                        losses: stats.battles - stats.wins,
-                        streak: stats.current_streak,
-                        rating: stats.rating,
-                        league: league
-                    })
+                    $.ajax({
+                        type: 'GET',
+                        url: "https://game-api.splinterlands.com/battle/history?player=" + localStorage.getItem('username'),
+                        jsonpCallback: 'testing',
+                        dataType: 'json',
+                        success: function(battles) {
+
+                            this.setState({
+                                wins: stats.wins,
+                                losses: stats.battles - stats.wins,
+                                streak: stats.current_streak,
+                                rating: stats.rating,
+                                league: league
+                            })
+                        }.bind(this),
+                        error: function(e) {
+                            console.log('There was an error retrieving the battle log');
+                        }
+                    });
                 }.bind(this),
                 error: function(e) {
                     console.log('There was an error retrieving your stats');
