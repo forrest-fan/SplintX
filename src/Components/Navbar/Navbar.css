@@ -19,6 +19,10 @@
 	font-weight: bold;
 }
 
+.navbar-x-accent {
+	color: var(--login-btn);
+}
+
 .navbar-links-container {
 	float: right;
 	display: inline-block;
@@ -58,6 +62,27 @@
 .bars-btn:hover {
 	background: var(--login-btn);
 	color: var(--navbar-bg);
+}
+
+.DECbalance {
+	position: fixed;
+	z-index: 1;
+	top: 65px;
+	right: 0;
+	background: var(--login-btn);
+	padding: 10px 20px 10px 10px;
+	font-weight: bold;
+	border-radius: 0px 0px 0px 15px;
+	box-shadow: 0px 3px 6px 0px #333;
+}
+
+.DECbalance img {
+	margin-right: 4px;
+	vertical-align: middle;
+}
+
+.DECbalance span {
+	vertical-align: middle;
 }
 
 .login-btn {

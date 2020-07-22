@@ -40,7 +40,7 @@ class MarketCart extends React.Component {
 				price: this.state.totalUSD,
 				market: 'splintx',
 				currency: 'USD',
-				app: 'splintXApp'
+				app: 'SplintXApp'
 			});
 			window.hive_keychain.requestCustomJson(localStorage.getItem('username'), "sm_market_purchase", "Active", jsonRequest, "Buy Card(s)", function(response) {
 			    let toast = document.getElementById('cart-purchased-toast');
@@ -50,8 +50,9 @@ class MarketCart extends React.Component {
 					totalDEC: 0,
 					totalUSD: 0
 				});
+				this.props.updateBalance();
 				this.props.clearCart();
-			});
+			}.bind(this));
 		} else if (this.props.cart.length > 45 ) {
 			let toast = document.getElementById('cart-tooMany-toast');
     		toast.className = 'show';

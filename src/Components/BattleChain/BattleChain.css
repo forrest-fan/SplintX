@@ -1,107 +1,46 @@
-#battle-chain {
-	margin: 10px 5% 0 5%;
+#battlechain {
+	margin: 0 60px;
 }
 
-#battle-chain h1 {
+.battlechain-header {
+	padding-top: 80px;
+}
+
+.battlechain-header h2 {
 	font-size: 30px;
+	font-weight: bold;
+	margin: 0.3em 5px;
 }
 
-.search-container {
-	margin: 0 auto;
-	width: 70%;
-	padding: 20px 0px;
+.battlechain-header hr {
+	border-bottom: 1px solid #768fb5;
 }
 
-.search-input {
-	display: inline-block;
-	width: 85%;
-	margin: 0;
-	padding: 5px 8px;
-	border-radius: 10px 0 0 10px;
-	outline: none;
-	border: 2px solid #2e2b27;
-	border-right: none;
-	transition: border-color 0.3s
-}
-
-.search-input:focus {
-	border-color: #e3ac64;
-}
-
-.search-btn {
-	display: inline-block;
-	width: 14%;
-	text-align: center;
-	margin: 0;
-	padding: 7px 10px;
-	background-color: #2e2b27;
-	border-radius: 0 10px 10px 0;
-	color: #e3ac64;
-	transition: background-color 0.3s, color 0.3s;
-}
-
-.search-btn:hover {
-	cursor: pointer;
-	background-color: #e3ac64;
-	color: #2e2b27;
-}
-
-.stats-container {
-	background: #2e2b27;
+.battlechain-stats-container{
 	margin: 0 25px;
-	padding: 25px 50px;
-	color: #e3ac64;
-	border-radius: 10px 10px 0 0;
-	box-shadow: 2px 2px 4px 1px #555;
 }
 
-.stats-header {
-	overflow: auto;
-}
-
-.stats-container hr {
-	border-bottom: 1px solid #8a6c43;
-	margin-top: 0;
-}
-
-.stats-container h2 {
+.battlechain-stats-overview h3 {
 	font-size: 26px;
-	display: inline-block;
-	float: left;
 }
 
-.username {
-	display: inline-block;
-	float: right;
-	font-weight: normal;
-	font-size: 20px;
-	vertical-align: middle
-}
-
-.stats-overview {
-	margin: 0 25px;
-}
-
-.stats-container h3 {
-	font-size: 20px;
-}
-
-.overview-stat {
+.battlechain-stats-overview-stat {
 	display: inline-block;
 	width: 24%;
 	text-align: center;
-	color: #fff;
 }
 
-.overview-stat h4 {
+.battlechain-stats-overview-stat h4 {
+	color: #000;
 	font-size: 28px;
+	margin: 0.5em 0;
 }
 
-.overview-stat p {
+.battlechain-stats-overview-stat p {
 	font-size: 16px;
 	font-stretch: expanded;
 	letter-spacing: 1px;
-	color: #e3ac64;
+	color: #000;
 }
 
 .battle-log {

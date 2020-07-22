@@ -162,96 +162,85 @@ class Collection extends React.Component {
 			let distinctCards = [];
 			$.ajax({
 				type: 'GET',
-				url: 'https://game-api.splinterlands.io/cards/get_details',
-				jsonpCallback: 'testing',
-				dataType: 'json',
-				success: function(cardDetails) {
-					$.ajax({
-						type: 'GET',
-			  			url: "https://game-api.splinterlands.com/cards/collection/" + localStorage.getItem('username'),
-			  			jsonpCallback: 'testing',
-			  			dataType: 'json',
-						success: function(Eelement) { 
-							for(var l = 0; l < Eelement.cards.length; ++l) {
-							    var detailID = Eelement.cards[l].card_detail_id;
-					            let cardData = cardDetails[detailID - 1];
-					          	let gold = Eelement.cards[l].gold;
-					          	let edition = Eelement.cards[l].edition === 0 ? 'Alpha' : Eelement.cards[l].edition === 1 ? 'Beta' : Eelement.cards[l].edition === 3 ? 'Reward' : Eelement.cards[l].edition === 4 ? 'Untamed' : 'Promo';
-					          	let distinctID = (gold ? 'G' : 'C') + (edition === 'Alpha' ? 'A' : edition === 'Beta' ? 'B' : edition === 'Reward' ? 'R' : edition === 'Untamed' ? 'U' : 'P') + detailID;
-					          	let name = cardData.name;
-					          	let type = cardData.type;
-					          	let rarity = cardData.rarity === 1 ? 'Common' : cardData.rarity === 2 ? 'Rare' : cardData.rarity === 3 ? 'Epic' : 'Legendary';
-					          	let element = cardData.color === 'Red' ? 'Fire' : cardData.color === 'Blue' ? 'Water' : cardData.color === 'Green' ? 'Earth' : cardData.color === 'White' ? 'Life' : cardData.color === 'Black' ? 'Death' : cardData.color === 'Gold' ? 'Dragon' : 'Neutral';
-					          	let xp = Eelement.cards[l].xp;
-					          	let lvl = 1;
-								let xpRates = edition === 'Untamed' || (edition === 'Reward' && detailID >= 225) ? newLvlXP : lvlXP;
-								let increment = edition === 'Untamed' || (edition === 'Reward' && detailID >= 225) ? 1 : 2;
-								for (let i = xpRates[cardData.rarity - 1].length - 1; i >= 0; i--) {
-					          		if (xp >= xpRates[cardData.rarity - 1][i]) {
-					          			lvl = i + increment;
-					          			break;
-					          		}
-					          	}
-					          	let img = 'https://d36mxiodymuqjm.cloudfront.net/cards_by_level/' + edition.toLowerCase() + '/' + name.replace(' ', '%20') + '_lv' + lvl;
-					          	img += gold ? '_gold.png' : '.png';
-					          	if (distinctCards.includes(distinctID)) {
-					            	for (let i = 0; i < cards.length; i++) {
-					            		let card = cards[i];
-					              		if (card.distinctID === distinctID) {
-				                			card.gold = card.gold || gold;
-				                			card.count += 1;
-				                			card.lvlHigh = lvl > card.lvlHigh ? lvl : card.lvlHigh;
-				                			card.lvlCount[lvl - 1] += 1;
-				                			card.img = 'https://d36mxiodymuqjm.cloudfront.net/cards_by_level/' + edition.toLowerCase() + '/' + name.replace(' ', '%20') + '_lv' + card.lvlHigh;
-				          					card.img += card.gold ? '_gold.png' : '.png';
-				          					card.mana = type === 'Monster' ? cardData.stats.mana[card.lvlHigh - 1] || 0 : cardData.stats.mana;
-						              		card.hp = (cardData.stats.health[card.lvlHigh - 1] + cardData.stats.armor[card.lvlHigh - 1]) || 0;
-						              		card.speed = cardData.stats.speed[card.lvlHigh - 1] || 0;
-						              		cards[i] = card;
-						              		break;
-				              			}
-				           			}	
-					         	} else {
-					         		let lvlCount = [];
-					         		for (let i = 0; i < lvlXP[cardData.rarity - 1].length + 1; i++) {
-					         			lvlCount.push(0);
-					         		}
-					         		lvlCount[lvl - 1] += 1;
-					            	cards.push({
-					              		name: name,
-					              		rarity: rarity,
-						              	edition: edition,
-						              	element: element,
-						              	type: type,
-						              	detailID: detailID,
-						              	distinctID: distinctID,
-						              	gold: gold,
-						              	img: img,
-						              	count: 1,
-						              	lvlHigh: lvl,
-						              	lvlCount: lvlCount,
-						              	mana: type === 'Monster' ? cardData.stats.mana[lvl - 1] || 0 : cardData.stats.mana,
-						              	hp: (cardData.stats.health[lvl - 1] + cardData.stats.armor[lvl - 1]) || 0,
-						              	speed: cardData.stats.speed[lvl - 1] || 0
-									 						//attack: cardData.stats.attack[cardData.stats.attack.length - 1] !== 0 ? cardData.stats.attack[cardData.stats.attack.length - 1] : cardData.stats.ranged[cardData.stats.ranged.length - 1] !== 0 ? cardData.stats.ranged[cardData.stats.ranged.length - 1] : cardData.stats.magic[cardData.stats.magic.length - 1] !== 0 ? cardData.stats.magic[cardData.stats.magic.length - 1] !== 0
-									});
-				            		distinctCards.push(distinctID);
-					        	}
-						    }
-			        		allCards = cards;
-							this.setState({
-								cards: cards,
-								loading: false
+	  			url: "https://game-api.splinterlands.com/cards/collection/" + localStorage.getItem('username'),
+	  			jsonpCallback: 'testing',
+	  			dataType: 'json',
+				success: function(Eelement) { 
+					for(var l = 0; l < Eelement.cards.length; ++l) {
+					    var detailID = Eelement.cards[l].card_detail_id;
+			            let cardData = this.props.cardDetails[detailID - 1];
+			          	let gold = Eelement.cards[l].gold;
+			          	let edition = Eelement.cards[l].edition === 0 ? 'Alpha' : Eelement.cards[l].edition === 1 ? 'Beta' : Eelement.cards[l].edition === 3 ? 'Reward' : Eelement.cards[l].edition === 4 ? 'Untamed' : 'Promo';
+			          	let distinctID = (gold ? 'G' : 'C') + (edition === 'Alpha' ? 'A' : edition === 'Beta' ? 'B' : edition === 'Reward' ? 'R' : edition === 'Untamed' ? 'U' : 'P') + detailID;
+			          	let name = cardData.name;
+			          	let type = cardData.type;
+			          	let rarity = cardData.rarity === 1 ? 'Common' : cardData.rarity === 2 ? 'Rare' : cardData.rarity === 3 ? 'Epic' : 'Legendary';
+			          	let element = cardData.color === 'Red' ? 'Fire' : cardData.color === 'Blue' ? 'Water' : cardData.color === 'Green' ? 'Earth' : cardData.color === 'White' ? 'Life' : cardData.color === 'Black' ? 'Death' : cardData.color === 'Gold' ? 'Dragon' : 'Neutral';
+			          	let xp = Eelement.cards[l].xp;
+			          	let lvl = 1;
+						let xpRates = edition === 'Untamed' || (edition === 'Reward' && detailID >= 225) ? newLvlXP : lvlXP;
+						let increment = edition === 'Untamed' || (edition === 'Reward' && detailID >= 225) ? 1 : 2;
+						for (let i = xpRates[cardData.rarity - 1].length - 1; i >= 0; i--) {
+			          		if (xp >= xpRates[cardData.rarity - 1][i]) {
+			          			lvl = i + increment;
+			          			break;
+			          		}
+			          	}
+			          	let img = 'https://d36mxiodymuqjm.cloudfront.net/cards_by_level/' + edition.toLowerCase() + '/' + name.replace(' ', '%20') + '_lv' + lvl;
+			          	img += gold ? '_gold.png' : '.png';
+			          	if (distinctCards.includes(distinctID)) {
+			            	for (let i = 0; i < cards.length; i++) {
+			            		let card = cards[i];
+			              		if (card.distinctID === distinctID) {
+		                			card.gold = card.gold || gold;
+		                			card.count += 1;
+		                			card.lvlHigh = lvl > card.lvlHigh ? lvl : card.lvlHigh;
+		                			card.lvlCount[lvl - 1] += 1;
+		                			card.img = 'https://d36mxiodymuqjm.cloudfront.net/cards_by_level/' + edition.toLowerCase() + '/' + name.replace(' ', '%20') + '_lv' + card.lvlHigh;
+		          					card.img += card.gold ? '_gold.png' : '.png';
+		          					card.mana = type === 'Monster' ? cardData.stats.mana[card.lvlHigh - 1] || 0 : cardData.stats.mana;
+				              		card.hp = (cardData.stats.health[card.lvlHigh - 1] + cardData.stats.armor[card.lvlHigh - 1]) || 0;
+				              		card.speed = cardData.stats.speed[card.lvlHigh - 1] || 0;
+				              		cards[i] = card;
+				              		break;
+		              			}
+		           			}	
+			         	} else {
+			         		let lvlCount = [];
+			         		for (let i = 0; i < lvlXP[cardData.rarity - 1].length + 1; i++) {
+			         			lvlCount.push(0);
+			         		}
+			         		lvlCount[lvl - 1] += 1;
+			            	cards.push({
+			              		name: name,
+			              		rarity: rarity,
+				              	edition: edition,
+				              	element: element,
+				              	type: type,
+				              	detailID: detailID,
+				              	distinctID: distinctID,
+				              	gold: gold,
+				              	img: img,
+				              	count: 1,
+				              	lvlHigh: lvl,
+				              	lvlCount: lvlCount,
+				              	mana: type === 'Monster' ? cardData.stats.mana[lvl - 1] || 0 : cardData.stats.mana,
+				              	hp: (cardData.stats.health[lvl - 1] + cardData.stats.armor[lvl - 1]) || 0,
+				              	speed: cardData.stats.speed[lvl - 1] || 0
+							 						//attack: cardData.stats.attack[cardData.stats.attack.length - 1] !== 0 ? cardData.stats.attack[cardData.stats.attack.length - 1] : cardData.stats.ranged[cardData.stats.ranged.length - 1] !== 0 ? cardData.stats.ranged[cardData.stats.ranged.length - 1] : cardData.stats.magic[cardData.stats.magic.length - 1] !== 0 ? cardData.stats.magic[cardData.stats.magic.length - 1] !== 0
 							});
-						}.bind(this),
-						error: function(e) {
-			      			console.log('There was an error retrieving your cards.');
-			  			}
+		            		distinctCards.push(distinctID);
+			        	}
+				    }
+	        		allCards = cards;
+					this.setState({
+						cards: cards,
+						loading: false
 					});
 				}.bind(this),
 				error: function(e) {
-					console.log('There was an error retrieving the card details');
-				}
+	      			console.log('There was an error retrieving your cards.');
+	  			}
 			});
 		}
 	}
@@ -263,96 +252,85 @@ class Collection extends React.Component {
 				let distinctCards = [];
 				$.ajax({
 					type: 'GET',
-					url: 'https://game-api.splinterlands.io/cards/get_details',
-					jsonpCallback: 'testing',
-					dataType: 'json',
-					success: function(cardDetails) {
-						$.ajax({
-							type: 'GET',
-				  			url: "https://game-api.splinterlands.com/cards/collection/" + localStorage.getItem('username'),
-				  			jsonpCallback: 'testing',
-				  			dataType: 'json',
-							success: function(Eelement) { 
-								for(var l = 0; l < Eelement.cards.length; ++l) {
-								    var detailID = Eelement.cards[l].card_detail_id;
-						            let cardData = cardDetails[detailID - 1];
-						          	let gold = Eelement.cards[l].gold;
-						          	let edition = Eelement.cards[l].edition === 0 ? 'Alpha' : Eelement.cards[l].edition === 1 ? 'Beta' : Eelement.cards[l].edition === 3 ? 'Reward' : Eelement.cards[l].edition === 4 ? 'Untamed' : 'Promo';
-						          	let distinctID = (gold ? 'G' : 'C') + (edition === 'Alpha' ? 'A' : edition === 'Beta' ? 'B' : edition === 'Reward' ? 'R' : edition === 'Untamed' ? 'U' : 'P') + detailID;
-						          	let name = cardData.name;
-						          	let type = cardData.type;
-						          	let rarity = cardData.rarity === 1 ? 'Common' : cardData.rarity === 2 ? 'Rare' : cardData.rarity === 3 ? 'Epic' : 'Legendary';
-						          	let element = cardData.color === 'Red' ? 'Fire' : cardData.color === 'Blue' ? 'Water' : cardData.color === 'Green' ? 'Earth' : cardData.color === 'White' ? 'Life' : cardData.color === 'Black' ? 'Death' : cardData.color === 'Gold' ? 'Dragon' : 'Neutral';
-						          	let xp = Eelement.cards[l].xp;
-						          	let lvl = 1;
-									let xpRates = edition === 'Untamed' || (edition === 'Reward' && detailID >= 225) ? newLvlXP : lvlXP;
-									let increment = edition === 'Untamed' || (edition === 'Reward' && detailID >= 225) ? 1 : 2;
-									for (let i = xpRates[cardData.rarity - 1].length - 1; i >= 0; i--) {
-						          		if (xp >= xpRates[cardData.rarity - 1][i]) {
-						          			lvl = i + increment;
-						          			break;
-						          		}
-						          	}
-						          	let img = 'https://d36mxiodymuqjm.cloudfront.net/cards_by_level/' + edition.toLowerCase() + '/' + name.replace(' ', '%20') + '_lv' + lvl;
-						          	img += gold ? '_gold.png' : '.png';
-						          	if (distinctCards.includes(distinctID)) {
-						            	for (let i = 0; i < cards.length; i++) {
-						            		let card = cards[i];
-						              		if (card.distinctID === distinctID) {
-					                			card.gold = card.gold || gold;
-					                			card.count += 1;
-					                			card.lvlHigh = lvl > card.lvlHigh ? lvl : card.lvlHigh;
-					                			card.lvlCount[lvl - 1] += 1;
-					                			card.img = 'https://d36mxiodymuqjm.cloudfront.net/cards_by_level/' + edition.toLowerCase() + '/' + name.replace(' ', '%20') + '_lv' + card.lvlHigh;
-					          					card.img += card.gold ? '_gold.png' : '.png';
-					          					card.mana = type === 'Monster' ? cardData.stats.mana[card.lvlHigh - 1] || 0 : cardData.stats.mana;
-							              		card.hp = (cardData.stats.health[card.lvlHigh - 1] + cardData.stats.armor[card.lvlHigh - 1]) || 0;
-							              		card.speed = cardData.stats.speed[card.lvlHigh - 1] || 0;
-							              		cards[i] = card;
-							              		break;
-					              			}
-					           			}	
-						         	} else {
-						         		let lvlCount = [];
-						         		for (let i = 0; i < lvlXP[cardData.rarity - 1].length + 1; i++) {
-						         			lvlCount.push(0);
-						         		}
-						         		lvlCount[lvl - 1] += 1;
-						            	cards.push({
-						              		name: name,
-						              		rarity: rarity,
-							              	edition: edition,
-							              	element: element,
-							              	type: type,
-							              	detailID: detailID,
-							              	distinctID: distinctID,
-							              	gold: gold,
-							              	img: img,
-							              	count: 1,
-							              	lvlHigh: lvl,
-							              	lvlCount: lvlCount,
-							              	mana: type === 'Monster' ? cardData.stats.mana[lvl - 1] || 0 : cardData.stats.mana,
-							              	hp: (cardData.stats.health[lvl - 1] + cardData.stats.armor[lvl - 1]) || 0,
-							              	speed: cardData.stats.speed[lvl - 1] || 0
-										 						//attack: cardData.stats.attack[cardData.stats.attack.length - 1] !== 0 ? cardData.stats.attack[cardData.stats.attack.length - 1] : cardData.stats.ranged[cardData.stats.ranged.length - 1] !== 0 ? cardData.stats.ranged[cardData.stats.ranged.length - 1] : cardData.stats.magic[cardData.stats.magic.length - 1] !== 0 ? cardData.stats.magic[cardData.stats.magic.length - 1] !== 0
-										});
-					            		distinctCards.push(distinctID);
-						        	}
-							    }
-				        		allCards = cards;
-								this.setState({
-									cards: cards,
-									loading: false
+		  			url: "https://game-api.splinterlands.com/cards/collection/" + localStorage.getItem('username'),
+		  			jsonpCallback: 'testing',
+		  			dataType: 'json',
+					success: function(Eelement) { 
+						for(var l = 0; l < Eelement.cards.length; ++l) {
+						    var detailID = Eelement.cards[l].card_detail_id;
+				            let cardData = this.props.cardDetails[detailID - 1];
+				          	let gold = Eelement.cards[l].gold;
+				          	let edition = Eelement.cards[l].edition === 0 ? 'Alpha' : Eelement.cards[l].edition === 1 ? 'Beta' : Eelement.cards[l].edition === 3 ? 'Reward' : Eelement.cards[l].edition === 4 ? 'Untamed' : 'Promo';
+				          	let distinctID = (gold ? 'G' : 'C') + (edition === 'Alpha' ? 'A' : edition === 'Beta' ? 'B' : edition === 'Reward' ? 'R' : edition === 'Untamed' ? 'U' : 'P') + detailID;
+				          	let name = cardData.name;
+				          	let type = cardData.type;
+				          	let rarity = cardData.rarity === 1 ? 'Common' : cardData.rarity === 2 ? 'Rare' : cardData.rarity === 3 ? 'Epic' : 'Legendary';
+				          	let element = cardData.color === 'Red' ? 'Fire' : cardData.color === 'Blue' ? 'Water' : cardData.color === 'Green' ? 'Earth' : cardData.color === 'White' ? 'Life' : cardData.color === 'Black' ? 'Death' : cardData.color === 'Gold' ? 'Dragon' : 'Neutral';
+				          	let xp = Eelement.cards[l].xp;
+				          	let lvl = 1;
+							let xpRates = edition === 'Untamed' || (edition === 'Reward' && detailID >= 225) ? newLvlXP : lvlXP;
+							let increment = edition === 'Untamed' || (edition === 'Reward' && detailID >= 225) ? 1 : 2;
+							for (let i = xpRates[cardData.rarity - 1].length - 1; i >= 0; i--) {
+				          		if (xp >= xpRates[cardData.rarity - 1][i]) {
+				          			lvl = i + increment;
+				          			break;
+				          		}
+				          	}
+				          	let img = 'https://d36mxiodymuqjm.cloudfront.net/cards_by_level/' + edition.toLowerCase() + '/' + name.replace(' ', '%20') + '_lv' + lvl;
+				          	img += gold ? '_gold.png' : '.png';
+				          	if (distinctCards.includes(distinctID)) {
+				            	for (let i = 0; i < cards.length; i++) {
+				            		let card = cards[i];
+				              		if (card.distinctID === distinctID) {
+			                			card.gold = card.gold || gold;
+			                			card.count += 1;
+			                			card.lvlHigh = lvl > card.lvlHigh ? lvl : card.lvlHigh;
+			                			card.lvlCount[lvl - 1] += 1;
+			                			card.img = 'https://d36mxiodymuqjm.cloudfront.net/cards_by_level/' + edition.toLowerCase() + '/' + name.replace(' ', '%20') + '_lv' + card.lvlHigh;
+			          					card.img += card.gold ? '_gold.png' : '.png';
+			          					card.mana = type === 'Monster' ? cardData.stats.mana[card.lvlHigh - 1] || 0 : cardData.stats.mana;
+					              		card.hp = (cardData.stats.health[card.lvlHigh - 1] + cardData.stats.armor[card.lvlHigh - 1]) || 0;
+					              		card.speed = cardData.stats.speed[card.lvlHigh - 1] || 0;
+					              		cards[i] = card;
+					              		break;
+			              			}
+			           			}	
+				         	} else {
+				         		let lvlCount = [];
+				         		for (let i = 0; i < lvlXP[cardData.rarity - 1].length + 1; i++) {
+				         			lvlCount.push(0);
+				         		}
+				         		lvlCount[lvl - 1] += 1;
+				            	cards.push({
+				              		name: name,
+				              		rarity: rarity,
+					              	edition: edition,
+					              	element: element,
+					              	type: type,
+					              	detailID: detailID,
+					              	distinctID: distinctID,
+					              	gold: gold,
+					              	img: img,
+					              	count: 1,
+					              	lvlHigh: lvl,
+					              	lvlCount: lvlCount,
+					              	mana: type === 'Monster' ? cardData.stats.mana[lvl - 1] || 0 : cardData.stats.mana,
+					              	hp: (cardData.stats.health[lvl - 1] + cardData.stats.armor[lvl - 1]) || 0,
+					              	speed: cardData.stats.speed[lvl - 1] || 0
+								 						//attack: cardData.stats.attack[cardData.stats.attack.length - 1] !== 0 ? cardData.stats.attack[cardData.stats.attack.length - 1] : cardData.stats.ranged[cardData.stats.ranged.length - 1] !== 0 ? cardData.stats.ranged[cardData.stats.ranged.length - 1] : cardData.stats.magic[cardData.stats.magic.length - 1] !== 0 ? cardData.stats.magic[cardData.stats.magic.length - 1] !== 0
 								});
-							}.bind(this),
-							error: function(e) {
-				      			console.log('There was an error retrieving your cards.');
-				  			}
+			            		distinctCards.push(distinctID);
+				        	}
+					    }
+		        		allCards = cards;
+						this.setState({
+							cards: cards,
+							loading: false
 						});
 					}.bind(this),
 					error: function(e) {
-						console.log('There was an error retrieving the card details');
-					}
+		      			console.log('There was an error retrieving your cards.');
+		  			}
 				});
 			} else {
 				allCards = [];

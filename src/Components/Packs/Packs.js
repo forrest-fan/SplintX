@@ -9,7 +9,7 @@ const packs = [
 		The UNTAMED set features over 70 new cards, with 1.5 million packs available for sale.\n
 		Airdrops: Every 100,000 packs sold will unlock a new card that will be airdropped to players who have already purchased packs and will be added to packs going forward.`,
 		price: 2000,
-		acceptedCurrencies: ['Credits', 'DEC'],
+		acceptedCurrencies: ['DEC'],
 		img: 'https://d36mxiodymuqjm.cloudfront.net/website/ui_elements/shop/logo_untamed.png'
 	}, 
 	{

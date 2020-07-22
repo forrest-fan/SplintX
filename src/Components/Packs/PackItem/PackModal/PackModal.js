@@ -5,10 +5,28 @@ class PackModal extends React.Component {
 		super(props);
 		this.state = {totalPrice: this.props.item.price};
 		this.updatePrice = this.updatePrice.bind(this);
+		this.buyPack = this.buyPack.bind(this);
+	}
+
+	buyPack() {
+		let totalPrice = this.state.totalPrice / 2000;
+		alert("buyPack function");
+  		var json = JSON.stringify({
+    		type: "booster_pack",
+   			qty: totalPrice,
+    		currency: "DEC",
+    		market: "splintx",
+    		app: "SplintXApp"
+  		});	
+		window.hive_keychain.requestCustomJson(localStorage.getItem('username'), "sm_purchase", "Active", json, "Booster Pack Purchase", function (response) {
+		  console.log(response);
+		});
+		this.props.updateBalance();
 	}
 
 	updatePrice(e) {
 		let quantity = e.target.value;
+		console.log(quantity);
 		this.setState({totalPrice: quantity * this.props.item.price}); 
 	}
 
@@ -25,7 +43,7 @@ class PackModal extends React.Component {
 		        <span><strong>Buy: </strong></span>
 		        {this.props.item.acceptedCurrencies.map(currency => {
 		        	let btnClass = 'buy-btn ' + currency + '-price';
-		        	return (<span className={btnClass}>{this.state.totalPrice.toLocaleString()} {currency}</span>);
+		        	return (<span className={btnClass} onClick={this.buyPack} style={{cursor:'pointer'}}>{this.state.totalPrice.toLocaleString()} {currency}</span>);
 		        })}
 		      </div>
 		    </div>
