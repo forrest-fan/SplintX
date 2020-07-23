@@ -21,10 +21,13 @@ class MarketCardModal extends React.Component {
 			forSale: [],
 			selected: [],
 			sortMethod: 'priceBcxAsc',
+			panel: 'multiSelect',
 			loading: true
 		};
 		this.updateSort = this.updateSort.bind(this);
 		this.getBCX = this.getBCX.bind(this);
+		this.updatePanel = this.updatePanel.bind(this);
+		this.multiSelect = this.multiSelect.bind(this);
 	}
 
 	updateSort(method) {
@@ -98,6 +101,30 @@ class MarketCardModal extends React.Component {
 		}
 	}
 
+	updatePanel(panel) {
+		let currentPanel = this.state.panel;
+		let currentId = 'panel' + currentPanel;
+		let newId = 'panel' + panel;
+		if (panel !== currentPanel) {
+			document.getElementById(currentId).className = 'market-cardModal-panel-header';
+			document.getElementById(newId).className = 'market-cardModal-panel-header activePanel';
+			this.setState({panel: panel});
+		}
+	}
+
+	multiSelect() {
+		let count = document.getElementById('card-count').value;
+		let minbcx = document.getElementById('minbcx').value;
+		let maxbcx = document.getElementById('maxbcx').value;
+		let maxprice = document.getElementById('maxprice').value;
+		let sort = document.getElementById('sortPrice').checked ? 'price' : document.getElementById('sortPriceBCX').checked ? 'bcx' : '';
+		if (count === null || sort === '') {
+			let toast = document.getElementById('market-cardModal-required-toast');
+			toast.className += ' show';
+			setTimeout(()=>{toast.className = toast.className.replace(' show', '')}, 3000);
+		}
+	}
+
 	componentDidMount() {
 		var forSale = [];
 		var distinctSale = [];
@@ -160,9 +187,28 @@ class MarketCardModal extends React.Component {
 	    				<img className='market-cardModal-img' src={this.props.info.img} />
 	    			</div>
 	    			<div className='market-cardModal-info-container'>
-		    			<h3>Cards For Sale</h3>
+		    			<div className='market-cardModal-panel-header-container'>
+			    			<h3 id='panelforSale' className='market-cardModal-panel-header activePanel' onClick={() => {
+								let currentPanel = this.state.panel;
+								let currentId = 'panel' + currentPanel;
+								if (currentPanel !== 'forSale') {
+									document.getElementById(currentId).className = 'market-cardModal-panel-header';
+									document.getElementById('panelforSale').className = 'market-cardModal-panel-header activePanel';
+									this.setState({panel: 'forSale'});
+								}
+			    			}}>Cards For Sale</h3>
+			    			<h3 id='panelmultiSelect' className='market-cardModal-panel-header' onClick={() => {
+								let currentPanel = this.state.panel;
+								let currentId = 'panel' + currentPanel;
+								if (currentPanel !== 'multiSelect') {
+									document.getElementById(currentId).className = 'market-cardModal-panel-header';
+									document.getElementById('panelmultiSelect').className = 'market-cardModal-panel-header activePanel';
+									this.setState({panel: 'multiSelect'});
+								}
+			    			}}>MultiSelect</h3>
+		    			</div>
 		    			
-		    			<div className='market-cardModal-table-container'>
+		    			{this.state.panel === 'forSale' ? <div className='market-cardModal-table-container'>
 		    				<table className='market-cardModal-table'>
 		    					<thead className='market-cardModal-table-header'>
 		    						<tr>
@@ -193,8 +239,8 @@ class MarketCardModal extends React.Component {
 		    										let selected = this.state.selected;
 		    										if (selected.length >= 45 && !selected.includes(listing)) {
 		    											let toast = document.getElementById('market-cardModal-tooMany-toast');
-		    											toast.className = 'show';
-		    											setTimeout(() => {toast.className = toast.className.replace('show', '')}, 3000);
+		    											toast.className += ' show';
+		    											setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
 		    										} else if (selected.includes(listing)) {
 		    											for (let i = 0; i < selected.length; i++) {
 		    												if (selected[i].uid === listing.uid) {
@@ -218,26 +264,48 @@ class MarketCardModal extends React.Component {
 		    					</tbody> }
 		    				</table>
 		    				{this.state.loading ? <div className='loader-modal-container'><div className='loader-modal'></div></div> : ''}
-		    			</div>
+		    			</div> : this.state.panel === 'multiSelect' ? <div className='market-cardModal-table-container'>
+			    			<form className='market-cardModal-multiselect'>
+			    				<h4>Card Count<span>*</span></h4>
+			    				<span><input id='card-count' className='multiSelect-input' placeholder='# of cards'/></span>
+			    				<h4>BCX Limits</h4>
+			    				<span><input id='minbcx' className='multiSelect-input' placeholder='Minimum BCX' type='number' min='1'/><input id='maxbcx' className='multiSelect-input' placeholder='Maximum BCX' type='number'/></span>
+			    				<h4>Maximum Price</h4>
+			    				<span><input id='maxprice' className='multiSelect-input' placeholder='Maximum Total Price' type='number'/></span>
+			    				<h4>Sort By<span>*</span></h4>
+			    				<span><input type='radio' name='sort' id='sortPrice' value='sortPrice'/><label for='sortPrice'>Lowest Price</label>
+			    				<input type='radio' name='sort' id='sortPriceBCX' value='sortPriceBCX'/><label for='sortPriceBCX'>Lowest Price/BCX</label></span>
+			    				<input type='submit' className='submit' value='Select' />	
+			    			</form>
+		    			</div> : ''}
 		    			
 		    			<div className='market-cardModal-addToCart'>
-		    				<span>{this.state.selected.length} {this.props.info.name} Card{this.state.selected.length === 1 ? '' : 's'} Selected, Total: ${sumProp(this.state.selected, 'buy_price').toFixed(2)} USD</span>
+		    				<span>{this.state.selected.length} {this.props.info.name} Card{this.state.selected.length === 1 ? '' : 's'} Selected, Total BCX: {sumProp(this.state.selected, 'bcx')}, Total: ${sumProp(this.state.selected, 'buy_price').toFixed(2)} USD</span>
 	    					<button className='market-cardModal-addToCart-btn' onClick={() => {
 	    						let selectedArr = this.state.selected;
 	    						let toast = document.getElementById('market-cardModal-toast');
 	    						this.setState({selected: []});
 	    						this.props.addToCart(selectedArr);
-	    						toast.className = 'show';
-	    						setTimeout(() => {toast.className = toast.className.replace('show', '')}, 3000)
+	    						toast.className += ' show';
+	    						setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
 	    					}} disabled={this.state.selected.length === 0}>Add to Cart</button>
+	    					<button className='market-cardModal-clearSelected-btn' onClick={() => {
+	    						this.setState({selected: []});
+	    					}} disabled={this.state.selected.length === 0}>Clear All</button>
 	    				</div>
 	    			</div>
 	    		</div>
-				<div id='market-cardModal-toast'>
+				<div id='market-cardModal-toast' className='toast successToast'>
 					<i className='fas fa-check'></i>Successfully added to cart!
 				</div>
-				<div id='market-cardModal-tooMany-toast'>
+				<div id='market-cardModal-tooMany-toast' className='toast failToast'>
 					<i className='fas fa-times'></i>You have already selected the limit of 45 cards.
+				</div>
+				<div id='market-cardModal-bcx-toast' className='toast failToast'>
+					<i className='fas fa-times'></i>Your max BCX is less than your min BCX.
+				</div>
+				<div id='market-cardModal-required-toast' className='toast failToast'>
+					<i className='fas fa-times'></i>Please fill all required fields.
 				</div>
 	    	</div>
 	    );
