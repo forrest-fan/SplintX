@@ -113,7 +113,8 @@ class Collection extends React.Component {
 		this.setState({
 			filters: filters,
 			filterCount: filterCount,
-			cards: cards
+			cards: cards,
+			loading: false
 		});
 	}
 
@@ -232,11 +233,21 @@ class Collection extends React.Component {
 		            		distinctCards.push(distinctID);
 			        	}
 				    }
+				    cards.sort((a, b) => {
+				    	if (a.element < b.element) {
+				    		return -1;
+				    	} else if (a.element > b.element) {
+				    		return 1;
+				    	} else {
+				    		if (a.gold) {
+				    			return -1;
+				    		} else {
+				    			return 1;
+				    		}
+				    	}
+				    });
 	        		allCards = cards;
-					this.setState({
-						cards: cards,
-						loading: false
-					});
+					this.updateFilters('Untamed', 'edition', 'add');
 				}.bind(this),
 				error: function(e) {
 	      			console.log('There was an error retrieving your cards.');
@@ -323,10 +334,7 @@ class Collection extends React.Component {
 				        	}
 					    }
 		        		allCards = cards;
-						this.setState({
-							cards: cards,
-							loading: false
-						});
+						this.updateFilters('Untamed', 'edition', 'add');
 					}.bind(this),
 					error: function(e) {
 		      			console.log('There was an error retrieving your cards.');
