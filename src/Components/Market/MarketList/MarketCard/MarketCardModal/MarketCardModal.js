@@ -161,9 +161,7 @@ class MarketCardModal extends React.Component {
 	    			</div>
 	    			<div className='market-cardModal-info-container'>
 		    			<h3>Cards For Sale</h3>
-		    			<form className='market-cardModal-multiselect'>
-		    				Multi-select: <input className='card-count'/> cards, Min BCX: <input className='bcx'/> Max BCX: <input  className='bcx'/>, <input type='radio' name='sort'/>Lowest $ <input type='radio' name='sort'/>Lowest $/BCX
-		    			</form>
+		    			
 		    			<div className='market-cardModal-table-container'>
 		    				<table className='market-cardModal-table'>
 		    					<thead className='market-cardModal-table-header'>
