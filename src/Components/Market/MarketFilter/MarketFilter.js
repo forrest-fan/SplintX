@@ -12,7 +12,7 @@ class MarketFilter extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeFilters: []
+      activeFilters: ['Untamed']
     }
     this.getCategory = this.getCategory.bind(this);
     this.handleSearchChange = this.handleSearchChange.bind(this);
