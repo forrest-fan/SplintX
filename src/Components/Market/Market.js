@@ -68,7 +68,6 @@ class Market extends React.Component {
 				filterCount = 0;
 			}
 		}
-
 		let cards = [];
 		let allCards = JSON.parse(sessionStorage.getItem('forSaleGrouped'));
 		allCards.map(card => {
@@ -116,7 +115,8 @@ class Market extends React.Component {
 		this.setState({
 			filters: filters,
 			filterCount: filterCount,
-			cards: cards
+			cards: cards,
+			loading: false
 		});
 	}
 
@@ -142,9 +142,6 @@ class Market extends React.Component {
 			cards.sort((a, b) => {
 				return Number(a.mana) - Number(b.mana);
 			});
-			console.log(cards.map(card => {
-				return card.mana;
-			}));
 		} else if (method === 'manaDes') {
 			cards.sort((a, b) => {
 				return Number(b.mana) - Number(a.mana);
@@ -258,10 +255,7 @@ class Market extends React.Component {
 				    	}
 				    });
 				    sessionStorage.setItem('forSaleGrouped', JSON.stringify(cards));
-					this.setState({
-						cards: cards,
-						loading: false
-					});
+				    this.updateFilters('Untamed', 'edition', 'add');
 				}.bind(this),
 				error: function(e) {
 	      			console.log('There was an error retrieving your cards.');
@@ -269,10 +263,7 @@ class Market extends React.Component {
 			});
 		} else {
 			let cards = JSON.parse(sessionStorage.getItem('forSaleGrouped'));
-			this.setState({
-				cards: cards,
-				loading: false
-			});
+			this.updateFilters('Untamed', 'edition', 'add');
 		}
 	}
 

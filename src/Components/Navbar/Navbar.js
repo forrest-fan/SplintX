@@ -38,11 +38,11 @@ class Navbar extends React.Component {
 
   handleLogout() {
     let toast = document.getElementById('navbar-logout-toast');
-    toast.className = 'show';
-    setTimeout(() => {toast.className = toast.className.replace('show', '')}, 3000)
+    toast.className += ' show';
+    setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000)
     localStorage.removeItem("username");
     this.setState({loggedIn: false});
-     this.props.login('');
+    this.props.login('');
   }
 
   render() {
@@ -65,7 +65,7 @@ class Navbar extends React.Component {
                 );
               })}
               {this.props.loggedIn ?                   
-                  <div className="login-btn nav-item" onClick={this.handleLogout}>Logout from {localStorage.getItem('username')}</div> :
+                  <div className="login-btn nav-item" onClick={this.handleLogout}><span style={{marginRight: '5px'}}>Logout</span> | <span style={{marginLeft: '5px'}}>{localStorage.getItem('username')}</span></div> :
                 <div className="login-btn nav-item" onClick={this.toggleLogin}>Login</div> }
               <div className="bars-btn nav-item-small" onClick={this.openSidebar}><i className='fas fa-bars'></i></div>
             </ul>
@@ -96,7 +96,7 @@ class Navbar extends React.Component {
           </div>
         </div>
         {this.state.renderLogin ? <LoginModal login={this.props.login} closeModal={this.toggleLogin}/> : ''}
-        <div id='navbar-logout-toast'>
+        <div id='navbar-logout-toast' className='toast successToast'>
           <i className='fas fa-check'></i>Successfully Logged Out!
         </div>
       </nav>
