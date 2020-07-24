@@ -129,8 +129,8 @@ class MarketCardModal extends React.Component {
 
 	multiSelectBCX() {
 		const matchUID = this.props.cart.map(item => {return item.uid});
-		let count = document.getElementById('bcx').value;
-		if (count === null) {
+		let count = document.getElementById('bcx').value || 0;
+		if (count === 0) {
 			let toast = document.getElementById('market-cardModal-required-toast');
 			toast.className += ' show';
 			setTimeout(()=>{toast.className = toast.className.replace(' show', '')}, 3000);
@@ -171,8 +171,8 @@ class MarketCardModal extends React.Component {
 
 	multiSelectPrice() {
 		const matchUID = this.props.cart.map(item => {return item.uid});
-		let count = document.getElementById('price').value;
-		if (count === null) {
+		let count = document.getElementById('price').value || 0;
+		if (count === 0) {
 			let toast = document.getElementById('market-cardModal-required-toast');
 			toast.className += ' show';
 			setTimeout(()=>{toast.className = toast.className.replace(' show', '')}, 3000);
@@ -372,13 +372,13 @@ class MarketCardModal extends React.Component {
 			    					<h4>Select BCX</h4>
 			    					<p>Find desired BCX for lowest total price</p>
 			    					<input id='bcx' type='number' className='multiSelect-input' placeholder='Desired BCX' />
-			    					<button onClick={this.multiSelectBCX}>Search</button>
+			    					<button onClick={this.multiSelectBCX}>Search by BCX</button>
 			    				</div>
 			    				<div className='multiselect-half'>
 			    					<h4>Select Price</h4>
 			    					<p>Find maximum BCX for desired price</p>
 			    					<input id='price' type='number' className='multiSelect-input' placeholder='Total Price (USD)' />
-			    					<button onClick={this.multiSelectPrice}>Search</button>
+			    					<button onClick={this.multiSelectPrice}>Search by Price</button>
 			    				</div>
 
 			    			</div>

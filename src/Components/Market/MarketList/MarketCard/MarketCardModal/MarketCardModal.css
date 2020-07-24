@@ -102,7 +102,6 @@
 	display: inline-block;
 	padding: 10px 20px;
 	box-sizing: border-box;
-	white-space: normal;
 }
 
 .market-cardModal-multiselect .multiselect-half.left {
@@ -119,6 +118,7 @@
 	margin: 0.7em 0px;
 	font-size: 16px;
 	text-align: center;
+	white-space: normal;
 }
 
 .multiSelect-input {
@@ -139,7 +139,7 @@
 	display: block;
 	margin: 10px auto;
 	padding: 8px 0px;
-	width: 80px;
+	width: 130px;
 	font-weight: bold;
 	outline: none;
 	border-radius: 10px;
