@@ -21,12 +21,13 @@ class MarketCardModal extends React.Component {
 			forSale: [],
 			selected: [],
 			sortMethod: 'priceBcxAsc',
-			panel: 'multiSelect',
+			panel: 'forSale',
 			loading: true
 		};
 		this.updateSort = this.updateSort.bind(this);
 		this.getBCX = this.getBCX.bind(this);
 		this.updatePanel = this.updatePanel.bind(this);
+		this.handlePanelChange = this.handlePanelChange.bind(this);
 		this.multiSelect = this.multiSelect.bind(this);
 	}
 
@@ -68,6 +69,14 @@ class MarketCardModal extends React.Component {
 				let bPriceBcx = Number(b.buy_price) / Number(b.bcx);
 				return bPriceBcx - aPriceBcx;
 			});
+		} else if (method === 'selected') {
+			forSale.sort((a, b) => {
+				if (this.state.selected.includes(b) && !this.state.selected.includes(a)) {
+					return 1;
+				} else {
+					return -1;
+				}
+			})
 		}
 
 		this.setState({sortMethod: method});
@@ -112,16 +121,81 @@ class MarketCardModal extends React.Component {
 		}
 	}
 
+	handlePanelChange(e) {
+		let newPanel = e.target.value;
+		this.updatePanel(newPanel);
+	}
+
 	multiSelect() {
-		let count = document.getElementById('card-count').value;
-		let minbcx = document.getElementById('minbcx').value;
-		let maxbcx = document.getElementById('maxbcx').value;
-		let maxprice = document.getElementById('maxprice').value;
+		const matchUID = this.props.cart.map(item => {return item.uid});
+		let select = document.getElementById('selectCards').checked ? 'cards' : document.getElementById('selectPrice').checked ? 'price' : '';
+		let count = document.getElementById('selectCount').value;
+		let minbcx = document.getElementById('minbcx').value || 1;
+		let maxbcx = document.getElementById('maxbcx').value || 10000;
 		let sort = document.getElementById('sortPrice').checked ? 'price' : document.getElementById('sortPriceBCX').checked ? 'bcx' : '';
-		if (count === null || sort === '') {
+		if (select === '' || count === null || sort === '') {
 			let toast = document.getElementById('market-cardModal-required-toast');
 			toast.className += ' show';
 			setTimeout(()=>{toast.className = toast.className.replace(' show', '')}, 3000);
+		} else if (minbcx > maxbcx) {
+			let toast = document.getElementById('market-cardModal-bcx-toast');
+			toast.className += ' show';
+			setTimeout(()=>{toast.className = toast.className.replace(' show', '')}, 3000);
+		} else {
+			let forSale = this.state.forSale;
+			let multi = [];
+			if (sort === 'price') {
+				forSale.sort((a, b) => {
+					if (a.buy_price < b.buy_price) {
+						return -1;
+					} else if (b.buy_price < a.buy_price) {
+						return 1;
+					} else {
+						let aPriceBcx = Number(a.buy_price) / Number(a.bcx);
+						let bPriceBcx = Number(b.buy_price) / Number(b.bcx);
+						return aPriceBcx - bPriceBcx;
+					}
+				});
+			} else if (sort === 'bcx') {
+				forSale.sort((a, b) => {
+					let aPriceBcx = Number(a.buy_price) / Number(a.bcx);
+					let bPriceBcx = Number(b.buy_price) / Number(b.bcx);
+					if (aPriceBcx < bPriceBcx) {
+						return -1;
+					} else if (bPriceBcx < aPriceBcx) {
+						return 1;
+					} else {
+						return Number(a.buy_price) - Number(b.buy_price);
+					}
+				});
+			}
+
+			if (select === 'cards') {
+				let i = 0;
+				let totalBCX = 0;
+				while (multi.length < count && i < forSale.length) {
+					if (forSale[i].bcx >= minbcx && forSale[i].bcx <= maxbcx && !this.state.selected.includes(forSale[i]) && !matchUID.includes(forSale[i].uid)) {
+						multi.push(forSale[i]);
+						
+					}
+					i++;
+				}
+			} else if (select === 'price') {
+				let i = 0;
+				let totalPrice = 0;
+				while (totalPrice < count && i < forSale.length) {
+					if (totalPrice + forSale[i].buy_price < count && forSale[i].bcx >= minbcx && forSale[i].bcx <= maxbcx && !this.state.selected.includes(forSale[i]) && !matchUID.includes(forSale[i].uid)) {
+						multi.push(forSale[i]);
+						totalPrice += forSale[i].buy_price;
+					}
+					console.log(totalPrice);
+					i++;
+				}
+			}
+			this.setState({
+				selected: this.state.selected.concat(multi),
+				panel: 'forSale'
+			});
 		}
 	}
 
@@ -158,7 +232,7 @@ class MarketCardModal extends React.Component {
 	      				return ({
 	      					seller: listing.seller,
 	      					uid: listing.uid,
-	      					buy_price: listing.buy_price,
+	      					buy_price: Number(listing.buy_price),
 	      					lvl: lvl,
 	      					currency: listing.currency,
 	      					market_id: listing.market_id,
@@ -175,6 +249,12 @@ class MarketCardModal extends React.Component {
 		});
 	}
 
+	componentDidUpdate(prevProps, prevState) {
+		if (this.state.panel === 'forSale' && prevState.panel === 'multiSelect' && this.state.selected !== prevState.selected) {
+			this.updateSort('selected');
+		}
+	}
+
 	render() {
 		const matchUID = this.props.cart.map(item => {return item.uid});
 	    return (
@@ -188,7 +268,7 @@ class MarketCardModal extends React.Component {
 	    			</div>
 	    			<div className='market-cardModal-info-container'>
 		    			<div className='market-cardModal-panel-header-container'>
-			    			<h3 id='panelforSale' className='market-cardModal-panel-header activePanel' onClick={() => {
+			    			<h3 id='panelforSale' className={this.state.panel === 'forSale' ? 'market-cardModal-panel-header activePanel' : 'market-cardModal-panel-header'} onClick={() => {
 								let currentPanel = this.state.panel;
 								let currentId = 'panel' + currentPanel;
 								if (currentPanel !== 'forSale') {
@@ -197,7 +277,7 @@ class MarketCardModal extends React.Component {
 									this.setState({panel: 'forSale'});
 								}
 			    			}}>Cards For Sale</h3>
-			    			<h3 id='panelmultiSelect' className='market-cardModal-panel-header' onClick={() => {
+			    			<h3 id='panelmultiSelect' className={this.state.panel === 'multiSelect' ? 'market-cardModal-panel-header activePanel': 'market-cardModal-panel-header'} onClick={() => {
 								let currentPanel = this.state.panel;
 								let currentId = 'panel' + currentPanel;
 								if (currentPanel !== 'multiSelect') {
@@ -206,13 +286,22 @@ class MarketCardModal extends React.Component {
 									this.setState({panel: 'multiSelect'});
 								}
 			    			}}>MultiSelect</h3>
+			    			<span className='market-cardModal-panel-small-container'>
+			    				Panel: 
+				    			<select className='market-cardModal-panel-small' onChange={this.handlePanelChange}>
+						            <option value='forSale'>Cards For Sale</option>
+						            <option value='multiSelect'>MultiSelect</option>
+						        </select>
+					        </span>
 		    			</div>
 		    			
 		    			{this.state.panel === 'forSale' ? <div className='market-cardModal-table-container'>
 		    				<table className='market-cardModal-table'>
 		    					<thead className='market-cardModal-table-header'>
 		    						<tr>
-		    							<th></th>
+		    							<th onClick={() => {
+		    								this.updateSort('selected');
+		    							}} style={{cursor: 'pointer'}}>{this.state.sortMethod === 'selected' ? <i className='fas fa-caret-down'></i> : ''}</th>
 		    							<th onClick={() => {
 		    								this.state.sortMethod === 'lvlDec' ? this.updateSort('lvlAsc') : this.updateSort('lvlDec');
 		    							}} style={{cursor: 'pointer'}}>Level <i className={'market-cardModal-table-sortIcon ' + (this.state.sortMethod === 'lvlAsc' ? 'fas fa-caret-up' : this.state.sortMethod === 'lvlDec' ? 'fas fa-caret-down' : '')}></i></th>
@@ -232,7 +321,6 @@ class MarketCardModal extends React.Component {
 		    					{this.state.loading ? '' :
 		    					<tbody className='market-cardModal-table-data'>
 		    						{this.state.forSale.map(listing => {
-		    							
 		    							return(
 		    								<tr>
 		    									<td className='market-cardModal-table-add'><input type='checkbox' onClick={() => {
@@ -254,8 +342,8 @@ class MarketCardModal extends React.Component {
 		    									}} disabled={matchUID.includes(listing.uid)} checked={this.state.selected.includes(listing)}/></td>
 		    									<td className='market-cardModal-table-data-lvl'>{listing.lvl}</td>
 		    									<td className='market-cardModal-table-data-lvl'>{listing.bcx}</td>
-		    									<td className='market-cardModal-table-data-price'>${Number(listing.buy_price).toFixed(2)}</td>
-		    									<td className='market-cardModal-table-data-price'>${(Number(listing.buy_price)/listing.bcx).toFixed(2)}</td>
+		    									<td className='market-cardModal-table-data-price'>${Number(listing.buy_price).toFixed(3)}</td>
+		    									<td className='market-cardModal-table-data-price'>${(Number(listing.buy_price)/listing.bcx).toFixed(3)}</td>
 		    									<td className='market-cardModal-table-data-seller'>{listing.seller.length > 8 ? listing.seller.substring(0, 8) + '...' : listing.seller}</td>
 		    									<td className='market-cardModal-table-data-uid'>{listing.uid}</td>
 		    								</tr>
@@ -265,22 +353,23 @@ class MarketCardModal extends React.Component {
 		    				</table>
 		    				{this.state.loading ? <div className='loader-modal-container'><div className='loader-modal'></div></div> : ''}
 		    			</div> : this.state.panel === 'multiSelect' ? <div className='market-cardModal-table-container'>
-			    			<form className='market-cardModal-multiselect'>
-			    				<h4>Card Count<span>*</span></h4>
-			    				<span><input id='card-count' className='multiSelect-input' placeholder='# of cards'/></span>
+			    			<div className='market-cardModal-multiselect'>
+			    				<p>{this.state.forSale.length} card{this.state.forSale.length === 1 ? '' : 's'} on the market</p>
+			    				<h4>Select Method<span>*</span></h4>
+			    				<span><input type='radio' name='select' id='selectCards' value='selectCards'/><label for='selectCards'>Select total BCX</label>
+			    				<input type='radio' name='select' id='selectPrice' value='selectPrice'/><label for='selectPrice'>Select total price</label></span><br/>
+			    				<span><input id='selectCount' className='multiSelect-input' placeholder='Total BCX/Price'/></span>
 			    				<h4>BCX Limits</h4>
 			    				<span><input id='minbcx' className='multiSelect-input' placeholder='Minimum BCX' type='number' min='1'/><input id='maxbcx' className='multiSelect-input' placeholder='Maximum BCX' type='number'/></span>
-			    				<h4>Maximum Price</h4>
-			    				<span><input id='maxprice' className='multiSelect-input' placeholder='Maximum Total Price' type='number'/></span>
 			    				<h4>Sort By<span>*</span></h4>
 			    				<span><input type='radio' name='sort' id='sortPrice' value='sortPrice'/><label for='sortPrice'>Lowest Price</label>
 			    				<input type='radio' name='sort' id='sortPriceBCX' value='sortPriceBCX'/><label for='sortPriceBCX'>Lowest Price/BCX</label></span>
-			    				<input type='submit' className='submit' value='Select' />	
-			    			</form>
+			    				<button onClick={this.multiSelect}>Select</button>	
+			    			</div>
 		    			</div> : ''}
 		    			
 		    			<div className='market-cardModal-addToCart'>
-		    				<span>{this.state.selected.length} {this.props.info.name} Card{this.state.selected.length === 1 ? '' : 's'} Selected, Total BCX: {sumProp(this.state.selected, 'bcx')}, Total: ${sumProp(this.state.selected, 'buy_price').toFixed(2)} USD</span>
+		    				<span>{this.state.selected.length} {this.props.info.name} Card{this.state.selected.length === 1 ? '' : 's'} Selected, Total BCX: {sumProp(this.state.selected, 'bcx')}, Total: ${sumProp(this.state.selected, 'buy_price').toFixed(3)} USD</span>
 	    					<button className='market-cardModal-addToCart-btn' onClick={() => {
 	    						let selectedArr = this.state.selected;
 	    						let toast = document.getElementById('market-cardModal-toast');

@@ -77,12 +77,24 @@
 	color: #000;
 }
 
-.market-cardModal-panel-header-container {
+.market-cardModal-panel-header {
 	color: #aaa;
 }
 
-.market-cardModal-panel-header-container .activePanel {
+.market-cardModal-panel-header.activePanel {
 	color: #000;
+}
+
+.market-cardModal-panel-small-container {
+	display: none;
+}
+
+.market-cardModal-panel-small {
+	font-size: 15px;
+	padding: 4px;
+	font-family: inherit;
+	outline: none;
+	margin-left: 5px;
 }
 
 .market-cardModal-multiselect h4 {
@@ -120,11 +132,15 @@
 	border-bottom: 1px solid var(--login-btn);
 }
 
-.market-cardModal-multiselect #minbcx, #maxbcx {
-	margin-right: 10px;
+.market-cardModal-multiselect #maxbcx {
+	margin-left: 10px;
 }
 
-.market-cardModal-multiselect .submit {
+.market-cardModal-multiselect #selectCount {
+	margin-top: 10px;
+}
+
+.market-cardModal-multiselect button {
 	display: block;
 	margin: 10px 0px;
 	padding: 8px 14px;
@@ -138,7 +154,7 @@
 	transition: 0.3s;
 }
 
-.market-cardModal-multiselect .submit:hover {
+.market-cardModal-multiselect button:hover {
 	opacity: 1;
 }
 
@@ -311,7 +327,7 @@
 	}
 }
 
-@media (max-width: 870px) {
+@media (max-width: 890px) {
 	.market-cardModal-table-container {
 		white-space: nowrap;
 		overflow-x: auto;
@@ -330,5 +346,15 @@
 
 	.market-cardModal-addToCart {
 		left: 10px;
+	}
+}
+
+@media (max-width: 750px) {
+	.market-cardModal-panel-header {
+		display: none;
+	}
+
+	.market-cardModal-panel-small-container {
+		display: block;
 	}
 }

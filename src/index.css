@@ -10,6 +10,12 @@ body {
 	font-family: Source Sans Pro;
 }
 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 .toast {
 	visibility: hidden;
 	position: fixed;
