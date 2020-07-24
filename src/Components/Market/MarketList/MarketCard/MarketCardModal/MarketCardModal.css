@@ -67,22 +67,23 @@
 
 .market-cardModal-panel-header {
 	display: inline-block;
-	margin: 8px 0px 0px 15px;
-	padding: 8px 4px;
+	margin: 8px 0px 0px 10px;
+	padding: 6px 14px;
 	cursor: pointer;
-	transition: 0.3s;
+	transition: 0.5s;
+	color: #888;
+	border-radius: 15px;
 }
 
 .market-cardModal-panel-header:hover {
-	color: #000;
-}
-
-.market-cardModal-panel-header {
-	color: #aaa;
+	color: #fff;
+	background: var(--navbar-bg);
+	opacity: 0.6;
 }
 
 .market-cardModal-panel-header.activePanel {
-	color: #000;
+	color: #fff;
+	background: var(--navbar-bg);
 }
 
 .market-cardModal-panel-small-container {
