@@ -31,7 +31,6 @@ class MarketCart extends React.Component {
 	}
 	
 	fillOrder() {
-		// Felix transaction code goes here
 		if (isLoggedIn() && this.props.cart.length <= 45) {
 			let jsonRequest = JSON.stringify({
 				items: this.props.cart.map(card => {
@@ -44,8 +43,8 @@ class MarketCart extends React.Component {
 			});
 			window.hive_keychain.requestCustomJson(localStorage.getItem('username'), "sm_market_purchase", "Active", jsonRequest, "Buy Card(s)", function(response) {
 			    let toast = document.getElementById('cart-purchased-toast');
-	    		toast.className = 'show';
-	       		setTimeout(() => {toast.className = toast.className.replace('show', '')}, 3000);
+	    		toast.className += 'show';
+	       		setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
 			    this.setState({
 					totalDEC: 0,
 					totalUSD: 0
@@ -55,12 +54,12 @@ class MarketCart extends React.Component {
 			}.bind(this));
 		} else if (this.props.cart.length > 45 ) {
 			let toast = document.getElementById('cart-tooMany-toast');
-    		toast.className = 'show';
-       		setTimeout(() => {toast.className = toast.className.replace('show', '')}, 3000);
+    		toast.className += ' show';
+       		setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
 		} else {
 			let toast = document.getElementById('cart-login-prompt-toast');
-    		toast.className = 'show';
-       		setTimeout(() => {toast.className = toast.className.replace('show', '')}, 3000);
+    		toast.className += ' show';
+       		setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
 		}
 	}
 
@@ -137,13 +136,13 @@ class MarketCart extends React.Component {
 	    				<button onClick={this.fillOrder} disabled={this.props.cart.length === 0}>Checkout - {this.state.totalDEC.toFixed(3)} DEC</button>
 	    			</div>
 	    		</div>
-	    		<div id='cart-purchased-toast'>
+	    		<div id='cart-purchased-toast' className='toast successToast'>
 					<i className='fas fa-check'></i>Successfully purchased!
 				</div>
-	    		<div id='cart-login-prompt-toast'>
+	    		<div id='cart-login-prompt-toast' className='toast failToast'>
 		          <i className='fas fa-times'></i>Please login to make a purchase.
 		        </div>
-				<div id='cart-tooMany-toast'>
+				<div id='cart-tooMany-toast' className='toast failToast'>
 					<i className='fas fa-times'></i>You have over 45 cards in your cart.
 				</div>
 	    	</div>

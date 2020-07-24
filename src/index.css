@@ -9,3 +9,61 @@
 body {
 	font-family: Source Sans Pro;
 }
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.toast {
+	visibility: hidden;
+	position: fixed;
+	bottom: 20px;
+	left: 50%;
+	transform: translateX(-50%);
+	text-align: center;
+	padding: 15px 25px;
+	z-index: 10;
+	font-size: 17px;
+	border-radius: 15px;
+	box-shadow: 2px 2px 6px 1px #333;
+}
+
+.toast.show {
+	visibility: visible;
+	animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+.successToast {
+	background: #fff;
+	color: #000;
+}
+
+.successToast i {
+	font-size: 22px;
+	vertical-align: middle;
+	color: #0da141;
+	margin-right: 15px;
+}
+
+.failToast {
+	background: #d43d3d;
+	color: #fff;
+}
+
+.failToast i {
+	font-size: 22px;
+	vertical-align: middle;
+	margin-right: 15px;
+}
+
+@keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 20px; opacity: 1;}
+}
+
+@keyframes fadeout {
+  from {bottom: 20px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
+}

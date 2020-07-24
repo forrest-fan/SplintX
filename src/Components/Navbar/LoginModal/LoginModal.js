@@ -33,15 +33,16 @@ class LoginModal extends React.Component {
 	        	var success = response["success"];
 	        	if (success) {
 		       		let toast = document.getElementById('loginModal-success-toast');
-					toast.className = 'show';
-	    			setTimeout(() => {toast.className = toast.className.replace('show', '')}, 3000)
+					toast.className += ' show';
+	    			setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000)
 	          		localStorage.setItem('username', username);
 		       		this.props.login(username);
 		       		this.setState({loggedIn: true});
 	       		} else {
+
 	       			let toast = document.getElementById('loginModal-fail-toast');
-					toast.className = 'show';
-	    			setTimeout(() => {toast.className = toast.className.replace('show', '')}, 3000)
+					toast.className += ' show';
+	    			setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000)
 	       		}
        		}.bind(this))
       	} else {
@@ -81,10 +82,10 @@ class LoginModal extends React.Component {
 						</div> : 
 						<button onClick={this.handleLogout}>Logout</button> }
 				</div>
-				<div id='loginModal-success-toast'>
+				<div id='loginModal-success-toast' className='toast successToast'>
 					<i className='fas fa-check'></i>Successfully Logged In!
 				</div>
-				<div id='loginModal-fail-toast'>
+				<div id='loginModal-fail-toast' className='toast failToast'>
 					<i className='fas fa-times'></i>Please check your username and try again.
 				</div>
 			</div>

@@ -38,11 +38,11 @@ class Navbar extends React.Component {
 
   handleLogout() {
     let toast = document.getElementById('navbar-logout-toast');
-    toast.className = 'show';
-    setTimeout(() => {toast.className = toast.className.replace('show', '')}, 3000)
+    toast.className += ' show';
+    setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000)
     localStorage.removeItem("username");
     this.setState({loggedIn: false});
-     this.props.login('');
+    this.props.login('');
   }
 
   render() {
@@ -96,7 +96,7 @@ class Navbar extends React.Component {
           </div>
         </div>
         {this.state.renderLogin ? <LoginModal login={this.props.login} closeModal={this.toggleLogin}/> : ''}
-        <div id='navbar-logout-toast'>
+        <div id='navbar-logout-toast' className='toast successToast'>
           <i className='fas fa-check'></i>Successfully Logged Out!
         </div>
       </nav>
