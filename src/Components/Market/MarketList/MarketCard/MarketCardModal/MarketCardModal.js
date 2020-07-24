@@ -28,7 +28,8 @@ class MarketCardModal extends React.Component {
 		this.getBCX = this.getBCX.bind(this);
 		this.updatePanel = this.updatePanel.bind(this);
 		this.handlePanelChange = this.handlePanelChange.bind(this);
-		this.multiSelect = this.multiSelect.bind(this);
+		this.multiSelectBCX = this.multiSelectBCX.bind(this);
+		this.multiSelectPrice = this.multiSelectPrice.bind(this);
 	}
 
 	updateSort(method) {
@@ -126,74 +127,85 @@ class MarketCardModal extends React.Component {
 		this.updatePanel(newPanel);
 	}
 
-	multiSelect() {
+	multiSelectBCX() {
 		const matchUID = this.props.cart.map(item => {return item.uid});
-		let select = document.getElementById('selectCards').checked ? 'cards' : document.getElementById('selectPrice').checked ? 'price' : '';
-		let count = document.getElementById('selectCount').value;
-		let minbcx = document.getElementById('minbcx').value || 1;
-		let maxbcx = document.getElementById('maxbcx').value || 10000;
-		let sort = document.getElementById('sortPrice').checked ? 'price' : document.getElementById('sortPriceBCX').checked ? 'bcx' : '';
-		if (select === '' || count === null || sort === '') {
+		let count = document.getElementById('bcx').value;
+		if (count === null) {
 			let toast = document.getElementById('market-cardModal-required-toast');
-			toast.className += ' show';
-			setTimeout(()=>{toast.className = toast.className.replace(' show', '')}, 3000);
-		} else if (minbcx > maxbcx) {
-			let toast = document.getElementById('market-cardModal-bcx-toast');
 			toast.className += ' show';
 			setTimeout(()=>{toast.className = toast.className.replace(' show', '')}, 3000);
 		} else {
 			let forSale = this.state.forSale;
 			let multi = [];
-			if (sort === 'price') {
-				forSale.sort((a, b) => {
-					if (a.buy_price < b.buy_price) {
-						return -1;
-					} else if (b.buy_price < a.buy_price) {
-						return 1;
-					} else {
-						let aPriceBcx = Number(a.buy_price) / Number(a.bcx);
-						let bPriceBcx = Number(b.buy_price) / Number(b.bcx);
-						return aPriceBcx - bPriceBcx;
-					}
-				});
-			} else if (sort === 'bcx') {
-				forSale.sort((a, b) => {
-					let aPriceBcx = Number(a.buy_price) / Number(a.bcx);
-					let bPriceBcx = Number(b.buy_price) / Number(b.bcx);
-					if (aPriceBcx < bPriceBcx) {
-						return -1;
-					} else if (bPriceBcx < aPriceBcx) {
-						return 1;
-					} else {
-						return Number(a.buy_price) - Number(b.buy_price);
-					}
-				});
+			
+			forSale.sort((a, b) => {
+				let aPriceBcx = Number(a.buy_price) / Number(a.bcx);
+				let bPriceBcx = Number(b.buy_price) / Number(b.bcx);
+				if (aPriceBcx < bPriceBcx) {
+					return -1;
+				} else if (aPriceBcx > bPriceBcx) {
+					return 1;
+				} else {
+					return b.bcx - a.bcx;
+				}
+			});
+
+			let i = 0;
+			let bcx = 0;
+			let cards = 0;
+			while (bcx < count && i < forSale.length && cards < 45) {
+				if (forSale[i].bcx + bcx <= count && forSale[i].uid !== matchUID[i]) {
+					multi.push(forSale[i]);
+					cards++;
+					bcx += forSale[i].bcx;
+				}
+				i++;
 			}
 
-			if (select === 'cards') {
-				let i = 0;
-				let totalBCX = 0;
-				while (multi.length < count && i < forSale.length) {
-					if (forSale[i].bcx >= minbcx && forSale[i].bcx <= maxbcx && !this.state.selected.includes(forSale[i]) && !matchUID.includes(forSale[i].uid)) {
-						multi.push(forSale[i]);
-						
-					}
-					i++;
-				}
-			} else if (select === 'price') {
-				let i = 0;
-				let totalPrice = 0;
-				while (totalPrice < count && i < forSale.length) {
-					if (totalPrice + forSale[i].buy_price < count && forSale[i].bcx >= minbcx && forSale[i].bcx <= maxbcx && !this.state.selected.includes(forSale[i]) && !matchUID.includes(forSale[i].uid)) {
-						multi.push(forSale[i]);
-						totalPrice += forSale[i].buy_price;
-					}
-					console.log(totalPrice);
-					i++;
-				}
-			}
 			this.setState({
-				selected: this.state.selected.concat(multi),
+				selected: multi,
+				panel: 'forSale'
+			});
+		}
+	}
+
+	multiSelectPrice() {
+		const matchUID = this.props.cart.map(item => {return item.uid});
+		let count = document.getElementById('price').value;
+		if (count === null) {
+			let toast = document.getElementById('market-cardModal-required-toast');
+			toast.className += ' show';
+			setTimeout(()=>{toast.className = toast.className.replace(' show', '')}, 3000);
+		} else {
+			let forSale = this.state.forSale;
+			let multi = [];
+			
+			forSale.sort((a, b) => {
+				let aPriceBcx = Number(a.buy_price) / Number(a.bcx);
+				let bPriceBcx = Number(b.buy_price) / Number(b.bcx);
+				if (aPriceBcx < bPriceBcx) {
+					return -1;
+				} else if (aPriceBcx > bPriceBcx) {
+					return 1;
+				} else {
+					return b.bcx - a.bcx;
+				}
+			});
+
+			let i = 0;
+			let price = 0;
+			let cards = 0;
+			while (price < count && i < forSale.length && cards < 45) {
+				if (forSale[i].buy_price + price <= count && forSale[i].uid !== matchUID[i]) {
+					multi.push(forSale[i]);
+					cards++;
+					price += forSale[i].buy_price;
+				}
+				i++;
+			}
+
+			this.setState({
+				selected: multi,
 				panel: 'forSale'
 			});
 		}
@@ -354,17 +366,21 @@ class MarketCardModal extends React.Component {
 		    				{this.state.loading ? <div className='loader-modal-container'><div className='loader-modal'></div></div> : ''}
 		    			</div> : this.state.panel === 'multiSelect' ? <div className='market-cardModal-table-container'>
 			    			<div className='market-cardModal-multiselect'>
-			    				<p>{this.state.forSale.length} card{this.state.forSale.length === 1 ? '' : 's'} on the market</p>
-			    				<h4>Select Method<span>*</span></h4>
-			    				<span><input type='radio' name='select' id='selectCards' value='selectCards'/><label for='selectCards'>Select total BCX</label>
-			    				<input type='radio' name='select' id='selectPrice' value='selectPrice'/><label for='selectPrice'>Select total price</label></span><br/>
-			    				<span><input id='selectCount' className='multiSelect-input' placeholder='Total BCX/Price'/></span>
-			    				<h4>BCX Limits</h4>
-			    				<span><input id='minbcx' className='multiSelect-input' placeholder='Minimum BCX' type='number' min='1'/><input id='maxbcx' className='multiSelect-input' placeholder='Maximum BCX' type='number'/></span>
-			    				<h4>Sort By<span>*</span></h4>
-			    				<span><input type='radio' name='sort' id='sortPrice' value='sortPrice'/><label for='sortPrice'>Lowest Price</label>
-			    				<input type='radio' name='sort' id='sortPriceBCX' value='sortPriceBCX'/><label for='sortPriceBCX'>Lowest Price/BCX</label></span>
-			    				<button onClick={this.multiSelect}>Select</button>	
+			    				<p>{this.state.forSale.length} card{this.state.forSale.length === 1 ? '' : 's'} on the market currently.</p>
+			    				<p>Note: We currently only support purchases up to 45 cards.</p>
+			    				<div className='multiselect-half left'>
+			    					<h4>Select BCX</h4>
+			    					<p>Find desired BCX for lowest total price</p>
+			    					<input id='bcx' type='number' className='multiSelect-input' placeholder='Desired BCX' />
+			    					<button onClick={this.multiSelectBCX}>Search</button>
+			    				</div>
+			    				<div className='multiselect-half'>
+			    					<h4>Select Price</h4>
+			    					<p>Find maximum BCX for desired price</p>
+			    					<input id='price' type='number' className='multiSelect-input' placeholder='Total Price (USD)' />
+			    					<button onClick={this.multiSelectPrice}>Search</button>
+			    				</div>
+
 			    			</div>
 		    			</div> : ''}
 		    			
@@ -389,9 +405,6 @@ class MarketCardModal extends React.Component {
 				</div>
 				<div id='market-cardModal-tooMany-toast' className='toast failToast'>
 					<i className='fas fa-times'></i>You have already selected the limit of 45 cards.
-				</div>
-				<div id='market-cardModal-bcx-toast' className='toast failToast'>
-					<i className='fas fa-times'></i>Your max BCX is less than your min BCX.
 				</div>
 				<div id='market-cardModal-required-toast' className='toast failToast'>
 					<i className='fas fa-times'></i>Please fill all required fields.

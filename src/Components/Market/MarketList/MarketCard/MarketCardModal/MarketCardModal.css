@@ -97,32 +97,35 @@
 	margin-left: 5px;
 }
 
+.market-cardModal-multiselect .multiselect-half {
+	width: 50%;
+	display: inline-block;
+	padding: 10px 20px;
+	box-sizing: border-box;
+	white-space: normal;
+}
+
+.market-cardModal-multiselect .multiselect-half.left {
+	border-right: 1px solid #ccc;
+}
+
 .market-cardModal-multiselect h4 {
 	margin: 0.7em 0px;
 	font-size: 18px;
+	text-align: center;
 }
 
-.market-cardModal-multiselect h4 span {
-	color: red;
-	margin-left: 3px;
-}
-
-.market-cardModal-multiselect span {
-	margin-left: 10px;
-}
-
-.market-cardModal-multiselect input {
-	font-size: 15px;
-	transition: 0.3s;
-}
-
-.market-cardModal-multiselect label {
-	font-size: 17px;
-	padding: 4px 8px;
+.market-cardModal-multiselect p {
+	margin: 0.7em 0px;
+	font-size: 16px;
+	text-align: center;
 }
 
 .multiSelect-input {
-	width: 155px;
+	font-family: inherit;
+	font-size: 16px;
+	transition: 0.3s;
+	width: 100%;
 	border: none;
 	border-bottom: 1px solid var(--navbar-bg);
 	outline: none;
@@ -132,18 +135,11 @@
 	border-bottom: 1px solid var(--login-btn);
 }
 
-.market-cardModal-multiselect #maxbcx {
-	margin-left: 10px;
-}
-
-.market-cardModal-multiselect #selectCount {
-	margin-top: 10px;
-}
-
 .market-cardModal-multiselect button {
 	display: block;
-	margin: 10px 0px;
-	padding: 8px 14px;
+	margin: 10px auto;
+	padding: 8px 0px;
+	width: 80px;
 	font-weight: bold;
 	outline: none;
 	border-radius: 10px;
@@ -356,5 +352,16 @@
 
 	.market-cardModal-panel-small-container {
 		display: block;
+	}
+
+	.market-cardModal-multiselect .multiselect-half {
+		padding: 5px;
+		display: block;
+		width: 100%;
+	}
+
+	.market-cardModal-multiselect .multiselect-half.left {
+		border-right: none;
+		border-bottom: 1px solid #ccc;
 	}
 }
