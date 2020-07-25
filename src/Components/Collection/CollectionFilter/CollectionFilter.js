@@ -2,7 +2,7 @@ import React from 'react';
 import './CollectionFilter.css';
 
 const filters = {
-  gold: ['Show Gold Cards'],
+  foil: ['Regular', 'Gold'],
   type: ['Monster', 'Summoner'],
   rarity: ['Common', 'Rare', 'Epic', 'Legendary'],
   edition: ['Alpha', 'Beta', 'Promo', 'Reward', 'Untamed'],

@@ -14,7 +14,7 @@ class Market extends React.Component {
 		this.state = {
 			filters: {
 				search: [''],
-				gold: false,
+				foil: [],
 				type: [],
 				rarity: [],
 				edition: [],
@@ -42,9 +42,6 @@ class Market extends React.Component {
 		let filterCount = this.state.filterCount;
 		if (category === 'search') {
 			filters.search[0] = filter;
-		} else if (category === 'gold') {
-			filters.gold = filters.gold ? false : true;
-			filterCount = filters.gold ? filterCount + 1 : filterCount - 1;
 		} else {
 			if (action === 'add') {
 				filters[category].push(filter);
@@ -75,13 +72,13 @@ class Market extends React.Component {
 			let editionPass = true;
 			let elementPass = true;
 			let searchPass = true;
-			let goldPass = true;
+			let foilPass = true;
 			let typePass = true;
 			let rarityFilters = filters.rarity;
 			let editionFilters = filters.edition;
 			let elementFilters = filters.element;
 			let searchFilter = filters.search[0];
-			let goldFilter = filters.gold;
+			let foilFilters = filters.foil;
 			let typeFilter = filters.type;
 			if (rarityFilters.length !== 0 && !rarityFilters.includes(card.rarity)) {
 				rarityPass = false;
@@ -99,15 +96,17 @@ class Market extends React.Component {
 				searchPass = false;
 			}
 
-			if (goldFilter && !card.gold) {
-				goldPass = false;
+			if (foilFilters.length === 1) {
+				if (foilFilters[0] === 'Regular' && card.gold || foilFilters[0] === 'Gold' && !card.gold) {
+					foilPass = false;
+				}
 			}
 
 			if (typeFilter.length !== 0 && !typeFilter.includes(card.type)) {
 				typePass = false;
 			}
 
-			if (rarityPass && editionPass && elementPass && searchPass && goldPass && typePass) {
+			if (rarityPass && editionPass && elementPass && searchPass && foilPass && typePass) {
 				cards.push(card);
 			}
 		});
