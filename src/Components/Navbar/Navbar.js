@@ -95,7 +95,7 @@ class Navbar extends React.Component {
             </div>
           </div>
         </div>
-        {this.state.renderLogin ? <LoginModal login={this.props.login} closeModal={this.toggleLogin}/> : ''}
+        {this.state.renderLogin && !this.props.loggedIn ? <LoginModal login={this.props.login} closeModal={this.toggleLogin}/> : ''}
         <div id='navbar-logout-toast' className='toast successToast'>
           <i className='fas fa-check'></i>Successfully Logged Out!
         </div>

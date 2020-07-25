@@ -1,6 +1,7 @@
 import React from 'react';
 import './MarketCardModal.css';
 import $ from 'jquery';
+import Chart from 'chart.js';
 
 const lvlXP = [[20,60,160,360,760,1560,2560,4560,7560],[100,300,700,1500,2500,4500,8500],[250,750,1750,3750,7750],[1000,3000,7000]];
 const newLvlXP = [[1,5,14,30,60,100,150,220,300,400],[1,5,14,25,40,60,85,115],[1,4,10,20,32,46],[1,3,6,11]];
@@ -46,7 +47,8 @@ class MarketCardModal extends React.Component {
 			selected: [],
 			sortMethod: 'priceBcxAsc',
 			panel: 'forSale',
-			loading: true
+			loading: true,
+			history: null
 		};
 		this.updateSort = this.updateSort.bind(this);
 		this.getBCX = this.getBCX.bind(this);
@@ -288,6 +290,102 @@ class MarketCardModal extends React.Component {
 	componentDidUpdate(prevProps, prevState) {
 		if (this.state.panel === 'forSale' && prevState.panel === 'multiSelect' && this.state.selected !== prevState.selected) {
 			this.updateSort('selected');
+		} else if (this.state.panel === 'history' && prevState.panel !== 'history') {
+			let edition = this.props.info.edition === 'Alpha' ? 0 : this.props.info.edition === 'Beta' ? 1 : this.props.info.edition === 'Promo' ? 2 : this.props.info.edition === 'Reward' ? 3 : 4;
+			let target = "sm.card_value.card_id=" + this.props.info.detailID + ";edition=" + edition + ";gold=" + this.props.info.gold.toString().charAt(0).toUpperCase() + this.props.info.gold.toString().substring(1);
+			if (sessionStorage.getItem('history') && Date.parse(JSON.parse(sessionStorage.getItem('history')).expiry) > (new Date())) {
+				let history = JSON.parse(sessionStorage.getItem('history')).data;
+				for (let i = 0; i < history.length; i++) {
+					if (history[i].target === target) {
+						let data = [];
+						let labelArray = [];
+						for (let j = 0; j < history[i].datapoints.length; j++) {
+					        let milliseconds = history[i].datapoints[j][1] * 1000;
+					        let date = new Date(milliseconds).toLocaleDateString('en-US', { timeZone: 'GMT' });
+					        labelArray.push(date);
+					        data.push({
+					        	t: new Date(),
+					        	y: history[i].datapoints[j][0]
+					        });
+				        }
+				        let config = {
+						  type: 'line',
+						  data: {
+						    labels: labelArray,
+						    datasets: [{
+						      label: 'Price(USD)',
+						      data: data,
+						      fill: false,
+						      borderColor: ['rgba(13, 33, 64, 1)'],
+						      borderWidth: 3
+						    }]
+						  },
+						  options: {
+						    responsive: true,
+						    maintainAspectRatio: false
+						  }
+						};
+						let ctx = document.getElementById('myChart').getContext('2d');
+						let myChart = new Chart(ctx, config);
+						break;
+					}
+				}
+			} else {
+				$.ajax({
+					type: 'GET',
+					url: 'http://18.223.152.60:8080/history',
+					jsonpCallback: 'testing',
+				  	dataType: 'json',
+				  	success: function(history) {
+						let expiry = new Date();
+						expiry.setDate(expiry.getDate() + 1);
+						expiry.setUTCHours(0, 0, 0, 0);
+				  		let historyObj = {
+				  			expiry: expiry,
+				  			data: history
+				  		};
+				  		sessionStorage.setItem('history', JSON.stringify(historyObj));
+				  		for (let i = 0; i < history.length; i++) {
+							if (history[i].target === target) {
+								let data = [];
+								let labelArray = [];
+								for (let j = 0; j < history[i].datapoints.length; j++) {
+							        let milliseconds = history[i].datapoints[j][1] * 1000;
+							        let date = new Date(milliseconds).toLocaleDateString('en-US', { timeZone: 'GMT' });
+							        labelArray.push(date);
+							        data.push({
+							        	t: new Date(),
+							        	y: history[i].datapoints[j][0]
+							        });
+						        }
+						        let config = {
+								  type: 'line',
+								  data: {
+								    labels: labelArray,
+								    datasets: [{
+								      label: 'Price(USD)',
+								      data: data,
+								      fill: false,
+								      borderColor: ['rgba(13, 33, 64, 1)'],
+								      borderWidth: 3
+								    }]
+								  },
+								  options: {
+								    responsive: true,
+								    maintainAspectRatio: false
+								  }
+								};
+								let ctx = document.getElementById('myChart').getContext('2d');
+								let myChart = new Chart(ctx, config);
+								break;
+							}
+						}
+				  	},
+				  	error: function(e) {
+				  		console.log('There was an error retrieving the price history');
+				  	}
+				});
+			}
 		}
 	}
 
@@ -331,12 +429,22 @@ class MarketCardModal extends React.Component {
 									this.setState({panel: 'stats'});
 								}
 			    			}}>Stats</h3>
+			    			<h3 id='panelhistory' className={this.state.panel === 'history' ? 'market-cardModal-panel-header activePanel': 'market-cardModal-panel-header'} onClick={() => {
+								let currentPanel = this.state.panel;
+								let currentId = 'panel' + currentPanel;
+								if (currentPanel !== 'history') {
+									document.getElementById(currentId).className = 'market-cardModal-panel-header';
+									document.getElementById('panelhistory').className = 'market-cardModal-panel-header activePanel';
+									this.setState({panel: 'history'});
+								}
+			    			}}>Price History</h3>
 			    			<span className='market-cardModal-panel-small-container'>
 			    				Panel: 
 				    			<select className='market-cardModal-panel-small' onChange={this.handlePanelChange}>
 						            <option value='forSale' selected={this.state.panel === 'forSale'}>Cards For Sale</option>
 						            <option value='multiSelect' selected={this.state.panel === 'multiSelect'}>MultiSelect</option>
 						            <option value='stats' selected={this.state.panel === 'stats'}>Stats</option>
+						            <option value='stats' selected={this.state.panel === 'history'}>Price History</option>
 						        </select>
 					        </span>
 		    			</div>
@@ -458,7 +566,7 @@ class MarketCardModal extends React.Component {
 			    									monsters = 'enemy';
 			    								}
 			    								return (
-			    									<li><strong>{this.props.info.stats[key]}</strong> to the <strong>{key === 'attack' ? 'Melee' : key.charAt(0).toUpperCase() + key.substring(1)}</strong> attribute of all {monsters} monsters</li>
+			    									<li><strong>{this.props.info.stats[key] > 0 ? '+' + this.props.info.stats[key] : this.props.info.stats[key]}</strong> to the <strong>{key === 'attack' ? 'Melee' : key.charAt(0).toUpperCase() + key.substring(1)}</strong> attribute of all {monsters} monsters</li>
 			    								);
 			    							} else if (key === 'abilities') {
 			    								return this.props.info.stats.abilities.map(ability => {
@@ -473,7 +581,9 @@ class MarketCardModal extends React.Component {
 			    			</div>
 		    			</div>
 
-		    			: ''}
+		    			: this.state.panel === 'history' ? <div className='market-cardModal-table-container'>
+		    				<canvas id="myChart"></canvas>
+		    			</div> : ''}
 		    			
 		    			<div className='market-cardModal-addToCart'>
 		    				<span>{this.state.selected.length} {this.props.info.name} Card{this.state.selected.length === 1 ? '' : 's'} Selected, Total BCX: {sumProp(this.state.selected, 'bcx')}, Total: ${sumProp(this.state.selected, 'buy_price').toFixed(3)} USD</span>
