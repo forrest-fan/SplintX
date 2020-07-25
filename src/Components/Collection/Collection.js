@@ -169,6 +169,7 @@ class Collection extends React.Component {
 				success: function(Eelement) { 
 					for(var l = 0; l < Eelement.cards.length; ++l) {
 					    var detailID = Eelement.cards[l].card_detail_id;
+					    console.log(this.props)
 			            let cardData = this.props.cardDetails[detailID - 1];
 			          	let gold = Eelement.cards[l].gold;
 			          	let edition = Eelement.cards[l].edition === 0 ? 'Alpha' : Eelement.cards[l].edition === 1 ? 'Beta' : Eelement.cards[l].edition === 3 ? 'Reward' : Eelement.cards[l].edition === 4 ? 'Untamed' : 'Promo';

@@ -12,12 +12,43 @@
 	width: 100%;
 	box-shadow: 1px 1px 4px 2px #444;
 	cursor: pointer;
-	background: var(--login-btn);
 	transition: 0.3s;
 }
 
 .card-img:hover {
 	box-shadow: 2px 2px 5px 3px #444;
+}
+
+.card-img.gold {
+	background: var(--login-btn);
+}
+
+.card-img.black {
+	background: #220433;
+}
+
+.card-img.purple {
+	background: #5c1082;
+}
+
+.card-img.red {
+	background: #5c0606;
+}
+
+.card-img.green {
+	background: #065c10;
+}
+
+.card-img.blue {
+	background: #136aa8;
+}
+
+.card-img.grey {
+	background: #a9b1b8;
+}
+
+.card-img.white {
+	background: #ebeff2;
 }
 
 .card-qty {
