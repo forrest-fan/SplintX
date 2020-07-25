@@ -83,7 +83,7 @@ class App extends React.Component {
             this.setState({
               page: 'market',
               DECbalance: DECbalance,
-              cardDetails: JSON.parse(sessionStorage.getItem('cardDetails'))
+              cardDetails: JSON.parse(sessionStorage.getItem('cardDetails')).data
             });
           }.bind(this),
           error: function(e) {
@@ -93,7 +93,7 @@ class App extends React.Component {
       } else {
         this.setState({
           page: 'market',
-          cardDetails: JSON.parse(sessionStorage.getItem('cardDetails'))
+          cardDetails: JSON.parse(sessionStorage.getItem('cardDetails')).data
         });
       }
     } else {
@@ -115,7 +115,14 @@ class App extends React.Component {
                     DECbalance = balances[i].balance;
                   }
                 }
-                sessionStorage.setItem('cardDetails', JSON.stringify(cardDetails));
+                let expiry = new Date();
+                expiry.setDate(expiry.getDate() + 3);
+                expiry.setUTCHours(0, 0, 0, 0);
+                let detailObj = {
+                  expiry: expiry, 
+                  data: cardDetails
+                }
+                sessionStorage.setItem('cardDetails', JSON.stringify(detailObj));
                 this.setState({
                   page: 'market',
                   DECbalance: DECbalance,
@@ -137,7 +144,14 @@ class App extends React.Component {
           url: 'https://game-api.splinterlands.com/cards/get_details',
           jsonpCallback: 'testing',
           success: function(cardDetails) {
-            sessionStorage.setItem('cardDetails', JSON.stringify(cardDetails));
+            let expiry = new Date();
+            expiry.setDate(expiry.getDate() + 3);
+            expiry.setUTCHours(0, 0, 0, 0);
+            let detailObj = {
+              expiry: expiry, 
+              data: cardDetails
+            }
+            sessionStorage.setItem('cardDetails', JSON.stringify(detailObj));
             this.setState({
               page: 'market',
               cardDetails: cardDetails

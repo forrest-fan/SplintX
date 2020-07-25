@@ -69,7 +69,7 @@ class Market extends React.Component {
 			}
 		}
 		let cards = [];
-		let allCards = JSON.parse(sessionStorage.getItem('forSaleGrouped'));
+		let allCards = JSON.parse(sessionStorage.getItem('forSaleGrouped')).data;
 		allCards.map(card => {
 			let rarityPass = true;
 			let editionPass = true;
@@ -257,7 +257,14 @@ class Market extends React.Component {
 				    		}
 				    	}
 				    });
-				    sessionStorage.setItem('forSaleGrouped', JSON.stringify(cards));
+				    let expiry = new Date();
+					expiry.setDate(expiry.getDate() + 3);
+					expiry.setUTCHours(0, 0, 0, 0);
+				    let cardsObj = {
+				    	expiry: expiry, 
+				    	data: cards
+				    }
+				    sessionStorage.setItem('forSaleGrouped', JSON.stringify(cardsObj));
 				    this.updateFilters('Untamed', 'edition', 'add');
 				}.bind(this),
 				error: function(e) {
@@ -265,7 +272,7 @@ class Market extends React.Component {
 	  			}
 			});
 		} else {
-			let cards = JSON.parse(sessionStorage.getItem('forSaleGrouped'));
+			let cards = JSON.parse(sessionStorage.getItem('forSaleGrouped')).data;
 			this.updateFilters('Untamed', 'edition', 'add');
 		}
 	}
