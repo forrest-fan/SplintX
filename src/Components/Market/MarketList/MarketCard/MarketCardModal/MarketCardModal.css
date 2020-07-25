@@ -82,7 +82,7 @@
 }
 
 .market-cardModal-panel-header.activePanel {
-	color: #fff;
+	color: var(--login-btn);
 	background: var(--navbar-bg);
 }
 
@@ -251,6 +251,10 @@
 	display: inline-block;
 	padding: 8px 15px;
 	font-size: 17px;
+}
+
+.market-cardModal-table-container canvas {
+	max-width: 100%;
 }
 
 .market-cardModal-addToCart {
