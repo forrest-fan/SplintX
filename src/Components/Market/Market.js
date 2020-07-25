@@ -225,6 +225,7 @@ class Market extends React.Component {
 			          	let qty = forSaleCards[l].qty;
 			          	let img = 'https://d36mxiodymuqjm.cloudfront.net/cards_by_level/' + edition.toLowerCase() + '/' + name.replace(' ', '%20') + '_lv1';
 			          	img += gold ? '_gold.png' : '.png';
+			          	let attackType = type === 'Monster' && cardData.stats.attack[cardData.stats.attack.length - 1] !== 0 ? 'attack' : type === 'Monster' && cardData.stats.ranged[cardData.stats.ranged.length - 1] !== 0 ? 'ranged' : type === 'Monster' && cardData.stats.magic[cardData.stats.magic.length - 1] !== 0 ? 'magic' : 'none';
 		            	cards.push({
 		              		name: name,
 		              		rarity: rarity,
@@ -238,7 +239,9 @@ class Market extends React.Component {
 			              	mana: type === 'Monster' ? cardData.stats.mana[0] : cardData.stats.mana,
 			              	qty: qty,
 			              	lowPrice: forSaleCards[l].low_price,
-			              	lowPriceBCX: forSaleCards[l].low_price_bcx
+			              	lowPriceBCX: forSaleCards[l].low_price_bcx,
+			              	stats: cardData.stats,
+			              	attackType: attackType
 			          	});
 				    }
 				    cards.sort((a, b) => {

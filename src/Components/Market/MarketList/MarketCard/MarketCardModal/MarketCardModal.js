@@ -12,7 +12,31 @@ const sumProp = (array, prop) => {
 	return sum;
 }
 
-
+const pivot = (obj) => {
+	let arr = [];
+	let values = Object.values(obj);
+	let keys = Object.keys(obj);
+	for (let i = 0; i < values[0].length; i++) {
+		let arrEntry = {
+			lvl: i + 1
+		};
+		for (let j = 0; j < values.length; j++) {
+			if (keys[j] === 'abilities') {
+				let abilities = [];
+				for (let k = i; k >= 0; k--) {
+					if (obj.abilities[k].length !== 0) {
+						abilities.push(obj.abilities[k][0]);
+					}
+				}
+				arrEntry[keys[j]] = abilities;
+			} else {
+				arrEntry[keys[j]] = values[j][i];
+			}
+		}
+		arr.push(arrEntry);
+	}
+	return arr;
+}
 
 class MarketCardModal extends React.Component {
 	constructor(props) {
@@ -298,18 +322,28 @@ class MarketCardModal extends React.Component {
 									this.setState({panel: 'multiSelect'});
 								}
 			    			}}>MultiSelect</h3>
+			    			<h3 id='panelstats' className={this.state.panel === 'stats' ? 'market-cardModal-panel-header activePanel': 'market-cardModal-panel-header'} onClick={() => {
+								let currentPanel = this.state.panel;
+								let currentId = 'panel' + currentPanel;
+								if (currentPanel !== 'stats') {
+									document.getElementById(currentId).className = 'market-cardModal-panel-header';
+									document.getElementById('panelstats').className = 'market-cardModal-panel-header activePanel';
+									this.setState({panel: 'stats'});
+								}
+			    			}}>Stats</h3>
 			    			<span className='market-cardModal-panel-small-container'>
 			    				Panel: 
 				    			<select className='market-cardModal-panel-small' onChange={this.handlePanelChange}>
-						            <option value='forSale'>Cards For Sale</option>
-						            <option value='multiSelect'>MultiSelect</option>
+						            <option value='forSale' selected={this.state.panel === 'forSale'}>Cards For Sale</option>
+						            <option value='multiSelect' selected={this.state.panel === 'multiSelect'}>MultiSelect</option>
+						            <option value='stats' selected={this.state.panel === 'stats'}>Stats</option>
 						        </select>
 					        </span>
 		    			</div>
 		    			
 		    			{this.state.panel === 'forSale' ? <div className='market-cardModal-table-container'>
 		    				<table className='market-cardModal-table'>
-		    					<thead className='market-cardModal-table-header'>
+		    					<thead>
 		    						<tr>
 		    							<th onClick={() => {
 		    								this.updateSort('selected');
@@ -331,11 +365,11 @@ class MarketCardModal extends React.Component {
 		    						</tr>
 		    					</thead>
 		    					{this.state.loading ? '' :
-		    					<tbody className='market-cardModal-table-data'>
+		    					<tbody>
 		    						{this.state.forSale.map(listing => {
 		    							return(
 		    								<tr>
-		    									<td className='market-cardModal-table-add'><input type='checkbox' onClick={() => {
+		    									<td className='center'><input type='checkbox' onClick={() => {
 		    										let selected = this.state.selected;
 		    										if (selected.length >= 45 && !selected.includes(listing)) {
 		    											let toast = document.getElementById('market-cardModal-tooMany-toast');
@@ -352,12 +386,12 @@ class MarketCardModal extends React.Component {
 		    										}		    										
 		    										this.setState({selected: selected});
 		    									}} disabled={matchUID.includes(listing.uid)} checked={this.state.selected.includes(listing)}/></td>
-		    									<td className='market-cardModal-table-data-lvl'>{listing.lvl}</td>
-		    									<td className='market-cardModal-table-data-lvl'>{listing.bcx}</td>
-		    									<td className='market-cardModal-table-data-price'>${Number(listing.buy_price).toFixed(3)}</td>
-		    									<td className='market-cardModal-table-data-price'>${(Number(listing.buy_price)/listing.bcx).toFixed(3)}</td>
-		    									<td className='market-cardModal-table-data-seller'>{listing.seller.length > 8 ? listing.seller.substring(0, 8) + '...' : listing.seller}</td>
-		    									<td className='market-cardModal-table-data-uid'>{listing.uid}</td>
+		    									<td className='center'>{listing.lvl}</td>
+		    									<td className='center'>{listing.bcx}</td>
+		    									<td className='center'>${Number(listing.buy_price).toFixed(3)}</td>
+		    									<td className='center'>${(Number(listing.buy_price)/listing.bcx).toFixed(3)}</td>
+		    									<td className='center'>{listing.seller.length > 8 ? listing.seller.substring(0, 8) + '...' : listing.seller}</td>
+		    									<td className='right'>{listing.uid}</td>
 		    								</tr>
 		    							);
 		    						})}
@@ -380,9 +414,66 @@ class MarketCardModal extends React.Component {
 			    					<input id='price' type='number' className='multiSelect-input' placeholder='Total Price (USD)' />
 			    					<button onClick={this.multiSelectPrice}>Search by Price</button>
 			    				</div>
-
 			    			</div>
-		    			</div> : ''}
+		    			</div> : this.state.panel === 'stats' ? <div className='market-cardModal-table-container'>
+			    			<div className='market-cardModal-stats'>
+			    				<span>Splinter: {this.props.info.element}</span>
+			    				<span>Edition: {this.props.info.edition}</span>
+			    				<span>Rarity: {this.props.info.rarity}</span>
+			    				<span>Mana: {this.props.info.type === 'Monster' ? this.props.info.stats.mana[0] : this.props.info.stats.mana}</span>
+			    				<span>Type: {this.props.info.type}</span>
+			    				{this.props.info.type === 'Monster' ? <table className='market-cardModal-table'>
+			    					<thead>
+			    						<tr className='market-cardModal-table-header'>
+			    							<th>Level</th>
+			    							<th>{this.props.info.attackType === 'attack' ? 'Melee' : this.props.info.attackType === 'ranged' ? 'Ranged' : 'Magic'}</th>
+			    							<th>Speed</th>
+			    							<th>Health</th>
+			    							<th>Armor</th>
+			    							<th>Abilities</th>
+			    						</tr>
+			    					</thead>
+			    					<tbody>
+			    						{pivot(this.props.info.stats).map(level => {
+			    							return (
+			    								<tr>
+			    									<td className='center'>{level.lvl}</td>
+			    									<td className='center'>{level[this.props.info.attackType]}</td>
+			    									<td className='center'>{level.speed}</td>
+			    									<td className='center'>{level.health}</td>
+			    									<td className='center'>{level.armor}</td>
+			    									<td className='center'>{level.abilities.join(', ')}</td>
+			    								</tr>
+			    							);
+			    						})}
+			    					</tbody>
+			    				</table> : this.props.info.type === 'Summoner' ? <div>
+			    					<ul>
+			    						{Object.keys(this.props.info.stats).map(key => {
+			    							if (key !== 'mana' && key !== 'abilities' && this.props.info.stats[key] !== 0) {
+			    								var monsters;
+			    								if (this.props.info.stats[key] > 0) {
+			    									monsters = 'friendly';
+			    								} else {
+			    									monsters = 'enemy';
+			    								}
+			    								return (
+			    									<li><strong>{this.props.info.stats[key]}</strong> to the <strong>{key === 'attack' ? 'Melee' : key.charAt(0).toUpperCase() + key.substring(1)}</strong> attribute of all {monsters} monsters</li>
+			    								);
+			    							} else if (key === 'abilities') {
+			    								return this.props.info.stats.abilities.map(ability => {
+			    									return(
+			    										<li><strong>{ability}</strong> ability</li>
+			    									);
+			    								})
+			    							}
+			    						})}
+			    					</ul>
+			    				</div> : ''}
+			    			</div>
+		    			</div>
+
+		    			: ''}
 		    			
 		    			<div className='market-cardModal-addToCart'>
 		    				<span>{this.state.selected.length} {this.props.info.name} Card{this.state.selected.length === 1 ? '' : 's'} Selected, Total BCX: {sumProp(this.state.selected, 'bcx')}, Total: ${sumProp(this.state.selected, 'buy_price').toFixed(3)} USD</span>
