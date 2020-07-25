@@ -21,13 +21,16 @@ class CollectionList extends React.Component {
             <span className='collectionList-resultCount'>{this.props.cards.length} Results</span>
             <span className='collectionList-filterCount' onClick={this.props.showMobileFilters}>{this.props.filterCount === 0 ? 'Add Filters (0)' : 'Edit Filters (' + this.props.filterCount +')'}</span>
           </p>
-          <select className='collectionList-sort-input' onChange={this.handleSortChange} defaultValue='default'>
-            <option disabled value='default'>Sort By:</option>
-            <option value='az'>Name: A - Z</option>
-            <option value='za'>Name: Z - A</option>
-            <option value='manaAsc'>Mana: Low - High</option>
-            <option value='manaDes'>Mana: High - Low</option>
-          </select>
+          <span className='collectionList-sort-input'>
+            Sort by: 
+            <select onChange={this.handleSortChange} defaultValue='splinter'>
+              <option value='splinter'>Splinter</option>
+              <option value='az'>Name: A - Z</option>
+              <option value='za'>Name: Z - A</option>
+              <option value='manaAsc'>Mana: Low - High</option>
+              <option value='manaDes'>Mana: High - Low</option>
+            </select>
+          </span>
         </div>
       	<div className='collectionList'>
 	         {this.props.loading ?

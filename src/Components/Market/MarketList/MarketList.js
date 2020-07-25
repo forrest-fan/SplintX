@@ -21,15 +21,18 @@ class MarketList extends React.Component {
             <span className='marketList-resultCount'>{this.props.cards.length} Results</span>
             <span className='marketList-filterCount' onClick={this.props.showMobileFilters}>{this.props.filterCount === 0 ? 'Add Filters (0)' : 'Edit Filters (' + this.props.filterCount +')'}</span>
           </p>
-          <select className='marketList-sort-input' onChange={this.handleSortChange} defaultValue='default'>
-            <option disabled value='default'>Sort By:</option>
-            <option value='az'>Name: A - Z</option>
-            <option value='za'>Name: Z - A</option>
-            <option value='manaAsc'>Mana: Low - High</option>
-            <option value='manaDes'>Mana: High - Low</option>
-            <option value='priceAsc'>Price: Low - High</option>
-            <option value='priceDec'>Price: High - Low</option>
-          </select>
+          <span className='marketList-sort-input'>
+            Sort by: 
+            <select onChange={this.handleSortChange} defaultValue='splinter'>
+              <option value='splinter'>Splinter</option>
+              <option value='az'>Name: A - Z</option>
+              <option value='za'>Name: Z - A</option>
+              <option value='priceAsc'>Price: Low - High</option>
+              <option value='priceDec'>Price: High - Low</option>
+              <option value='qtyAsc'>Quantity: Low - High</option>
+              <option value='qtyDec'>Quantity: High - Low</option>
+            </select>
+          </span>
         </div>
       	<div className='marketList'>
 	        {this.props.loading ?

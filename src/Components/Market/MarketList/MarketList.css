@@ -31,9 +31,15 @@
 .marketList-sort-input {
 	display: inline-block;
 	float: right;
-	padding: 3px 5px;
-	font-size: 14px;
 	vertical-align: middle;
+	font-size: 17px;
+}
+
+.marketList-sort-input select {
+	margin-left: 5px;
+	padding: 3px 1px;
+	font-size: 14px;
+	outline: none;
 }
 
 .marketList {

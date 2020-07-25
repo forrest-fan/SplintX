@@ -146,6 +146,20 @@ class Collection extends React.Component {
 			cards.sort((a, b) => {
 				return b.mana - a.mana;
 			})
+		} else if (method === 'splinter') {
+		    cards.sort((a, b) => {
+		    	if (a.element < b.element) {
+		    		return -1;
+		    	} else if (a.element > b.element) {
+		    		return 1;
+		    	} else {
+		    		if (a.gold) {
+		    			return -1;
+		    		} else {
+		    			return 1;
+		    		}
+		    	}
+		    });
 		}
 
 		this.setState({cards: cards});
