@@ -203,7 +203,7 @@ class Market extends React.Component {
 	}
 
 	componentDidMount() {
-		if (!sessionStorage.getItem('forSaleGrouped')) {
+		if (!sessionStorage.getItem('forSaleGrouped') && JSON.parse(sessionStorage.getItem('forSaleGrouped')).expiry < (new Date())) {
 			let cards = [];
 			$.ajax({
 				type: 'GET',
