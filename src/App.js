@@ -66,7 +66,7 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    if (sessionStorage.getItem('cardDetails')) {
+    if (sessionStorage.getItem('cardDetails') && JSON.parse(sessionStorage.getItem('cardDetails')).expiry < (new Date())) {
       if (this.state.loggedIn) {
         $.ajax({
           type: 'GET',
