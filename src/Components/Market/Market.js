@@ -145,6 +145,14 @@ class Market extends React.Component {
 			cards.sort((a, b) => {
 				return b.lowPrice - a.lowPrice;
 			}); 
+		} else if (method === 'priceBCXAsc') {
+			cards.sort((a, b) => {
+				return a.lowPriceBCX - b.lowPriceBCX;
+			});
+		} else if (method === 'priceBCXDec') {
+			cards.sort((a, b) => {
+				return b.lowPriceBCX - a.lowPriceBCX;
+			}); 
 		} else if (method === 'qtyAsc') {
 			cards.sort((a, b) => {
 				return a.qty - b.qty;
@@ -249,10 +257,9 @@ class Market extends React.Component {
 			              	distinctID: distinctID,
 			              	gold: gold,
 			              	img: img,
-			              	mana: type === 'Monster' ? cardData.stats.mana[0] : cardData.stats.mana,
-			              	qty: qty,
-			              	lowPrice: forSaleCards[l].low_price,
-			              	lowPriceBCX: forSaleCards[l].low_price_bcx,
+			              	qty: Number(qty),
+			              	lowPrice: Number(forSaleCards[l].low_price),
+			              	lowPriceBCX: Number(forSaleCards[l].low_price_bcx),
 			              	stats: cardData.stats,
 			              	attackType: attackType
 			          	});
