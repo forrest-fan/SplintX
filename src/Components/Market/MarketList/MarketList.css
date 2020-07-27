@@ -99,7 +99,7 @@
 		margin: 10px 0px;
 	}
 
-	.list-sort-input select {
+	.list-sort-dropdown select {
 		margin-left: 10px;
 	}
 
@@ -116,5 +116,11 @@
 	.list-info .filterCount {
 		display: block;
 		margin: 10px 0px;
+	}
+
+	.list-sort-dropdown {
+		float: none;
+		display: block;
+		padding: 10px 0px;
 	}
 }
