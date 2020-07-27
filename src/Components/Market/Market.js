@@ -224,7 +224,10 @@ class Market extends React.Component {
 	}
 
 	componentDidMount() {
-		if (!sessionStorage.getItem('forSaleGrouped') && JSON.parse(sessionStorage.getItem('forSaleGrouped')).expiry < (new Date())) {
+		if (sessionStorage.getItem('forSaleGrouped') && JSON.parse(sessionStorage.getItem('forSaleGrouped')).expiry < (new Date())) {
+			let cards = JSON.parse(sessionStorage.getItem('forSaleGrouped')).data;
+			this.updateFilters('Untamed', 'edition', 'add');
+		} else {
 			let cards = [];
 			$.ajax({
 				type: 'GET',
@@ -291,9 +294,6 @@ class Market extends React.Component {
 	      			console.log('There was an error retrieving your cards.');
 	  			}
 			});
-		} else {
-			let cards = JSON.parse(sessionStorage.getItem('forSaleGrouped')).data;
-			this.updateFilters('Untamed', 'edition', 'add');
 		}
 	}
 
