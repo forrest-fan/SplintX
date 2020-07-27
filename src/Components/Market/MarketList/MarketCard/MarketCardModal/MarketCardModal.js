@@ -396,7 +396,7 @@ class MarketCardModal extends React.Component {
 	    		<div className='market-cardModal-overlay' onClick={this.props.closeModal}></div>
 	    		<div className='market-cardModal-content' >
         			<div className='market-cardModal-exit' onClick={this.props.closeModal}><i className='fas fa-times'></i></div>
-	    			<h2>{this.props.info.name}</h2>
+	    			<h2 className={this.props.info.gold ? 'gold' : ''}>{this.props.info.name + (this.props.info.gold ? ' (Gold)' : '')}</h2>
 	    			<div className='market-cardModal-img-container'>
 	    				<img className='market-cardModal-img' src={this.props.info.img} />
 	    			</div>
@@ -444,7 +444,7 @@ class MarketCardModal extends React.Component {
 						            <option value='forSale' selected={this.state.panel === 'forSale'}>Cards For Sale</option>
 						            <option value='multiSelect' selected={this.state.panel === 'multiSelect'}>MultiSelect</option>
 						            <option value='stats' selected={this.state.panel === 'stats'}>Stats</option>
-						            <option value='stats' selected={this.state.panel === 'history'}>Price History</option>
+						            <option value='history' selected={this.state.panel === 'history'}>Price History</option>
 						        </select>
 					        </span>
 		    			</div>

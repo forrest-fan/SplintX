@@ -12,7 +12,6 @@ class CollectionCard extends React.Component {
 	}
 
 	toggleModal() {
-		console.log(this.props.info.name);
 		this.setState({
 			renderModal: this.state.renderModal ? false : true
 		});
