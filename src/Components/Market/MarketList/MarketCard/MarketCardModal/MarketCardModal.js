@@ -396,7 +396,7 @@ class MarketCardModal extends React.Component {
 	    		<div className='market-cardModal-overlay' onClick={this.props.closeModal}></div>
 	    		<div className='market-cardModal-content' >
         			<div className='market-cardModal-exit' onClick={this.props.closeModal}><i className='fas fa-times'></i></div>
-	    			<h2>{this.props.info.name}</h2>
+	    			<h2 className={this.props.info.gold ? 'gold' : ''}>{this.props.info.name + (this.props.info.gold ? ' (Gold)' : '')}</h2>
 	    			<div className='market-cardModal-img-container'>
 	    				<img className='market-cardModal-img' src={this.props.info.img} />
 	    			</div>

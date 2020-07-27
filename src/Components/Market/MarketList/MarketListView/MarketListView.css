@@ -5,11 +5,11 @@
 .list-item {
 	display: grid;
 	grid-template-columns: 30px 1fr 80px 80px 80px;
-	grid-template-rows: 30px;
+	grid-template-rows: 35px;
 	justify-content: stretch;
 	align-items: center;
 	border-bottom: 1px solid #ccc;
-	padding: 7px;
+	padding: 8px;
 	transition: 0.3s;
 	cursor: pointer;
 	font-size: 15px;
@@ -41,8 +41,13 @@
 @media (max-width: 750px) {
 	.list-item {
 		grid-template-columns: 30px 1fr 50px 50px 50px;
-		grid-template-rows: 40px;
-		font-size: 15px;
+		grid-template-rows: 50px;
+		font-size: 16px;
+		padding: 4px;
+	}
+
+	.list-item i {
+		font-size: 13px;
 	}
 
 	.list-item .name {

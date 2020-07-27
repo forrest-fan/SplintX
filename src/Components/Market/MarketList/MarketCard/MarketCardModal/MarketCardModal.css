@@ -48,6 +48,11 @@
 .market-cardModal-content h2 {
 	text-align: center;
 	width: 100%;
+	font-size: 26px;
+}
+
+.market-cardModal-content h2.gold {
+	color: var(--login-btn);
 }
 
 .market-cardModal-img-container {
@@ -346,6 +351,10 @@
 }
 
 @media (max-width: 750px) {
+	.market-cardModal-content h2 {
+		font-size: 20px;
+	}
+
 	.market-cardModal-panel-header {
 		display: none;
 	}
