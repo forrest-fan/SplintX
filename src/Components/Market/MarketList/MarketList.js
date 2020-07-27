@@ -1,10 +1,14 @@
 import React from 'react';
 import './MarketList.css';
 import MarketCard from './MarketCard/MarketCard';
+import MarketListView from './MarketListView/MarketListView';
 
 class MarketList extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      renderStyle: localStorage.getItem('renderStyle') || 'card'
+    };
     this.handleSortChange = this.handleSortChange.bind(this);
   }
 
@@ -15,29 +19,58 @@ class MarketList extends React.Component {
 
   render() {
     return(
-      <div className="marketList-container">
-        <div className='marketList-sort-container'>
-          <p className='marketList-info'>
-            <span className='marketList-resultCount'>{this.props.cards.length} Results</span>
-            <span className='marketList-filterCount' onClick={this.props.showMobileFilters}>{this.props.filterCount === 0 ? 'Add Filters (0)' : 'Edit Filters (' + this.props.filterCount +')'}</span>
+      <div className="list-container">
+        <div className='list-sort-container'>
+          <p className='list-info'>
+            <span className='resultCount'>{this.props.cards.length} Results</span>
+            <span className='filterCount' onClick={this.props.showMobileFilters}>{this.props.filterCount === 0 ? 'Add Filters (0)' : 'Edit Filters (' + this.props.filterCount +')'}</span>
           </p>
-          <select className='marketList-sort-input' onChange={this.handleSortChange} defaultValue='default'>
-            <option disabled value='default'>Sort By:</option>
-            <option value='az'>Name: A - Z</option>
-            <option value='za'>Name: Z - A</option>
-            <option value='manaAsc'>Mana: Low - High</option>
-            <option value='manaDes'>Mana: High - Low</option>
-            <option value='priceAsc'>Price: Low - High</option>
-            <option value='priceDec'>Price: High - Low</option>
-          </select>
+          <span className='list-sort-input'>
+            <span className='list-display'>
+              <i onClick={()=>{
+                localStorage.setItem('renderStyle', 'card');
+                this.setState({renderStyle: 'card'});
+              }} className={'fas fa-th-large' + (this.state.renderStyle === 'card' ? ' active' : '')}></i>
+              <i onClick={()=>{
+                localStorage.setItem('renderStyle', 'list');
+                this.setState({renderStyle: 'list'});
+              }} className={'fas fa-list' + (this.state.renderStyle === 'list' ? ' active' : '')}></i>
+            </span>
+            <span className='list-sort-dropdown'>
+              Sort by: 
+              <select onChange={this.handleSortChange} defaultValue='splinter'>
+                <option value='splinter'>Splinter</option>
+                <option value='az'>Name: A - Z</option>
+                <option value='za'>Name: Z - A</option>
+                <option value='priceAsc'>Price: Low - High</option>
+                <option value='priceDec'>Price: High - Low</option>
+                <option value='priceBCXAsc'>Price/BCX: Low - High</option>
+                <option value='priceBCXDec'>Price/BCX: High - Low</option>
+                <option value='qtyAsc'>Quantity: Low - High</option>
+                <option value='qtyDec'>Quantity: High - Low</option>
+              </select>
+            </span>
+          </span>
         </div>
-      	<div className='marketList'>
+      	<div className='list'>
+          {this.state.renderStyle === 'list' ?
+          <div className='list-item header'>
+            <p className='center'></p>
+            <p>Name</p>
+            <p className='center'>Quantity</p>
+            <p className='center'>Price</p>
+            <p className='center'>Price/BCX</p>
+          </div> : '' }
 	        {this.props.loading ?
 	        	<div className='loader-container'><div className='loader'></div></div> :
 	        this.props.cards.length === 0 ?
-              	<p className='market-noCards'>No cards were found. Please update the filters.</p> : 
+              	<p className='noCards'>No cards were found. Please update the filters.</p> : 
               	this.props.cards.map(card => {
-                	return (<MarketCard info={card} cart={this.props.cart} addToCart={this.props.addToCart} />);
+                	if (this.state.renderStyle === 'list') {
+                    return (<MarketListView info={card} cart={this.props.cart} addToCart={this.props.addToCart} />);
+                  } else if (this.state.renderStyle === 'card') {
+                    return (<MarketCard info={card} cart={this.props.cart} addToCart={this.props.addToCart} />);
+                  }
               	})
            }
 	      </div>

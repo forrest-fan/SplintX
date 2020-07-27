@@ -18,7 +18,7 @@ class Collection extends React.Component {
 		this.state = {
 			filters: {
 				search: [''],
-				gold: false,
+				foil: [],
 				type: [],
 				rarity: [],
 				edition: [],
@@ -73,13 +73,13 @@ class Collection extends React.Component {
 			let editionPass = true;
 			let elementPass = true;
 			let searchPass = true;
-			let goldPass = true;
+			let foilPass = true;
 			let typePass = true;
 			let rarityFilters = filters.rarity;
 			let editionFilters = filters.edition;
 			let elementFilters = filters.element;
 			let searchFilter = filters.search[0];
-			let goldFilter = filters.gold;
+			let foilFilters = filters.foil;
 			let typeFilter = filters.type;
 			if (rarityFilters.length !== 0 && !rarityFilters.includes(card.rarity)) {
 				rarityPass = false;
@@ -97,15 +97,17 @@ class Collection extends React.Component {
 				searchPass = false;
 			}
 
-			if (goldFilter && !card.gold) {
-				goldPass = false;
+			if (foilFilters.length === 1) {
+				if (foilFilters[0] === 'Regular' && card.gold || foilFilters[0] === 'Gold' && !card.gold) {
+					foilPass = false;
+				}
 			}
 
 			if (typeFilter.length !== 0 && !typeFilter.includes(card.type)) {
 				typePass = false;
 			}
 
-			if (rarityPass && editionPass && elementPass && searchPass && goldPass && typePass) {
+			if (rarityPass && editionPass && elementPass && searchPass && foilPass && typePass) {
 				cards.push(card);
 			}
 		});
@@ -144,6 +146,20 @@ class Collection extends React.Component {
 			cards.sort((a, b) => {
 				return b.mana - a.mana;
 			})
+		} else if (method === 'splinter') {
+		    cards.sort((a, b) => {
+		    	if (a.element < b.element) {
+		    		return -1;
+		    	} else if (a.element > b.element) {
+		    		return 1;
+		    	} else {
+		    		if (a.gold) {
+		    			return -1;
+		    		} else {
+		    			return 1;
+		    		}
+		    	}
+		    });
 		}
 
 		this.setState({cards: cards});

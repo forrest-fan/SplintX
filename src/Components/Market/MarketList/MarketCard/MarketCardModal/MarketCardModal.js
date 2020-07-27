@@ -1,6 +1,7 @@
 import React from 'react';
 import './MarketCardModal.css';
 import $ from 'jquery';
+import Chart from 'chart.js';
 
 const lvlXP = [[20,60,160,360,760,1560,2560,4560,7560],[100,300,700,1500,2500,4500,8500],[250,750,1750,3750,7750],[1000,3000,7000]];
 const newLvlXP = [[1,5,14,30,60,100,150,220,300,400],[1,5,14,25,40,60,85,115],[1,4,10,20,32,46],[1,3,6,11]];
@@ -12,7 +13,31 @@ const sumProp = (array, prop) => {
 	return sum;
 }
 
-
+const pivot = (obj) => {
+	let arr = [];
+	let values = Object.values(obj);
+	let keys = Object.keys(obj);
+	for (let i = 0; i < values[0].length; i++) {
+		let arrEntry = {
+			lvl: i + 1
+		};
+		for (let j = 0; j < values.length; j++) {
+			if (keys[j] === 'abilities') {
+				let abilities = [];
+				for (let k = i; k >= 0; k--) {
+					if (obj.abilities[k].length !== 0) {
+						abilities.push(obj.abilities[k][0]);
+					}
+				}
+				arrEntry[keys[j]] = abilities;
+			} else {
+				arrEntry[keys[j]] = values[j][i];
+			}
+		}
+		arr.push(arrEntry);
+	}
+	return arr;
+}
 
 class MarketCardModal extends React.Component {
 	constructor(props) {
@@ -22,7 +47,8 @@ class MarketCardModal extends React.Component {
 			selected: [],
 			sortMethod: 'priceBcxAsc',
 			panel: 'forSale',
-			loading: true
+			loading: true,
+			history: null
 		};
 		this.updateSort = this.updateSort.bind(this);
 		this.getBCX = this.getBCX.bind(this);
@@ -264,6 +290,102 @@ class MarketCardModal extends React.Component {
 	componentDidUpdate(prevProps, prevState) {
 		if (this.state.panel === 'forSale' && prevState.panel === 'multiSelect' && this.state.selected !== prevState.selected) {
 			this.updateSort('selected');
+		} else if (this.state.panel === 'history' && prevState.panel !== 'history') {
+			let edition = this.props.info.edition === 'Alpha' ? 0 : this.props.info.edition === 'Beta' ? 1 : this.props.info.edition === 'Promo' ? 2 : this.props.info.edition === 'Reward' ? 3 : 4;
+			let target = "sm.card_value.card_id=" + this.props.info.detailID + ";edition=" + edition + ";gold=" + this.props.info.gold.toString().charAt(0).toUpperCase() + this.props.info.gold.toString().substring(1);
+			if (sessionStorage.getItem('history') && Date.parse(JSON.parse(sessionStorage.getItem('history')).expiry) > (new Date())) {
+				let history = JSON.parse(sessionStorage.getItem('history')).data;
+				for (let i = 0; i < history.length; i++) {
+					if (history[i].target === target) {
+						let data = [];
+						let labelArray = [];
+						for (let j = 0; j < history[i].datapoints.length; j++) {
+					        let milliseconds = history[i].datapoints[j][1] * 1000;
+					        let date = new Date(milliseconds).toLocaleDateString('en-US', { timeZone: 'GMT' });
+					        labelArray.push(date);
+					        data.push({
+					        	t: new Date(),
+					        	y: history[i].datapoints[j][0]
+					        });
+				        }
+				        let config = {
+						  type: 'line',
+						  data: {
+						    labels: labelArray,
+						    datasets: [{
+						      label: 'Price(USD)',
+						      data: data,
+						      fill: false,
+						      borderColor: ['rgba(13, 33, 64, 1)'],
+						      borderWidth: 3
+						    }]
+						  },
+						  options: {
+						    responsive: true,
+						    maintainAspectRatio: false
+						  }
+						};
+						let ctx = document.getElementById('myChart').getContext('2d');
+						let myChart = new Chart(ctx, config);
+						break;
+					}
+				}
+			} else {
+				$.ajax({
+					type: 'GET',
+					url: 'http://18.223.152.60:8080/history',
+					jsonpCallback: 'testing',
+				  	dataType: 'json',
+				  	success: function(history) {
+						let expiry = new Date();
+						expiry.setDate(expiry.getDate() + 1);
+						expiry.setUTCHours(0, 0, 0, 0);
+				  		let historyObj = {
+				  			expiry: expiry,
+				  			data: history
+				  		};
+				  		sessionStorage.setItem('history', JSON.stringify(historyObj));
+				  		for (let i = 0; i < history.length; i++) {
+							if (history[i].target === target) {
+								let data = [];
+								let labelArray = [];
+								for (let j = 0; j < history[i].datapoints.length; j++) {
+							        let milliseconds = history[i].datapoints[j][1] * 1000;
+							        let date = new Date(milliseconds).toLocaleDateString('en-US', { timeZone: 'GMT' });
+							        labelArray.push(date);
+							        data.push({
+							        	t: new Date(),
+							        	y: history[i].datapoints[j][0]
+							        });
+						        }
+						        let config = {
+								  type: 'line',
+								  data: {
+								    labels: labelArray,
+								    datasets: [{
+								      label: 'Price(USD)',
+								      data: data,
+								      fill: false,
+								      borderColor: ['rgba(13, 33, 64, 1)'],
+								      borderWidth: 3
+								    }]
+								  },
+								  options: {
+								    responsive: true,
+								    maintainAspectRatio: false
+								  }
+								};
+								let ctx = document.getElementById('myChart').getContext('2d');
+								let myChart = new Chart(ctx, config);
+								break;
+							}
+						}
+				  	},
+				  	error: function(e) {
+				  		console.log('There was an error retrieving the price history');
+				  	}
+				});
+			}
 		}
 	}
 
@@ -274,7 +396,7 @@ class MarketCardModal extends React.Component {
 	    		<div className='market-cardModal-overlay' onClick={this.props.closeModal}></div>
 	    		<div className='market-cardModal-content' >
         			<div className='market-cardModal-exit' onClick={this.props.closeModal}><i className='fas fa-times'></i></div>
-	    			<h2>{this.props.info.name}</h2>
+	    			<h2 className={this.props.info.gold ? 'gold' : ''}>{this.props.info.name + (this.props.info.gold ? ' (Gold)' : '')}</h2>
 	    			<div className='market-cardModal-img-container'>
 	    				<img className='market-cardModal-img' src={this.props.info.img} />
 	    			</div>
@@ -298,18 +420,38 @@ class MarketCardModal extends React.Component {
 									this.setState({panel: 'multiSelect'});
 								}
 			    			}}>MultiSelect</h3>
+			    			<h3 id='panelstats' className={this.state.panel === 'stats' ? 'market-cardModal-panel-header activePanel': 'market-cardModal-panel-header'} onClick={() => {
+								let currentPanel = this.state.panel;
+								let currentId = 'panel' + currentPanel;
+								if (currentPanel !== 'stats') {
+									document.getElementById(currentId).className = 'market-cardModal-panel-header';
+									document.getElementById('panelstats').className = 'market-cardModal-panel-header activePanel';
+									this.setState({panel: 'stats'});
+								}
+			    			}}>Stats</h3>
+			    			<h3 id='panelhistory' className={this.state.panel === 'history' ? 'market-cardModal-panel-header activePanel': 'market-cardModal-panel-header'} onClick={() => {
+								let currentPanel = this.state.panel;
+								let currentId = 'panel' + currentPanel;
+								if (currentPanel !== 'history') {
+									document.getElementById(currentId).className = 'market-cardModal-panel-header';
+									document.getElementById('panelhistory').className = 'market-cardModal-panel-header activePanel';
+									this.setState({panel: 'history'});
+								}
+			    			}}>Price History</h3>
 			    			<span className='market-cardModal-panel-small-container'>
 			    				Panel: 
 				    			<select className='market-cardModal-panel-small' onChange={this.handlePanelChange}>
-						            <option value='forSale'>Cards For Sale</option>
-						            <option value='multiSelect'>MultiSelect</option>
+						            <option value='forSale' selected={this.state.panel === 'forSale'}>Cards For Sale</option>
+						            <option value='multiSelect' selected={this.state.panel === 'multiSelect'}>MultiSelect</option>
+						            <option value='stats' selected={this.state.panel === 'stats'}>Stats</option>
+						            <option value='history' selected={this.state.panel === 'history'}>Price History</option>
 						        </select>
 					        </span>
 		    			</div>
 		    			
 		    			{this.state.panel === 'forSale' ? <div className='market-cardModal-table-container'>
 		    				<table className='market-cardModal-table'>
-		    					<thead className='market-cardModal-table-header'>
+		    					<thead>
 		    						<tr>
 		    							<th onClick={() => {
 		    								this.updateSort('selected');
@@ -331,11 +473,11 @@ class MarketCardModal extends React.Component {
 		    						</tr>
 		    					</thead>
 		    					{this.state.loading ? '' :
-		    					<tbody className='market-cardModal-table-data'>
+		    					<tbody>
 		    						{this.state.forSale.map(listing => {
 		    							return(
 		    								<tr>
-		    									<td className='market-cardModal-table-add'><input type='checkbox' onClick={() => {
+		    									<td className='center'><input type='checkbox' onClick={() => {
 		    										let selected = this.state.selected;
 		    										if (selected.length >= 45 && !selected.includes(listing)) {
 		    											let toast = document.getElementById('market-cardModal-tooMany-toast');
@@ -352,12 +494,12 @@ class MarketCardModal extends React.Component {
 		    										}		    										
 		    										this.setState({selected: selected});
 		    									}} disabled={matchUID.includes(listing.uid)} checked={this.state.selected.includes(listing)}/></td>
-		    									<td className='market-cardModal-table-data-lvl'>{listing.lvl}</td>
-		    									<td className='market-cardModal-table-data-lvl'>{listing.bcx}</td>
-		    									<td className='market-cardModal-table-data-price'>${Number(listing.buy_price).toFixed(3)}</td>
-		    									<td className='market-cardModal-table-data-price'>${(Number(listing.buy_price)/listing.bcx).toFixed(3)}</td>
-		    									<td className='market-cardModal-table-data-seller'>{listing.seller.length > 8 ? listing.seller.substring(0, 8) + '...' : listing.seller}</td>
-		    									<td className='market-cardModal-table-data-uid'>{listing.uid}</td>
+		    									<td className='center'>{listing.lvl}</td>
+		    									<td className='center'>{listing.bcx}</td>
+		    									<td className='center'>${Number(listing.buy_price).toFixed(3)}</td>
+		    									<td className='center'>${(Number(listing.buy_price)/listing.bcx).toFixed(3)}</td>
+		    									<td className='center'>{listing.seller.length > 8 ? listing.seller.substring(0, 8) + '...' : listing.seller}</td>
+		    									<td className='right'>{listing.uid}</td>
 		    								</tr>
 		    							);
 		    						})}
@@ -380,8 +522,67 @@ class MarketCardModal extends React.Component {
 			    					<input id='price' type='number' className='multiSelect-input' placeholder='Total Price (USD)' />
 			    					<button onClick={this.multiSelectPrice}>Search by Price</button>
 			    				</div>
-
 			    			</div>
+		    			</div> : this.state.panel === 'stats' ? <div className='market-cardModal-table-container'>
+			    			<div className='market-cardModal-stats'>
+			    				<span>Splinter: {this.props.info.element}</span>
+			    				<span>Edition: {this.props.info.edition}</span>
+			    				<span>Rarity: {this.props.info.rarity}</span>
+			    				<span>Mana: {this.props.info.type === 'Monster' ? this.props.info.stats.mana[0] : this.props.info.stats.mana}</span>
+			    				<span>Type: {this.props.info.type}</span>
+			    				{this.props.info.type === 'Monster' ? <table className='market-cardModal-table'>
+			    					<thead>
+			    						<tr className='market-cardModal-table-header'>
+			    							<th>Level</th>
+			    							<th>{this.props.info.attackType === 'attack' ? 'Melee' : this.props.info.attackType === 'ranged' ? 'Ranged' : 'Magic'}</th>
+			    							<th>Speed</th>
+			    							<th>Health</th>
+			    							<th>Armor</th>
+			    							<th>Abilities</th>
+			    						</tr>
+			    					</thead>
+			    					<tbody>
+			    						{pivot(this.props.info.stats).map(level => {
+			    							return (
+			    								<tr>
+			    									<td className='center'>{level.lvl}</td>
+			    									<td className='center'>{level[this.props.info.attackType]}</td>
+			    									<td className='center'>{level.speed}</td>
+			    									<td className='center'>{level.health}</td>
+			    									<td className='center'>{level.armor}</td>
+			    									<td className='center'>{level.abilities.join(', ')}</td>
+			    								</tr>
+			    							);
+			    						})}
+			    					</tbody>
+			    				</table> : this.props.info.type === 'Summoner' ? <div>
+			    					<ul>
+			    						{Object.keys(this.props.info.stats).map(key => {
+			    							if (key !== 'mana' && key !== 'abilities' && this.props.info.stats[key] !== 0) {
+			    								var monsters;
+			    								if (this.props.info.stats[key] > 0) {
+			    									monsters = 'friendly';
+			    								} else {
+			    									monsters = 'enemy';
+			    								}
+			    								return (
+			    									<li><strong>{this.props.info.stats[key] > 0 ? '+' + this.props.info.stats[key] : this.props.info.stats[key]}</strong> to the <strong>{key === 'attack' ? 'Melee' : key.charAt(0).toUpperCase() + key.substring(1)}</strong> attribute of all {monsters} monsters</li>
+			    								);
+			    							} else if (key === 'abilities') {
+			    								return this.props.info.stats.abilities.map(ability => {
+			    									return(
+			    										<li><strong>{ability}</strong> ability</li>
+			    									);
+			    								})
+			    							}
+			    						})}
+			    					</ul>
+			    				</div> : ''}
+			    			</div>
+		    			</div>
+
+		    			: this.state.panel === 'history' ? <div className='market-cardModal-table-container'>
+		    				<canvas id="myChart"></canvas>
 		    			</div> : ''}
 		    			
 		    			<div className='market-cardModal-addToCart'>

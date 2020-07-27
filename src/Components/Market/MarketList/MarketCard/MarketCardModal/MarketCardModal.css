@@ -48,6 +48,11 @@
 .market-cardModal-content h2 {
 	text-align: center;
 	width: 100%;
+	font-size: 26px;
+}
+
+.market-cardModal-content h2.gold {
+	color: var(--login-btn);
 }
 
 .market-cardModal-img-container {
@@ -82,7 +87,7 @@
 }
 
 .market-cardModal-panel-header.activePanel {
-	color: #fff;
+	color: var(--login-btn);
 	background: var(--navbar-bg);
 }
 
@@ -155,28 +160,6 @@
 	opacity: 1;
 }
 
-.loader-modal-container {
-  	position: absolute;
-  	top: 50%;
-  	left: 50%;
-  	transform: translate(-50%, -50%);
-}
-
-.loader-modal {
-	display: block;
-	border: 8px solid #eee; /* Light grey */
-  	border-top: 8px solid var(--navbar-bg); /* Blue */
-  	border-radius: 50%;
-  	width: 50px;
-  	height: 50px;
-  	animation: spin 2s linear infinite;
-}
-
-@keyframes spin {
-  	0% { transform: rotate(0deg); }
-  	100% { transform: rotate(360deg); }
-}
-
 .market-cardModal-table-container {
 	padding: 10px;
 	box-sizing: border-box;
@@ -208,7 +191,7 @@
 	border-collapse: collapse;
 }
 
-.market-cardModal-table-header {
+.market-cardModal-table thead {
 	background: var(--navbar-bg);
 	color: var(--login-btn);
 	font-weight: bold;
@@ -216,8 +199,8 @@
 	border: none;
 }
 
-.market-cardModal-table-header th{
-	padding: 7px 0px;
+.market-cardModal-table th{
+	padding: 7px 10px;
 }
 
 .market-cardModal-table-sortIcon {
@@ -225,37 +208,36 @@
 	font-size: 10px;
 }
 
-.market-cardModal-table-data tr {
+.market-cardModal-table tr {
 	border-top: 1px solid #ccc;
 }
 
-.market-cardModal-table-data td{
+.market-cardModal-table td{
 	padding: 4px 7px;
 	border: 1px solid #ddd;
 }
 
-.market-cardModal-table-add {
-	text-align: center;
-}
-
-.market-cardModal-table-add input {
+.market-cardModal-table input {
 	cursor: pointer;
 }
 
-.market-cardModal-table-data-seller {
+.market-cardModal-table .center {
 	text-align: center;
 }
 
-.market-cardModal-table-data-uid {
+.market-cardModal-table .right {
 	text-align: right;
 }
 
-.market-cardModal-table-data-lvl {
-	text-align: center;
+.market-cardModal-stats span {
+	font-weight: bold;
+	display: inline-block;
+	padding: 8px 15px;
+	font-size: 17px;
 }
 
-.market-cardModal-table-data-price {
-	text-align: center;
+.market-cardModal-table-container canvas {
+	max-width: 100%;
 }
 
 .market-cardModal-addToCart {
@@ -322,6 +304,10 @@
 	.market-cardModal-img-container {
 		display: none;
 	}
+
+	.market-cardModal-content {
+		display: block;
+	}
 }
 
 @media (max-width: 890px) {
@@ -347,6 +333,10 @@
 }
 
 @media (max-width: 750px) {
+	.market-cardModal-content h2 {
+		font-size: 20px;
+	}
+
 	.market-cardModal-panel-header {
 		display: none;
 	}
@@ -364,5 +354,9 @@
 	.market-cardModal-multiselect .multiselect-half.left {
 		border-right: none;
 		border-bottom: 1px solid #ccc;
+	}
+
+	.market-cardModal-stats span {
+		display: block;
 	}
 }
