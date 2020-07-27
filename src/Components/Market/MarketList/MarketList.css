@@ -93,10 +93,18 @@
 		display: inline-block;
 	}
 
-	.marketList-sort-input {
+	.list-sort-input {
 		display: block;
 		float: none;
 		margin: 10px 0px;
+	}
+
+	.list-sort-input select {
+		margin-left: 10px;
+	}
+
+	.list-sort-dropdown {
+		float: right;
 	}
 
 	.list-item.header {

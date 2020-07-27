@@ -36,18 +36,20 @@ class MarketList extends React.Component {
                 this.setState({renderStyle: 'list'});
               }} className={'fas fa-list' + (this.state.renderStyle === 'list' ? ' active' : '')}></i>
             </span>
-            Sort by: 
-            <select onChange={this.handleSortChange} defaultValue='splinter'>
-              <option value='splinter'>Splinter</option>
-              <option value='az'>Name: A - Z</option>
-              <option value='za'>Name: Z - A</option>
-              <option value='priceAsc'>Price: Low - High</option>
-              <option value='priceDec'>Price: High - Low</option>
-              <option value='priceBCXAsc'>Price/BCX: Low - High</option>
-              <option value='priceBCXDec'>Price/BCX: High - Low</option>
-              <option value='qtyAsc'>Quantity: Low - High</option>
-              <option value='qtyDec'>Quantity: High - Low</option>
-            </select>
+            <span className='list-sort-dropdown'>
+              Sort by: 
+              <select onChange={this.handleSortChange} defaultValue='splinter'>
+                <option value='splinter'>Splinter</option>
+                <option value='az'>Name: A - Z</option>
+                <option value='za'>Name: Z - A</option>
+                <option value='priceAsc'>Price: Low - High</option>
+                <option value='priceDec'>Price: High - Low</option>
+                <option value='priceBCXAsc'>Price/BCX: Low - High</option>
+                <option value='priceBCXDec'>Price/BCX: High - Low</option>
+                <option value='qtyAsc'>Quantity: Low - High</option>
+                <option value='qtyDec'>Quantity: High - Low</option>
+              </select>
+            </span>
           </span>
         </div>
       	<div className='list'>

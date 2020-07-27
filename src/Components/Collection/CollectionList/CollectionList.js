@@ -36,14 +36,16 @@ class CollectionList extends React.Component {
                 this.setState({renderStyle: 'list'});
               }} className={'fas fa-list' + (this.state.renderStyle === 'list' ? ' active' : '')}></i>
             </span>
-            Sort by: 
-            <select onChange={this.handleSortChange} defaultValue='splinter'>
-              <option value='splinter'>Splinter</option>
-              <option value='az'>Name: A - Z</option>
-              <option value='za'>Name: Z - A</option>
-              <option value='manaAsc'>Mana: Low - High</option>
-              <option value='manaDes'>Mana: High - Low</option>
-            </select>
+            <span className='list-sort-dropdown'>
+              Sort by: 
+              <select onChange={this.handleSortChange} defaultValue='splinter'>
+                <option value='splinter'>Splinter</option>
+                <option value='az'>Name: A - Z</option>
+                <option value='za'>Name: Z - A</option>
+                <option value='manaAsc'>Mana: Low - High</option>
+                <option value='manaDes'>Mana: High - Low</option>
+              </select>
+            </span>
           </span>
         </div>
       	<div className='list'>
