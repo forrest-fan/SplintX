@@ -444,7 +444,7 @@ class MarketCardModal extends React.Component {
 						            <option value='forSale' selected={this.state.panel === 'forSale'}>Cards For Sale</option>
 						            <option value='multiSelect' selected={this.state.panel === 'multiSelect'}>MultiSelect</option>
 						            <option value='stats' selected={this.state.panel === 'stats'}>Stats</option>
-						            <option value='stats' selected={this.state.panel === 'history'}>Price History</option>
+						            <option value='history' selected={this.state.panel === 'history'}>Price History</option>
 						        </select>
 					        </span>
 		    			</div>
