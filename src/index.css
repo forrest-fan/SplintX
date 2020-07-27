@@ -67,3 +67,31 @@ input::-webkit-inner-spin-button {
   from {bottom: 20px; opacity: 1;}
   to {bottom: 0; opacity: 0;}
 }
+
+.loader-container {
+  	position: absolute;
+  	left: 50%;
+  	transform: translateX(-50%);
+  	margin-top: 50px;
+}
+
+.loader {
+	display: block;
+	border: 12px solid #eee; /* Light grey */
+  	border-top: 12px solid var(--navbar-bg); /* Blue */
+  	border-radius: 50%;
+  	width: 80px;
+  	height: 80px;
+  	animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  	0% { transform: rotate(0deg); }
+  	100% { transform: rotate(360deg); }
+}
+
+@media (max-width: 750px) {
+	body {
+		margin: 0;
+	}
+}
