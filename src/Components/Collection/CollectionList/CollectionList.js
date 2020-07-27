@@ -48,7 +48,7 @@ class CollectionList extends React.Component {
         </div>
       	<div className='list'>
           {this.state.renderStyle === 'list' ?
-          <div className='collection-list-item header'>
+          <div className='collection list-item header'>
             <p className='center'></p>
             <p>Name</p>
             <p className='center'>Quantity</p>

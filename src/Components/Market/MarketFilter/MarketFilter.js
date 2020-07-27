@@ -41,14 +41,14 @@ class MarketFilter extends React.Component {
 
   render() {
     return(
-      <div className={this.props.mobileFilters ? 'collection-filter-pane show-sidebar' : 'collection-filter-pane hide-sidebar'} >
+      <div className={this.props.mobileFilters ? 'filter-pane show-sidebar' : 'filter-pane hide-sidebar'} >
         <div className='exit-btn' onClick={this.props.hideMobileFilters}><i className='fas fa-times'></i></div>
-        <input className='collection-filter-search' placeholder='Search Cards' onChange={this.handleSearchChange}/>
-        <h2 className='collection-filter-header'>Filters</h2>
-        <div className='collection-activeFilters-container'>
+        <input className='filter-search' placeholder='Search Cards' onChange={this.handleSearchChange}/>
+        <h2 className='filter-header'>Filters</h2>
+        <div className='activeFilters-container'>
           {this.state.activeFilters.map(filter => {
             return (
-              <p className='collection-activeFilter' onClick={() => {
+              <p className='activeFilter' onClick={() => {
                 let activeFilters = this.state.activeFilters;
                 for (let i = 0; i < activeFilters.length; i++) {
                   if (activeFilters[i] === filter) {
@@ -62,11 +62,11 @@ class MarketFilter extends React.Component {
             );
           })}
         </div>
-        {this.state.activeFilters.length !== 0 ? <p className='collection-clearFilters' onClick={this.clearFilters}>Clear Filters</p> : ''}
+        {this.state.activeFilters.length !== 0 ? <p className='clearFilters' onClick={this.clearFilters}>Clear Filters</p> : ''}
         {Object.keys(filters).map(filterSection => {
           return (
-            <div className='collection-filter-section'>
-            <h2 className='collection-filter-section-header'>{filterSection.toUpperCase()}</h2>
+            <div className='filter-section'>
+            <h2 className='filter-section-header'>{filterSection.toUpperCase()}</h2>
               {filters[filterSection].map(filter => {
                 let iconClass = filterSection + '-icon';
                 if (filterSection === 'rarity') {
@@ -78,7 +78,7 @@ class MarketFilter extends React.Component {
                   iconClass += ' fas fa-star';
                 }
                 return (
-                  <p className='collection-filter-selection' id={filter} onClick={() => {
+                  <p className='filter-selection' id={filter} onClick={() => {
                     let activeFilters = this.state.activeFilters;
                     if (!activeFilters.includes(filter)) {
                       activeFilters.push(filter);
