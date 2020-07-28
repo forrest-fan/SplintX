@@ -142,8 +142,8 @@ class MarketCardModal extends React.Component {
 		let currentId = 'panel' + currentPanel;
 		let newId = 'panel' + panel;
 		if (panel !== currentPanel) {
-			document.getElementById(currentId).className = 'market-cardModal-panel-header';
-			document.getElementById(newId).className = 'market-cardModal-panel-header activePanel';
+			document.getElementById(currentId).className = 'modal-panel-header';
+			document.getElementById(newId).className = 'modal-panel-header activePanel';
 			this.setState({panel: panel});
 		}
 	}
@@ -157,7 +157,7 @@ class MarketCardModal extends React.Component {
 		const matchUID = this.props.cart.map(item => {return item.uid});
 		let count = document.getElementById('bcx').value || 0;
 		if (count === 0) {
-			let toast = document.getElementById('market-cardModal-required-toast');
+			let toast = document.getElementById('modal-required-toast');
 			toast.className += ' show';
 			setTimeout(()=>{toast.className = toast.className.replace(' show', '')}, 3000);
 		} else {
@@ -199,7 +199,7 @@ class MarketCardModal extends React.Component {
 		const matchUID = this.props.cart.map(item => {return item.uid});
 		let count = document.getElementById('price').value || 0;
 		if (count === 0) {
-			let toast = document.getElementById('market-cardModal-required-toast');
+			let toast = document.getElementById('modal-required-toast');
 			toast.className += ' show';
 			setTimeout(()=>{toast.className = toast.className.replace(' show', '')}, 3000);
 		} else {
@@ -392,55 +392,55 @@ class MarketCardModal extends React.Component {
 	render() {
 		const matchUID = this.props.cart.map(item => {return item.uid});
 	    return (
-	    	<div className='market-cardModal'>
-	    		<div className='market-cardModal-overlay' onClick={this.props.closeModal}></div>
-	    		<div className='market-cardModal-content' >
-        			<div className='market-cardModal-exit' onClick={this.props.closeModal}><i className='fas fa-times'></i></div>
+	    	<div className='modal'>
+	    		<div className='modal-overlay' onClick={this.props.closeModal}></div>
+	    		<div className='modal-content' >
+        			<div className='modal-exit' onClick={this.props.closeModal}><i className='fas fa-times'></i></div>
 	    			<h2 className={this.props.info.gold ? 'gold' : ''}>{this.props.info.name + (this.props.info.gold ? ' (Gold)' : '')}</h2>
-	    			<div className='market-cardModal-img-container'>
-	    				<img className='market-cardModal-img' src={this.props.info.img} />
+	    			<div className='modal-img-container'>
+	    				<img className='modal-img' src={this.props.info.img} />
 	    			</div>
-	    			<div className='market-cardModal-info-container'>
-		    			<div className='market-cardModal-panel-header-container'>
-			    			<h3 id='panelforSale' className={this.state.panel === 'forSale' ? 'market-cardModal-panel-header activePanel' : 'market-cardModal-panel-header'} onClick={() => {
+	    			<div className='modal-info-container'>
+		    			<div className='modal-panel-header-container'>
+			    			<h3 id='panelforSale' className={this.state.panel === 'forSale' ? 'modal-panel-header activePanel' : 'modal-panel-header'} onClick={() => {
 								let currentPanel = this.state.panel;
 								let currentId = 'panel' + currentPanel;
 								if (currentPanel !== 'forSale') {
-									document.getElementById(currentId).className = 'market-cardModal-panel-header';
-									document.getElementById('panelforSale').className = 'market-cardModal-panel-header activePanel';
+									document.getElementById(currentId).className = 'modal-panel-header';
+									document.getElementById('panelforSale').className = 'modal-panel-header activePanel';
 									this.setState({panel: 'forSale'});
 								}
 			    			}}>Cards For Sale</h3>
-			    			<h3 id='panelmultiSelect' className={this.state.panel === 'multiSelect' ? 'market-cardModal-panel-header activePanel': 'market-cardModal-panel-header'} onClick={() => {
+			    			<h3 id='panelmultiSelect' className={this.state.panel === 'multiSelect' ? 'modal-panel-header activePanel': 'modal-panel-header'} onClick={() => {
 								let currentPanel = this.state.panel;
 								let currentId = 'panel' + currentPanel;
 								if (currentPanel !== 'multiSelect') {
-									document.getElementById(currentId).className = 'market-cardModal-panel-header';
-									document.getElementById('panelmultiSelect').className = 'market-cardModal-panel-header activePanel';
+									document.getElementById(currentId).className = 'modal-panel-header';
+									document.getElementById('panelmultiSelect').className = 'modal-panel-header activePanel';
 									this.setState({panel: 'multiSelect'});
 								}
 			    			}}>MultiSelect</h3>
-			    			<h3 id='panelstats' className={this.state.panel === 'stats' ? 'market-cardModal-panel-header activePanel': 'market-cardModal-panel-header'} onClick={() => {
+			    			<h3 id='panelstats' className={this.state.panel === 'stats' ? 'modal-panel-header activePanel': 'modal-panel-header'} onClick={() => {
 								let currentPanel = this.state.panel;
 								let currentId = 'panel' + currentPanel;
 								if (currentPanel !== 'stats') {
-									document.getElementById(currentId).className = 'market-cardModal-panel-header';
-									document.getElementById('panelstats').className = 'market-cardModal-panel-header activePanel';
+									document.getElementById(currentId).className = 'modal-panel-header';
+									document.getElementById('panelstats').className = 'modal-panel-header activePanel';
 									this.setState({panel: 'stats'});
 								}
 			    			}}>Stats</h3>
-			    			{/* <h3 id='panelhistory' className={this.state.panel === 'history' ? 'market-cardModal-panel-header activePanel': 'market-cardModal-panel-header'} onClick={() => {
+			    			{/* <h3 id='panelhistory' className={this.state.panel === 'history' ? 'modal-panel-header activePanel': 'modal-panel-header'} onClick={() => {
 								let currentPanel = this.state.panel;
 								let currentId = 'panel' + currentPanel;
 								if (currentPanel !== 'history') {
-									document.getElementById(currentId).className = 'market-cardModal-panel-header';
-									document.getElementById('panelhistory').className = 'market-cardModal-panel-header activePanel';
+									document.getElementById(currentId).className = 'modal-panel-header';
+									document.getElementById('panelhistory').className = 'modal-panel-header activePanel';
 									this.setState({panel: 'history'});
 								}
 			    			}}>Price History</h3>*/}
-			    			<span className='market-cardModal-panel-small-container'>
+			    			<span className='modal-panel-small-container'>
 			    				Panel: 
-				    			<select className='market-cardModal-panel-small' onChange={this.handlePanelChange}>
+				    			<select className='modal-panel-small' onChange={this.handlePanelChange}>
 						            <option value='forSale' selected={this.state.panel === 'forSale'}>Cards For Sale</option>
 						            <option value='multiSelect' selected={this.state.panel === 'multiSelect'}>MultiSelect</option>
 						            <option value='stats' selected={this.state.panel === 'stats'}>Stats</option>
@@ -449,25 +449,25 @@ class MarketCardModal extends React.Component {
 					        </span>
 		    			</div>
 		    			
-		    			{this.state.panel === 'forSale' ? <div className='market-cardModal-table-container'>
-		    				<table className='market-cardModal-table'>
+		    			{this.state.panel === 'forSale' ? <div className='modal-table-container'>
+		    				<table className='modal-table'>
 		    					<thead>
 		    						<tr>
 		    							<th onClick={() => {
-		    								this.updateSort('selected');
+		    								if (this.state.sortMethod !== 'selected') this.updateSort('selected');
 		    							}} style={{cursor: 'pointer'}}>{this.state.sortMethod === 'selected' ? <i className='fas fa-caret-down'></i> : ''}</th>
 		    							<th onClick={() => {
 		    								this.state.sortMethod === 'lvlDec' ? this.updateSort('lvlAsc') : this.updateSort('lvlDec');
-		    							}} style={{cursor: 'pointer'}}>Level <i className={'market-cardModal-table-sortIcon ' + (this.state.sortMethod === 'lvlAsc' ? 'fas fa-caret-up' : this.state.sortMethod === 'lvlDec' ? 'fas fa-caret-down' : '')}></i></th>
+		    							}} style={{cursor: 'pointer'}}>Level <i className={'modal-table-sortIcon ' + (this.state.sortMethod === 'lvlAsc' ? 'fas fa-caret-up' : this.state.sortMethod === 'lvlDec' ? 'fas fa-caret-down' : '')}></i></th>
 		    							<th onClick={() => {
 		    								this.state.sortMethod === 'bcxDec' ? this.updateSort('bcxAsc') : this.updateSort('bcxDec');
-		    							}} style={{cursor: 'pointer'}}>BCX <i className={'market-cardModal-table-sortIcon ' + (this.state.sortMethod === 'bcxAsc' ? 'fas fa-caret-up' : this.state.sortMethod === 'bcxDec' ? 'fas fa-caret-down' : '')}></i></th>
+		    							}} style={{cursor: 'pointer'}}>BCX <i className={'modal-table-sortIcon ' + (this.state.sortMethod === 'bcxAsc' ? 'fas fa-caret-up' : this.state.sortMethod === 'bcxDec' ? 'fas fa-caret-down' : '')}></i></th>
 		    							<th onClick={() => {
 		    								this.state.sortMethod === 'priceAsc' ? this.updateSort('priceDec') : this.updateSort('priceAsc');
-		    							}} style={{cursor: 'pointer'}}>Price <i className={'market-cardModal-table-sortIcon ' + (this.state.sortMethod === 'priceAsc' ? 'fas fa-caret-up' : this.state.sortMethod === 'priceDec' ? 'fas fa-caret-down' : '')}></i></th>
+		    							}} style={{cursor: 'pointer'}}>Price <i className={'modal-table-sortIcon ' + (this.state.sortMethod === 'priceAsc' ? 'fas fa-caret-up' : this.state.sortMethod === 'priceDec' ? 'fas fa-caret-down' : '')}></i></th>
 		    							<th onClick={() => {
 		    								this.state.sortMethod === 'priceBcxAsc' ? this.updateSort('priceBcxDec') : this.updateSort('priceBcxAsc');
-		    							}} style={{cursor: 'pointer'}}>$/BCX <i className={'market-cardModal-table-sortIcon ' + (this.state.sortMethod === 'priceBcxAsc' ? 'fas fa-caret-up' : this.state.sortMethod === 'priceBcxDec' ? 'fas fa-caret-down' : '')}></i></th>
+		    							}} style={{cursor: 'pointer'}}>$/BCX <i className={'modal-table-sortIcon ' + (this.state.sortMethod === 'priceBcxAsc' ? 'fas fa-caret-up' : this.state.sortMethod === 'priceBcxDec' ? 'fas fa-caret-down' : '')}></i></th>
 		    							<th>Seller</th>
 		    							<th>Card ID</th>
 		    						</tr>
@@ -480,7 +480,7 @@ class MarketCardModal extends React.Component {
 		    									<td className='center'><input type='checkbox' onClick={() => {
 		    										let selected = this.state.selected;
 		    										if (selected.length >= 45 && !selected.includes(listing)) {
-		    											let toast = document.getElementById('market-cardModal-tooMany-toast');
+		    											let toast = document.getElementById('modal-tooMany-toast');
 		    											toast.className += ' show';
 		    											setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
 		    										} else if (selected.includes(listing)) {
@@ -506,8 +506,8 @@ class MarketCardModal extends React.Component {
 		    					</tbody> }
 		    				</table>
 		    				{this.state.loading ? <div className='loader-modal-container'><div className='loader-modal'></div></div> : ''}
-		    			</div> : this.state.panel === 'multiSelect' ? <div className='market-cardModal-table-container'>
-			    			<div className='market-cardModal-multiselect'>
+		    			</div> : this.state.panel === 'multiSelect' ? <div className='modal-table-container'>
+			    			<div className='modal-multiselect'>
 			    				<p>{this.state.forSale.length} card{this.state.forSale.length === 1 ? '' : 's'} on the market currently.</p>
 			    				<p>Note: We currently only support purchases up to 45 cards.</p>
 			    				<div className='multiselect-half left'>
@@ -523,16 +523,16 @@ class MarketCardModal extends React.Component {
 			    					<button onClick={this.multiSelectPrice}>Search by Price</button>
 			    				</div>
 			    			</div>
-		    			</div> : this.state.panel === 'stats' ? <div className='market-cardModal-table-container'>
-			    			<div className='market-cardModal-stats'>
+		    			</div> : this.state.panel === 'stats' ? <div className='modal-table-container'>
+			    			<div className='modal-stats'>
 			    				<span>Splinter: {this.props.info.element}</span>
 			    				<span>Edition: {this.props.info.edition}</span>
 			    				<span>Rarity: {this.props.info.rarity}</span>
 			    				<span>Mana: {this.props.info.type === 'Monster' ? this.props.info.stats.mana[0] : this.props.info.stats.mana}</span>
 			    				<span>Type: {this.props.info.type}</span>
-			    				{this.props.info.type === 'Monster' ? <table className='market-cardModal-table'>
+			    				{this.props.info.type === 'Monster' ? <table className='modal-table'>
 			    					<thead>
-			    						<tr className='market-cardModal-table-header'>
+			    						<tr className='modal-table-header'>
 			    							<th>Level</th>
 			    							<th>{this.props.info.attackType === 'attack' ? 'Melee' : this.props.info.attackType === 'ranged' ? 'Ranged' : 'Magic'}</th>
 			    							<th>Speed</th>
@@ -579,35 +579,33 @@ class MarketCardModal extends React.Component {
 			    					</ul>
 			    				</div> : ''}
 			    			</div>
-		    			</div>
-
-		    			: this.state.panel === 'history' ? <div className='market-cardModal-table-container'>
+		    			</div> : this.state.panel === 'history' ? <div className='modal-table-container'>
 		    				<canvas id="myChart"></canvas>
 		    			</div> : ''}
 		    			
-		    			<div className='market-cardModal-addToCart'>
+		    			<div className='modal-addToCart'>
 		    				<span>{this.state.selected.length} {this.props.info.name} Card{this.state.selected.length === 1 ? '' : 's'} Selected, Total BCX: {sumProp(this.state.selected, 'bcx')}, Total: ${sumProp(this.state.selected, 'buy_price').toFixed(3)} USD</span>
-	    					<button className='market-cardModal-addToCart-btn' onClick={() => {
+	    					<button className='modal-addToCart-btn' onClick={() => {
 	    						let selectedArr = this.state.selected;
-	    						let toast = document.getElementById('market-cardModal-toast');
+	    						let toast = document.getElementById('modal-toast');
 	    						this.setState({selected: []});
 	    						this.props.addToCart(selectedArr);
 	    						toast.className += ' show';
 	    						setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
 	    					}} disabled={this.state.selected.length === 0}>Add to Cart</button>
-	    					<button className='market-cardModal-clearSelected-btn' onClick={() => {
+	    					<button className='modal-clearSelected-btn' onClick={() => {
 	    						this.setState({selected: []});
 	    					}} disabled={this.state.selected.length === 0}>Clear All</button>
 	    				</div>
 	    			</div>
 	    		</div>
-				<div id='market-cardModal-toast' className='toast successToast'>
+				<div id='modal-toast' className='toast successToast'>
 					<i className='fas fa-check'></i>Successfully added to cart!
 				</div>
-				<div id='market-cardModal-tooMany-toast' className='toast failToast'>
+				<div id='modal-tooMany-toast' className='toast failToast'>
 					<i className='fas fa-times'></i>You have already selected the limit of 45 cards.
 				</div>
-				<div id='market-cardModal-required-toast' className='toast failToast'>
+				<div id='modal-required-toast' className='toast failToast'>
 					<i className='fas fa-times'></i>Please fill all required fields.
 				</div>
 	    	</div>

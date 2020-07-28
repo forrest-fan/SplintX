@@ -1,4 +1,4 @@
-.market-cardModal {
+.modal {
 	position: fixed;
 	left: 0;
 	top: 0;
@@ -7,7 +7,7 @@
 	z-index: 7;
 }
 
-.market-cardModal-overlay {
+.modal-overlay {
 	position: fixed;
 	left: 0;
 	top: 0;
@@ -16,7 +16,7 @@
 	background: rgba(0, 0, 0, 0.4);
 }
 
-.market-cardModal-content {
+.modal-content {
 	padding: 20px;
 	box-sizing: border-box;
 	position: fixed;
@@ -32,7 +32,7 @@
 	align-content: flex-start;
 }
 
-.market-cardModal-exit {
+.modal-exit {
 	position: absolute;
 	top: 10px;
 	right: 10px;
@@ -41,36 +41,36 @@
 	transition: 0.3s;
 }
 
-.market-cardModal-exit:hover {
+.modal-exit:hover {
 	color: #d43d3d;
 }
 
-.market-cardModal-content h2 {
+.modal-content h2 {
 	text-align: center;
 	width: 100%;
 	font-size: 26px;
 }
 
-.market-cardModal-content h2.gold {
+.modal-content h2.gold {
 	color: var(--login-btn);
 }
 
-.market-cardModal-img-container {
+.modal-img-container {
 	padding: 10px;
 	box-sizing: border-box;
 	vertical-align: top;
 }
 
-.market-cardModal-img {
+.modal-img {
 	height: 55vh;
 }
 
-.market-cardModal-info-container {
+.modal-info-container {
 	flex: 1;
 	max-width: 100%;
 }
 
-.market-cardModal-panel-header {
+.modal-panel-header {
 	display: inline-block;
 	margin: 8px 0px 0px 10px;
 	padding: 6px 14px;
@@ -80,22 +80,23 @@
 	border-radius: 15px;
 }
 
-.market-cardModal-panel-header:hover {
+.modal-panel-header:hover {
 	color: #fff;
 	background: var(--navbar-bg);
 	opacity: 0.6;
 }
 
-.market-cardModal-panel-header.activePanel {
+.modal-panel-header.activePanel {
 	color: var(--login-btn);
 	background: var(--navbar-bg);
+	pointer-events: none;
 }
 
-.market-cardModal-panel-small-container {
+.modal-panel-small-container {
 	display: none;
 }
 
-.market-cardModal-panel-small {
+.modal-panel-small {
 	font-size: 15px;
 	padding: 4px;
 	font-family: inherit;
@@ -103,24 +104,24 @@
 	margin-left: 5px;
 }
 
-.market-cardModal-multiselect .multiselect-half {
+.modal-multiselect .multiselect-half {
 	width: 50%;
 	display: inline-block;
 	padding: 10px 20px;
 	box-sizing: border-box;
 }
 
-.market-cardModal-multiselect .multiselect-half.left {
+.modal-multiselect .multiselect-half.left {
 	border-right: 1px solid #ccc;
 }
 
-.market-cardModal-multiselect h4 {
+.modal-multiselect h4 {
 	margin: 0.7em 0px;
 	font-size: 18px;
 	text-align: center;
 }
 
-.market-cardModal-multiselect p {
+.modal-multiselect p {
 	margin: 0.7em 0px;
 	font-size: 16px;
 	text-align: center;
@@ -141,7 +142,7 @@
 	border-bottom: 1px solid var(--login-btn);
 }
 
-.market-cardModal-multiselect button {
+.modal-multiselect button {
 	display: block;
 	margin: 10px auto;
 	padding: 8px 0px;
@@ -156,11 +157,11 @@
 	transition: 0.3s;
 }
 
-.market-cardModal-multiselect button:hover {
+.modal-multiselect button:hover {
 	opacity: 1;
 }
 
-.market-cardModal-table-container {
+.modal-table-container {
 	padding: 10px;
 	box-sizing: border-box;
 	height: 50vh;
@@ -168,30 +169,30 @@
 	position: relative;
 }
 
-.market-cardModal-table-container::-webkit-scrollbar {
+.modal-table-container::-webkit-scrollbar {
     width: 5px;
     height: 5px;
 	padding: 2px;
 	cursor: pointer;
 }
 
-.market-cardModal-table-container::-webkit-scrollbar-track {
+.modal-table-container::-webkit-scrollbar-track {
 	background: #ddd;
 	border-radius: 5px;
 }
 
-.market-cardModal-table-container::-webkit-scrollbar-thumb {
+.modal-table-container::-webkit-scrollbar-thumb {
     border-radius: 10px;
     background-color: rgba(0, 0, 0, 0.5);
     cursor: pointer;
 }
 
-.market-cardModal-table {
+.modal-table {
 	width: 100%;
 	border-collapse: collapse;
 }
 
-.market-cardModal-table thead {
+.modal-table thead {
 	background: var(--navbar-bg);
 	color: var(--login-btn);
 	font-weight: bold;
@@ -199,48 +200,52 @@
 	border: none;
 }
 
-.market-cardModal-table th{
+.modal-table th{
 	padding: 7px 10px;
 }
 
-.market-cardModal-table-sortIcon {
+.modal-table-sortIcon {
 	margin-left: 5px;
 	font-size: 10px;
 }
 
-.market-cardModal-table tr {
+.modal-table tr {
 	border-top: 1px solid #ccc;
 }
 
-.market-cardModal-table td{
+.modal-table td{
 	padding: 4px 7px;
 	border: 1px solid #ddd;
 }
 
-.market-cardModal-table input {
+.modal-table input {
 	cursor: pointer;
 }
 
-.market-cardModal-table .center {
+.modal-table .left {
+	text-align: left;
+}
+
+.modal-table .center {
 	text-align: center;
 }
 
-.market-cardModal-table .right {
+.modal-table .right {
 	text-align: right;
 }
 
-.market-cardModal-stats span {
+.modal-stats span {
 	font-weight: bold;
 	display: inline-block;
 	padding: 8px 15px;
 	font-size: 17px;
 }
 
-.market-cardModal-table-container canvas {
+.modal-table-container canvas {
 	max-width: 100%;
 }
 
-.market-cardModal-addToCart {
+.modal-addToCart {
 	position: absolute;
 	bottom: 10px;
 	right: 10px;
@@ -249,7 +254,7 @@
 	padding: 10px;
 }
 
-.market-cardModal-addToCart-btn {
+.modal-addToCart-btn {
 	display: inline-block;
 	margin-left: 15px;
 	padding: 10px 10px;
@@ -263,16 +268,16 @@
 	cursor: pointer;
 }
 
-.market-cardModal-addToCart-btn:focus {
+.modal-addToCart-btn:focus {
 	outline: none;
 }
 
-.market-cardModal-addToCart-btn:disabled {
+.modal-addToCart-btn:disabled {
 	opacity: 0.5;
 	cursor: not-allowed;
 }
 
-.market-cardModal-clearSelected-btn {
+.modal-clearSelected-btn {
 	display: inline-block;
 	margin-left: 15px;
 	padding: 10px;
@@ -287,76 +292,76 @@
 	transition: 0.3s;
 }
 
-.market-cardModal-clearSelected-btn:hover {
+.modal-clearSelected-btn:hover {
 	background: var(--login-btn);
 }
 
-.market-cardModal-clearSelected-btn:focus {
+.modal-clearSelected-btn:focus {
 	outline: none;
 }
 
-.market-cardModal-clearSelected-btn:disabled {
+.modal-clearSelected-btn:disabled {
 	opacity: 0.5;
 	cursor: not-allowed;
 }
 
 @media (max-width: 1100px) {
-	.market-cardModal-img-container {
+	.modal-img-container {
 		display: none;
 	}
 
-	.market-cardModal-content {
+	.modal-content {
 		display: block;
 	}
 }
 
 @media (max-width: 890px) {
-	.market-cardModal-table-container {
+	.modal-table-container {
 		white-space: nowrap;
 		overflow-x: auto;
 		height: 40vh;
 	}
 
-	.market-cardModal-addToCart-btn {
+	.modal-addToCart-btn {
 		display: block;
 		margin: 5px 0px;
 	}
 
-	.market-cardModal-clearSelected-btn {
+	.modal-clearSelected-btn {
 		display: block;
 		margin: 5px 0px;
 	}
 
-	.market-cardModal-addToCart {
+	.modal-addToCart {
 		left: 10px;
 	}
 }
 
 @media (max-width: 750px) {
-	.market-cardModal-content h2 {
+	.modal-content h2 {
 		font-size: 20px;
 	}
 
-	.market-cardModal-panel-header {
+	.modal-panel-header {
 		display: none;
 	}
 
-	.market-cardModal-panel-small-container {
+	.modal-panel-small-container {
 		display: block;
 	}
 
-	.market-cardModal-multiselect .multiselect-half {
+	.modal-multiselect .multiselect-half {
 		padding: 5px;
 		display: block;
 		width: 100%;
 	}
 
-	.market-cardModal-multiselect .multiselect-half.left {
+	.modal-multiselect .multiselect-half.left {
 		border-right: none;
 		border-bottom: 1px solid #ccc;
 	}
 
-	.market-cardModal-stats span {
+	.modal-stats span {
 		display: block;
 	}
 }

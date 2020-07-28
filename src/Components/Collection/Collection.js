@@ -205,29 +205,26 @@ class Collection extends React.Component {
 			          	}
 			          	let img = 'https://d36mxiodymuqjm.cloudfront.net/cards_by_level/' + edition.toLowerCase() + '/' + name.replace(' ', '%20') + '_lv' + lvl;
 			          	img += gold ? '_gold.png' : '.png';
+			          	let attackType = type === 'Monster' && cardData.stats.attack[cardData.stats.attack.length - 1] !== 0 ? 'attack' : type === 'Monster' && cardData.stats.ranged[cardData.stats.ranged.length - 1] !== 0 ? 'ranged' : type === 'Monster' && cardData.stats.magic[cardData.stats.magic.length - 1] !== 0 ? 'magic' : 'none';
 			          	if (distinctCards.includes(distinctID)) {
 			            	for (let i = 0; i < cards.length; i++) {
 			            		let card = cards[i];
 			              		if (card.distinctID === distinctID) {
-		                			card.gold = card.gold || gold;
 		                			card.count += 1;
 		                			card.lvlHigh = lvl > card.lvlHigh ? lvl : card.lvlHigh;
-		                			card.lvlCount[lvl - 1] += 1;
 		                			card.img = 'https://d36mxiodymuqjm.cloudfront.net/cards_by_level/' + edition.toLowerCase() + '/' + name.replace(' ', '%20') + '_lv' + card.lvlHigh;
 		          					card.img += card.gold ? '_gold.png' : '.png';
 		          					card.mana = type === 'Monster' ? cardData.stats.mana[card.lvlHigh - 1] || 0 : cardData.stats.mana;
-				              		card.hp = (cardData.stats.health[card.lvlHigh - 1] + cardData.stats.armor[card.lvlHigh - 1]) || 0;
-				              		card.speed = cardData.stats.speed[card.lvlHigh - 1] || 0;
+		          					card.cards.push({
+		          						lvl: lvl,
+						          		uid: Eelement.cards[l].uid,
+						          		xp: Eelement.cards[l].xp
+		          					});
 				              		cards[i] = card;
 				              		break;
 		              			}
 		           			}	
 			         	} else {
-			         		let lvlCount = [];
-			         		for (let i = 0; i < lvlXP[cardData.rarity - 1].length + 1; i++) {
-			         			lvlCount.push(0);
-			         		}
-			         		lvlCount[lvl - 1] += 1;
 			            	cards.push({
 			              		name: name,
 			              		rarity: rarity,
@@ -240,11 +237,14 @@ class Collection extends React.Component {
 				              	img: img,
 				              	count: 1,
 				              	lvlHigh: lvl,
-				              	lvlCount: lvlCount,
 				              	mana: type === 'Monster' ? cardData.stats.mana[lvl - 1] || 0 : cardData.stats.mana,
-				              	hp: (cardData.stats.health[lvl - 1] + cardData.stats.armor[lvl - 1]) || 0,
-				              	speed: cardData.stats.speed[lvl - 1] || 0
-							 						//attack: cardData.stats.attack[cardData.stats.attack.length - 1] !== 0 ? cardData.stats.attack[cardData.stats.attack.length - 1] : cardData.stats.ranged[cardData.stats.ranged.length - 1] !== 0 ? cardData.stats.ranged[cardData.stats.ranged.length - 1] : cardData.stats.magic[cardData.stats.magic.length - 1] !== 0 ? cardData.stats.magic[cardData.stats.magic.length - 1] !== 0
+				              	stats: cardData.stats,
+				              	attackType: attackType,
+				              	cards: [{
+					          		lvl: lvl,
+					          		uid: Eelement.cards[l].uid,
+					          		xp: Eelement.cards[l].xp
+					          	}]
 							});
 		            		distinctCards.push(distinctID);
 			        	}
