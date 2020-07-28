@@ -429,7 +429,7 @@ class MarketCardModal extends React.Component {
 									this.setState({panel: 'stats'});
 								}
 			    			}}>Stats</h3>
-			    			<h3 id='panelhistory' className={this.state.panel === 'history' ? 'market-cardModal-panel-header activePanel': 'market-cardModal-panel-header'} onClick={() => {
+			    			{/* <h3 id='panelhistory' className={this.state.panel === 'history' ? 'market-cardModal-panel-header activePanel': 'market-cardModal-panel-header'} onClick={() => {
 								let currentPanel = this.state.panel;
 								let currentId = 'panel' + currentPanel;
 								if (currentPanel !== 'history') {
@@ -437,14 +437,14 @@ class MarketCardModal extends React.Component {
 									document.getElementById('panelhistory').className = 'market-cardModal-panel-header activePanel';
 									this.setState({panel: 'history'});
 								}
-			    			}}>Price History</h3>
+			    			}}>Price History</h3>*/}
 			    			<span className='market-cardModal-panel-small-container'>
 			    				Panel: 
 				    			<select className='market-cardModal-panel-small' onChange={this.handlePanelChange}>
 						            <option value='forSale' selected={this.state.panel === 'forSale'}>Cards For Sale</option>
 						            <option value='multiSelect' selected={this.state.panel === 'multiSelect'}>MultiSelect</option>
 						            <option value='stats' selected={this.state.panel === 'stats'}>Stats</option>
-						            <option value='history' selected={this.state.panel === 'history'}>Price History</option>
+						            {/* <option value='history' selected={this.state.panel === 'history'}>Price History</option>*/}
 						        </select>
 					        </span>
 		    			</div>
