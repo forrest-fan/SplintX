@@ -3,8 +3,9 @@ import './MarketCardModal.css';
 import $ from 'jquery';
 import Chart from 'chart.js';
 
-const lvlXP = [[20,60,160,360,760,1560,2560,4560,7560],[100,300,700,1500,2500,4500,8500],[250,750,1750,3750,7750],[1000,3000,7000]];
-const newLvlXP = [[1,5,14,30,60,100,150,220,300,400],[1,5,14,25,40,60,85,115],[1,4,10,20,32,46],[1,3,6,11]];
+const combineRate = [[1,5,14,30,60,100,150,220,300,400],[1,5,14,25,40,60,85,115],[1,4,10,20,32,46],[1,3,6,11]];
+const combineRateGold = [[0,0,1,2,5,9,14,20,27,38],[0,1,2,4,7,11,16,22],[0,1,2,4,7,10],[0,1,2,4]];
+
 const sumProp = (array, prop) => {
 	let sum = 0;
 	for (let i = 0; i < array.length; i++) {
@@ -257,16 +258,16 @@ class MarketCardModal extends React.Component {
 			  			let rarity = this.props.info.rarity === 'Common' ? 1 : this.props.info.rarity === 'Rare' ? 2 : this.props.info.rarity === 'Epic' ? 3 : 4;
 						let edition = this.props.info.edition;
 						let detailID = this.props.info.detailID;
-						let lvl = 1;
-						let xpRates = edition === 'Untamed' || (edition === 'Reward' && detailID >= 225) ? newLvlXP : lvlXP;
-						let increment = edition === 'Untamed' || (edition === 'Reward' && detailID >= 225) ? 1 : 2;
+						let lvl = 0;
 						let bcx = this.getBCX(listing.xp);
-						for (let i = xpRates[rarity - 1].length - 1; i >= 0; i--) {
-			          		if (listing.xp >= xpRates[rarity - 1][i]) {
-			          			lvl = i + increment;
-			          			break;
-			          		}
-			          	}
+						let xpRates = this.props.info.gold ? combineRateGold[rarity - 1] : combineRate[rarity - 1];
+						for (let i = 0; i < xpRates.length; i++) {
+							if (bcx >= xpRates[i]) {
+								lvl++;
+							} else {
+								break;
+							}
+						}
 	      				return ({
 	      					seller: listing.seller,
 	      					uid: listing.uid,
