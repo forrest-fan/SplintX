@@ -72,7 +72,7 @@ class Collectionmodal extends React.Component {
 		this.setState({sortMethod: method});
 	}
 
-	getBurn(BCX) {
+	getBurn(BCX, xp) {
 		let rarity = this.props.info.rarity === 'Common' ? 1 : this.props.info.rarity === 'Rare' ? 2 : this.props.info.rarity === 'Epic' ? 3 : 4;
 		let burn_rate=[15,60,300,1500];
 		let untamed_burn_rate = [10,40,200,1000];
@@ -90,9 +90,13 @@ class Collectionmodal extends React.Component {
 		}
 		if(this.props.info.gold) {
 			burn_value *= 50;
-		} 
-	  // if card is maxed out, burn value *= 1.05
-	  return burn_value;
+		}
+		let xp_levels = [[20,60,160,360,760,1560,2560,4560,7560],[100,300,700,1500,2500,4500,8500],[250,750,1750,3750,7750],[1000,3000,7000]];
+		let max_xp = xp_levels[rarity][xp_levels[rarity].length - 1];
+		if (xp >= max_xp) {
+			burn_value *= 1.05;
+		}
+	 	return burn_value;
 	}
 
 	render() {
@@ -176,7 +180,7 @@ class Collectionmodal extends React.Component {
 			    									<td className='left'>{card.uid}</td>
 			    									<td className='center'>{card.lvl}</td>
 			    									<td className='center'>{card.bcx}</td>
-			    									<td className='center'>{this.getBurn(card.bcx)}</td>
+			    									<td className='center'>{this.getBurn(card.bcx, card.xp)}</td>
 			    								</tr>
 			    							);
 			    						})}

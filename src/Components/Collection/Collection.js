@@ -246,6 +246,7 @@ class Collection extends React.Component {
 		          					card.cards.push({
 		          						lvl: lvl,
 						          		uid: Eelement.cards[l].uid,
+					          			xp: Eelement.cards[l].xp,
 						          		bcx: this.getBCX(Eelement.cards[l].xp, Eelement.cards[l].edition, cardData.rarity, detailID, gold)
 		          					});
 				              		cards[i] = card;
@@ -272,6 +273,7 @@ class Collection extends React.Component {
 				              	cards: [{
 					          		lvl: lvl,
 					          		uid: Eelement.cards[l].uid,
+					          		xp: Eelement.cards[l].xp,
 					          		bcx: this.getBCX(Eelement.cards[l].xp, Eelement.cards[l].edition, cardData.rarity, detailID, gold)
 					          	}]
 							});
