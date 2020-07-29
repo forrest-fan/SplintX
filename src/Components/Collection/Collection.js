@@ -148,13 +148,29 @@ class Collection extends React.Component {
 					return -1;
 				}
 			})
-		} else if (method === 'manaAsc') {
+		} else if (method === 'qtyAsc') {
 			cards.sort((a, b) => {
-				return a.mana - b.mana;
+				return a.count - b.count;
 			})
-		} else if (method === 'manaDes') {
+		} else if (method === 'qtyDes') {
 			cards.sort((a, b) => {
-				return b.mana - a.mana;
+				return b.count - a.count;
+			})
+		} else if (method === 'bcxAsc') {
+			cards.sort((a, b) => {
+				return a.totalBCX - b.totalBCX;
+			})
+		} else if (method === 'bcxDes') {
+			cards.sort((a, b) => {
+				return b.totalBCX - a.totalBCX;
+			})
+		} else if (method === 'valueAsc') {
+			cards.sort((a, b) => {
+				return (a.totalBCX * a.lowPriceBCX) - (b.totalBCX * b.lowPriceBCX);
+			})
+		} else if (method === 'valueDes') {
+			cards.sort((a, b) => {
+				return (b.totalBCX * b.lowPriceBCX) - (a.totalBCX * a.lowPriceBCX);
 			})
 		} else if (method === 'splinter') {
 		    cards.sort((a, b) => {
@@ -258,7 +274,6 @@ class Collection extends React.Component {
 	                			card.lvlHigh = lvl > card.lvlHigh ? lvl : card.lvlHigh;
 	                			card.img = 'https://d36mxiodymuqjm.cloudfront.net/cards_by_level/' + edition.toLowerCase() + '/' + name.replace(' ', '%20') + '_lv' + card.lvlHigh;
 	          					card.img += card.gold ? '_gold.png' : '.png';
-	          					card.mana = type === 'Monster' ? cardData.stats.mana[card.lvlHigh - 1] || 0 : cardData.stats.mana;
 	          					card.totalBCX += bcx;
 	          					card.cards.push({
 	          						lvl: lvl,
@@ -284,7 +299,6 @@ class Collection extends React.Component {
 			              	tier: cardData.tier,
 			              	count: 1,
 			              	lvlHigh: lvl,
-			              	mana: type === 'Monster' ? cardData.stats.mana[lvl - 1] || 0 : cardData.stats.mana,
 			              	stats: cardData.stats,
 			              	attackType: attackType,
 			              	totalBCX: bcx,

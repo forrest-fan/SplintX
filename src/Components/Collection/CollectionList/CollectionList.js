@@ -42,8 +42,12 @@ class CollectionList extends React.Component {
                 <option value='splinter'>Splinter</option>
                 <option value='az'>Name: A - Z</option>
                 <option value='za'>Name: Z - A</option>
-                <option value='manaAsc'>Mana: Low - High</option>
-                <option value='manaDes'>Mana: High - Low</option>
+                <option value='qtyAsc'>Cards: Low - High</option>
+                <option value='qtyDes'>Cards: High - Low</option>
+                <option value='bcxAsc'>BCX: Low - High</option>
+                <option value='bcxDes'>BCX: High - Low</option>
+                <option value='valueAsc'>Value: Low - High</option>
+                <option value='valueDes'>Value: High - Low</option>
               </select>
             </span>
           </span>
