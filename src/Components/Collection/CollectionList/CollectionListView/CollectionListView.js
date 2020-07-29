@@ -21,7 +21,7 @@ class CollectionListView extends React.Component {
 	render() {
 	    return (
 	    	<div className='list-item-container' id={this.props.info.distinctID}>
-	    		<div className='collection list-item'>
+	    		<div className='collection list-item' onClick={this.toggleModal}>
 	    			<i className={(this.props.info.gold ? 'gold' : this.props.info.element.toLowerCase()) + ' fas center ' + (this.props.info.element === 'Fire' ? 'fa-fire' : this.props.info.element === 'Water' ? 'fa-tint' : this.props.info.element === 'Earth' ? 'fa-leaf' : this.props.info.element === 'Life' ? 'fa-star-of-life' : this.props.info.element === 'Death' ? 'fa-skull' : this.props.info.element === 'Dragon' ? 'fa-dragon' : 'fa-dumbbell')}></i>
 	    			<p className={'name' + (this.props.info.gold ? ' gold' : '')}>{this.props.info.name}</p>
 	    			<p className='qty center'>{this.props.info.count}</p>

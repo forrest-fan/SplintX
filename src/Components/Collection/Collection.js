@@ -33,6 +33,7 @@ class Collection extends React.Component {
 		this.updateSort = this.updateSort.bind(this);
 		this.showMobileFilters = this.showMobileFilters.bind(this);
 		this.hideMobileFilters = this.hideMobileFilters.bind(this);
+		this.getBCX = this.getBCX.bind(this);
 	}
 
 	updateFilters(filter, category, action) {
@@ -173,6 +174,33 @@ class Collection extends React.Component {
 		this.setState({mobileFilters: false});
 	}
 
+	getBCX(xp, edition, rarity, detailID, gold) {
+		if (xp === 0) {
+			return 1;
+		} else if (edition === 4 || (edition === 1 && detailID > 223)) {
+			return xp;
+		}
+
+		let alpha_xp = [20,100,250,1000];
+		let alpha_gold_xp = [250,500,1000,2500];
+		let beta_xp = [15,75,175,750];
+		let beta_gold_xp = [200,400,800,2000];
+		
+		if (edition === 0) {
+			if (gold) {
+				return Math.floor(xp / alpha_gold_xp[rarity - 1]);
+			} else {
+				return Math.floor(1 + (xp / alpha_xp[rarity - 1]));
+			}
+		} else {
+			if (gold) {
+				return Math.floor(xp / beta_gold_xp[rarity - 1]);
+			} else {
+				return Math.floor(1 + (xp / beta_xp[rarity - 1]));
+			}
+		}
+	}
+
 	componentDidMount() {
 		if (this.props.loggedIn) {
 			let cards = [];
@@ -218,7 +246,7 @@ class Collection extends React.Component {
 		          					card.cards.push({
 		          						lvl: lvl,
 						          		uid: Eelement.cards[l].uid,
-						          		xp: Eelement.cards[l].xp
+						          		bcx: this.getBCX(Eelement.cards[l].xp, Eelement.cards[l].edition, cardData.rarity, detailID, gold)
 		          					});
 				              		cards[i] = card;
 				              		break;
@@ -235,6 +263,7 @@ class Collection extends React.Component {
 				              	distinctID: distinctID,
 				              	gold: gold,
 				              	img: img,
+				              	tier: cardData.tier,
 				              	count: 1,
 				              	lvlHigh: lvl,
 				              	mana: type === 'Monster' ? cardData.stats.mana[lvl - 1] || 0 : cardData.stats.mana,
@@ -243,7 +272,7 @@ class Collection extends React.Component {
 				              	cards: [{
 					          		lvl: lvl,
 					          		uid: Eelement.cards[l].uid,
-					          		xp: Eelement.cards[l].xp
+					          		bcx: this.getBCX(Eelement.cards[l].xp, Eelement.cards[l].edition, cardData.rarity, detailID, gold)
 					          	}]
 							});
 		            		distinctCards.push(distinctID);

@@ -38,7 +38,7 @@ class Collectionmodal extends React.Component {
 			sortMethod: 'bcxDec',
 			selected: []
 		};
-		this.getBCX = this.getBCX.bind(this);
+		this.getBurn = this.getBurn.bind(this);
 	}
 
 	updateSort(method) {
@@ -72,32 +72,27 @@ class Collectionmodal extends React.Component {
 		this.setState({sortMethod: method});
 	}
 
-	getBCX(xp) {
-		if (xp === 0) {
-			return 1;
-		} else if (this.props.info.edition === 'Untamed' || (this.props.info.edition === 'Reward' && this.props.info.detailID > 223)) {
-			return xp;
-		}
-
-		let alpha_xp = [20,100,250,1000];
-		let alpha_gold_xp = [250,500,1000,2500];
-		let beta_xp = [15,75,175,750];
-		let beta_gold_xp = [200,400,800,2000];
+	getBurn(BCX) {
 		let rarity = this.props.info.rarity === 'Common' ? 1 : this.props.info.rarity === 'Rare' ? 2 : this.props.info.rarity === 'Epic' ? 3 : 4;
-
-		if (this.props.info.edition === 'Alpha') {
-			if (this.props.info.gold) {
-				return Math.floor(xp / alpha_gold_xp[rarity - 1]);
+		let burn_rate=[15,60,300,1500];
+		let untamed_burn_rate = [10,40,200,1000];
+		let burn_value = burn_rate[rarity - 1] * BCX;
+		if(this.props.info.edition !== 'Beta') {
+			if(this.props.info.edition === 'Alpha' || this.props.info.edition === 'Promo') {
+				burn_value *= 2;
+			} else if (this.props.info.edition === 'Untamed') {
+				burn_value = untamed_burn_rate[rarity - 1];
 			} else {
-				return Math.floor(1 + (xp / alpha_xp[rarity - 1]));
-			}
-		} else {
-			if (this.props.info.gold) {
-				return Math.floor(xp / beta_gold_xp[rarity - 1]);
-			} else {
-				return Math.floor(1 + (xp / beta_xp[rarity - 1]));
-			}
+				if(this.props.info.tier) {
+					burn_value = untamed_burn_rate[rarity - 1];
+				} 
+			} 
 		}
+		if(this.props.info.gold) {
+			burn_value *= 50;
+		} 
+	  // if card is maxed out, burn value *= 1.05
+	  return burn_value;
 	}
 
 	render() {
@@ -151,7 +146,10 @@ class Collectionmodal extends React.Component {
 			    							<th onClick={() => {
 			    								this.state.sortMethod === 'bcxDec' ? this.updateSort('bcxAsc') : this.updateSort('bcxDec');
 			    							}} style={{cursor: 'pointer'}}>BCX <i className={'modal-table-sortIcon ' + (this.state.sortMethod === 'bcxAsc' ? 'fas fa-caret-up' : this.state.sortMethod === 'bcxDec' ? 'fas fa-caret-down' : '')}></i></th>
-			    						</tr>
+			    							<th onClick={() => {
+			    								this.state.sortMethod === 'bcxDec' ? this.updateSort('bcxAsc') : this.updateSort('bcxDec');
+			    							}} style={{cursor: 'pointer'}}>Burn Value <i className={'modal-table-sortIcon ' + (this.state.sortMethod === 'bcxAsc' ? 'fas fa-caret-up' : this.state.sortMethod === 'bcxDec' ? 'fas fa-caret-down' : '')}></i></th>
+										</tr>
 			    					</thead>
 			    					{this.state.loading ? '' :
 			    					<tbody>
@@ -177,7 +175,8 @@ class Collectionmodal extends React.Component {
 			    									}} /></td>
 			    									<td className='left'>{card.uid}</td>
 			    									<td className='center'>{card.lvl}</td>
-			    									<td className='center'>{this.getBCX(card.xp)}</td>
+			    									<td className='center'>{card.bcx}</td>
+			    									<td className='center'>{this.getBurn(card.bcx)}</td>
 			    								</tr>
 			    							);
 			    						})}
