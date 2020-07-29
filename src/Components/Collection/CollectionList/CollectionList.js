@@ -51,10 +51,12 @@ class CollectionList extends React.Component {
         </div>
       	<div className='list'>
           {this.state.renderStyle === 'list' ?
-          <div className='collection list-item header'>
+          <div className='list-item header'>
             <p className='center'></p>
             <p>Name</p>
-            <p className='center'>Quantity</p>
+            <p className='center'>Cards</p>
+            <p className='center'>BCX</p>
+            <p className='center'>Value</p>
           </div> : '' }
 	         {this.props.loading ?
             <div className='loader-container'><div className='loader'></div></div> :
