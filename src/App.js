@@ -124,7 +124,7 @@ class App extends React.Component {
                 }
                 sessionStorage.setItem('cardDetails', JSON.stringify(detailObj));
                 this.setState({
-                  page: 'collection',
+                  page: 'market',
                   DECbalance: DECbalance,
                   cardDetails: cardDetails
                 });
