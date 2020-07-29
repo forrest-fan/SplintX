@@ -9,6 +9,13 @@ var allCards = [];
 const combineRate = [[1,5,14,30,60,100,150,220,300,400],[1,5,14,25,40,60,85,115],[1,4,10,20,32,46],[1,3,6,11]];
 const combineRateGold = [[0,0,1,2,5,9,14,20,27,38],[0,1,2,4,7,11,16,22],[0,1,2,4,7,10],[0,1,2,4]];
 
+const calculateValue = (cards) => {
+  let value = 0;
+  for (let i = 0; i < cards.length; i++) {
+    value += cards[i].totalBCX * cards[i].lowPriceBCX;
+  }
+  return value;
+}
 
 class Collection extends React.Component {
 	constructor(props) {
@@ -27,7 +34,8 @@ class Collection extends React.Component {
 			filterCount: 0,
 			cards: [],
 			mobileFilters: false,
-			loading: this.props.loggedIn
+			loading: this.props.loggedIn,
+			totalValue: 0
 		};
 		this.updateFilters = this.updateFilters.bind(this);
 		this.updateSort = this.updateSort.bind(this);
@@ -306,6 +314,7 @@ class Collection extends React.Component {
 			    });
         		allCards = cards;
 				this.updateFilters('Untamed', 'edition', 'add');
+				this.setState({totalValue: calculateValue(allCards)})
 			}.bind(this),
 			error: function(e) {
       			console.log('There was an error retrieving your cards.');
@@ -343,7 +352,7 @@ class Collection extends React.Component {
 				<div className='collection-container'>
 					<CollectionFilter updateFilters={this.updateFilters} mobileFilters={this.state.mobileFilters} hideMobileFilters={this.hideMobileFilters}/>
 					{this.props.loggedIn ?
-						<CollectionList cards={this.state.cards} loading={this.state.loading} updateSort={this.updateSort} filterCount={this.state.filterCount} showMobileFilters={this.showMobileFilters}/> :
+						<CollectionList cards={this.state.cards} loading={this.state.loading} updateSort={this.updateSort} filterCount={this.state.filterCount} showMobileFilters={this.showMobileFilters} totalValue={this.state.totalValue}/> :
 						<div className='collection-login-prompt'>Please log in to see your cards.</div> }
 				</div>
 			</div>

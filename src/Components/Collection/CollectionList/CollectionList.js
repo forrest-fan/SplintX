@@ -47,6 +47,7 @@ class CollectionList extends React.Component {
               </select>
             </span>
           </span>
+          <p className='totalValue'>Total Collection Value: ${this.props.totalValue.toFixed(3)} USD</p>
         </div>
       	<div className='list'>
           {this.state.renderStyle === 'list' ?
