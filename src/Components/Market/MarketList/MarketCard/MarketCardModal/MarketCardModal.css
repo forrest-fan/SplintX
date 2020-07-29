@@ -187,6 +187,12 @@
     cursor: pointer;
 }
 
+.modal-table-container h3.summonerStat {
+	font-size: 19px;
+	font-weight: bold;
+	margin: 10px 0;
+}
+
 .modal-table {
 	width: 100%;
 	border-collapse: collapse;

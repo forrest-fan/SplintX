@@ -27,6 +27,8 @@ const pivot = (obj) => {
 	return arr;
 }
 
+const summoner = [[[1, 1, 1, 1, 0], [2, 2, 2, 1, 1], [3, 3, 2, 2, 1], [4, 4, 3, 2, 2], [5, 5, 4, 3, 2], [6, 6, 5, 4, 2], [7, 7, 6, 4, 3], [8, 8, 6, 5, 3], [9, 9, 7, 5, 4], [10, 10, 8, 6, 4]], [[1, 1, 1, 1, 1], [2, 3, 2, 2, 1], [3, 4, 3, 2, 2], [4, 5, 4, 3, 2], [5, 6, 5, 4, 3], [6, 8, 6, 5, 3], [7, 9, 7, 5, 4], [8, 10, 8, 6, 4]], [[1, 2, 1, 1, 1], [2, 3, 3, 2, 1], [3, 5, 4, 3, 2], [4, 7, 5, 4, 3], [5, 8, 7, 5, 3], [6, 10, 8, 6, 4]], [[1, 3, 2, 2, 1], [2, 5, 4, 3, 2], [3, 8, 6, 5, 3], [4, 10, 8, 6, 4]]];
+
 class Collectionmodal extends React.Component {
 	constructor(props) {
 		super(props);
@@ -240,6 +242,29 @@ class Collectionmodal extends React.Component {
 			    							}
 			    						})}
 			    					</ul>
+			    					<h3 className='summonerStat'>Summoner Level Cap</h3>
+			    					<table className='modal-table' style={{tableLayout: 'fixed'}}>
+				    					<thead>
+				    						<tr className='modal-table-header'>
+				    							<th>Level</th>
+				    							<th>Common</th>
+				    							<th>Rare</th>
+				    							<th>Epic</th>
+				    							<th>Legendary</th>
+				    						</tr>
+				    					</thead>
+				    					<tbody>
+				    						{summoner[(this.props.info.rarity === 'Common' ? 1 : this.props.info.rarity === 'Rare' ? 2 : this.props.info.rarity === 'Epic' ? 3 : 4) - 1].map(level => {
+				    							return (
+				    								<tr>
+				    									{level.map(data => {
+				    										return <td className='center'>{data}</td>
+				    									})}
+				    								</tr>
+				    							);
+				    						})}
+				    					</tbody>
+				    				</table>
 			    				</div> : ''}
 			    			</div>
 		    			</div> : '' }
