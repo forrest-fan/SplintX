@@ -1,6 +1,6 @@
 import React from 'react';
 import './Collection.css';
-import CollectionFilter from './CollectionFilter/CollectionFilter';
+import Filter from '../Filter/Filter';
 import CollectionList from './CollectionList/CollectionList';
 import $ from 'jquery';
 
@@ -364,7 +364,7 @@ class Collection extends React.Component {
 					<hr />
 				</div>
 				<div className='collection-container'>
-					<CollectionFilter updateFilters={this.updateFilters} mobileFilters={this.state.mobileFilters} hideMobileFilters={this.hideMobileFilters}/>
+					<Filter updateFilters={this.updateFilters} mobileFilters={this.state.mobileFilters} hideMobileFilters={this.hideMobileFilters}/>
 					{this.props.loggedIn ?
 						<CollectionList cards={this.state.cards} loading={this.state.loading} updateSort={this.updateSort} filterCount={this.state.filterCount} showMobileFilters={this.showMobileFilters} totalValue={this.state.totalValue}/> :
 						<div className='collection-login-prompt'>Please log in to see your cards.</div> }

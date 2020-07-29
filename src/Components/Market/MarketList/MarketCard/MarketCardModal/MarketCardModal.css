@@ -251,7 +251,7 @@
 	max-width: 100%;
 }
 
-.modal-addToCart {
+.modal-summary {
 	position: absolute;
 	bottom: 10px;
 	right: 10px;
@@ -260,55 +260,40 @@
 	padding: 10px;
 }
 
-.modal-addToCart-btn {
+.modal-summary button {
 	display: inline-block;
-	margin-left: 15px;
+	margin-left: 10px;
 	padding: 10px 10px;
 	font-size: 13px;
 	font-weight: bold;
 	vertical-align: middle;
-	background: var(--login-btn);
-	color: #000;
-	border: 2px solid var(--login-btn);
 	border-radius: 10px;
+	border: 2px solid var(--login-btn);
 	cursor: pointer;
+	transition: 0.3s
 }
 
-.modal-addToCart-btn:focus {
+.modal-summary button:focus {
 	outline: none;
 }
 
-.modal-addToCart-btn:disabled {
+.modal-summary button:disabled {
 	opacity: 0.5;
 	cursor: not-allowed;
 }
 
+.modal-action-btn {
+	background: var(--login-btn);
+	color: #000;
+}
+
 .modal-clearSelected-btn {
-	display: inline-block;
-	margin-left: 15px;
-	padding: 10px;
-	font-size: 13px;
-	font-weight: bold;
-	vertical-align: middle;
-	border: 2px solid var(--login-btn);
 	color: #000;
 	background: none;
-	border-radius: 10px;
-	cursor: pointer;
-	transition: 0.3s;
 }
 
 .modal-clearSelected-btn:hover {
 	background: var(--login-btn);
-}
-
-.modal-clearSelected-btn:focus {
-	outline: none;
-}
-
-.modal-clearSelected-btn:disabled {
-	opacity: 0.5;
-	cursor: not-allowed;
 }
 
 @media (max-width: 1100px) {
@@ -328,17 +313,12 @@
 		height: 40vh;
 	}
 
-	.modal-addToCart-btn {
+	.modal-summary button {
 		display: block;
 		margin: 5px 0px;
 	}
 
-	.modal-clearSelected-btn {
-		display: block;
-		margin: 5px 0px;
-	}
-
-	.modal-addToCart {
+	.modal-summary {
 		left: 10px;
 	}
 }

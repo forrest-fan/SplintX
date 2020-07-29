@@ -1,6 +1,6 @@
 import React from 'react';
 import './Market.css';
-import MarketFilter from './MarketFilter/MarketFilter';
+import Filter from '../Filter/Filter';
 import MarketList from './MarketList/MarketList';
 import MarketCart from './MarketCart/MarketCart';
 import $ from 'jquery';
@@ -305,7 +305,7 @@ class Market extends React.Component {
 					<hr />
 				</div>
 				<div className='market-container'>
-					<MarketFilter updateFilters={this.updateFilters} mobileFilters={this.state.mobileFilters} hideMobileFilters={this.hideMobileFilters}/>
+					<Filter updateFilters={this.updateFilters} mobileFilters={this.state.mobileFilters} hideMobileFilters={this.hideMobileFilters}/>
 					<MarketList cart={this.state.cart} addToCart={this.addToCart} cards={this.state.cards} loading={this.state.loading} updateSort={this.updateSort} filterCount={this.state.filterCount} showMobileFilters={this.showMobileFilters}/>	
 				</div>
 				<div className='market-cart-btn' onClick={this.toggleCart}><i className='fas fa-shopping-cart'></i></div>

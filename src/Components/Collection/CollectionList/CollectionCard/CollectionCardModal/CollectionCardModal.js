@@ -27,6 +27,14 @@ const pivot = (obj) => {
 	return arr;
 }
 
+const sumProp = (array, prop) => {
+	let sum = 0;
+	for (let i = 0; i < array.length; i++) {
+		sum += Number(array[i][prop]);
+	}
+	return sum;
+}
+
 const summoner = [[[1, 1, 1, 1, 0], [2, 2, 2, 1, 1], [3, 3, 2, 2, 1], [4, 4, 3, 2, 2], [5, 5, 4, 3, 2], [6, 6, 5, 4, 2], [7, 7, 6, 4, 3], [8, 8, 6, 5, 3], [9, 9, 7, 5, 4], [10, 10, 8, 6, 4]], [[1, 1, 1, 1, 1], [2, 3, 2, 2, 1], [3, 4, 3, 2, 2], [4, 5, 4, 3, 2], [5, 6, 5, 4, 3], [6, 8, 6, 5, 3], [7, 9, 7, 5, 4], [8, 10, 8, 6, 4]], [[1, 2, 1, 1, 1], [2, 3, 3, 2, 1], [3, 5, 4, 3, 2], [4, 7, 5, 4, 3], [5, 8, 7, 5, 3], [6, 10, 8, 6, 4]], [[1, 3, 2, 2, 1], [2, 5, 4, 3, 2], [3, 8, 6, 5, 3], [4, 10, 8, 6, 4]]];
 
 class Collectionmodal extends React.Component {
@@ -163,21 +171,21 @@ class Collectionmodal extends React.Component {
 			    							return(
 			    								<tr>
 			    									<td className='center'><input type='checkbox' onClick={() => {
-			    										// let selected = this.state.selected;
-			    										// if (selected.length >= 45 && !selected.includes(listing)) {
-			    										// 	let toast = document.getElementById('modal-tooMany-toast');
-			    										// 	toast.className += ' show';
-			    										// 	setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
-			    										// } else if (selected.includes(listing)) {
-			    										// 	for (let i = 0; i < selected.length; i++) {
-			    										// 		if (selected[i].uid === listing.uid) {
-			    										// 			selected.splice(i, 1);
-			    										// 		}
-			    										// 	}
-			    										// } else {
-			    										// 	selected.push(listing);
-			    										// }		    										
-			    										// this.setState({selected: selected});
+			    										let selected = this.state.selected;
+			    										if (selected.length >= 45 && !selected.includes(card)) {
+			    											let toast = document.getElementById('modal-tooMany-toast');
+			    											toast.className += ' show';
+			    											setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
+			    										} else if (selected.includes(card)) {
+			    											for (let i = 0; i < selected.length; i++) {
+			    												if (selected[i].uid === card.uid) {
+			    													selected.splice(i, 1);
+			    												}
+			    											}
+			    										} else {
+			    											selected.push(card);
+			    										}		    										
+			    										this.setState({selected: selected});
 			    									}} /></td>
 			    									<td className='left'>{card.uid}</td>
 			    									<td className='center'>{card.lvl}</td>
@@ -268,9 +276,27 @@ class Collectionmodal extends React.Component {
 			    				</div> : ''}
 			    			</div>
 		    			</div> : '' }
+		    			<div className='modal-summary'>
+		    				<span>{this.state.selected.length} Card{this.state.selected.length === 1 ? '' : 's'} Selected, BCX: {sumProp(this.state.selected, 'bcx')}</span>
+	    					<button className='modal-action-btn' onClick={() => {
+
+	    					}} disabled={this.state.selected.length === 0}>Burn</button>
+	    					<button className='modal-action-btn' onClick={() => {
+
+	    					}} disabled={this.state.selected.length === 0}>Sell</button>
+	    					<button className='modal-action-btn' onClick={() => {
+
+	    					}} disabled={this.state.selected.length === 0}>Transfer</button>
+	    					<button className='modal-clearSelected-btn' onClick={() => {
+	    						this.setState({selected: []});
+	    					}} disabled={this.state.selected.length === 0}>Clear All</button>
+	    				</div>
 		    			</div>
 		    		</div>
 	    		</div>
+	    		<div id='modal-tooMany-toast' className='toast failToast'>
+					<i className='fas fa-times'></i>You have already selected the limit of 45 cards.
+				</div>
 	    	</div>
 	    );
 	}

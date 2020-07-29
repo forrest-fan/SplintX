@@ -608,9 +608,9 @@ class MarketCardModal extends React.Component {
 		    				<canvas id="myChart"></canvas>
 		    			</div> : ''}
 		    			
-		    			<div className='modal-addToCart'>
-		    				<span>{this.state.selected.length} {this.props.info.name} Card{this.state.selected.length === 1 ? '' : 's'} Selected, Total BCX: {sumProp(this.state.selected, 'bcx')}, Total: ${sumProp(this.state.selected, 'buy_price').toFixed(3)} USD</span>
-	    					<button className='modal-addToCart-btn' onClick={() => {
+		    			<div className='modal-summary'>
+		    				<span>{this.state.selected.length} Card{this.state.selected.length === 1 ? '' : 's'} Selected, BCX: {sumProp(this.state.selected, 'bcx')}, Price: ${sumProp(this.state.selected, 'buy_price').toFixed(3)} USD</span>
+	    					<button className='modal-action-btn' onClick={() => {
 	    						let selectedArr = this.state.selected;
 	    						let toast = document.getElementById('modal-toast');
 	    						this.setState({selected: []});
