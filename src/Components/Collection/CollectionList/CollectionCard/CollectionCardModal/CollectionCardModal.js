@@ -1,5 +1,6 @@
 import React from 'react';
 import './CollectionCardModal.css';
+import TransferModal from './TransferModal/TransferModal';
 
 const pivot = (obj) => {
 	let arr = [];
@@ -46,9 +47,20 @@ class Collectionmodal extends React.Component {
 			}),
 			panel: 'collection',
 			sortMethod: 'bcxDec',
-			selected: []
+			selected: [],
+			renderTransfer: false,
+			renderSell: false
 		};
+		this.toggleTransfer = this.toggleTransfer.bind(this);
 		this.getBurn = this.getBurn.bind(this);
+		this.updateSort = this.updateSort.bind(this);
+		this.burn = this.burn.bind(this);
+	}
+
+	toggleTransfer() {
+		this.setState({
+			renderTransfer: this.state.renderTransfer ? false : true
+		});
 	}
 
 	updateSort(method) {
@@ -107,6 +119,28 @@ class Collectionmodal extends React.Component {
 			burn_value *= 1.05;
 		}
 	 	return burn_value;
+	}
+
+	burn() {
+		let selected = this.state.selected.map(card => {return card.uid});
+		let burnJSON = JSON.stringify({
+			cards: selected,
+			app: 'steemmonsters/0.7.34'
+		});
+		window.hive_keychain.requestCustomJson(localStorage.getItem('username'), 'sm_burn_cards', 'Active', burnJSON, 'Burn Card(s)', function(response) {
+			if (response.success) {
+				let toast = document.getElementById('cardsBurned-toast');
+				toast.className += ' show';
+				setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
+				this.props.updateBalance();
+				this.props.updateCollection('remove', selected);
+				this.setState({selected: []});
+			} else {
+				let toast = document.getElementById('cardsFailed-toast');
+				toast.className += ' show';
+				setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
+			}
+		}.bind(this));
 	}
 
 	render() {
@@ -186,7 +220,7 @@ class Collectionmodal extends React.Component {
 			    											selected.push(card);
 			    										}		    										
 			    										this.setState({selected: selected});
-			    									}} /></td>
+			    									}} checked={this.state.selected.includes(card)}/></td>
 			    									<td className='left'>{card.uid}</td>
 			    									<td className='center'>{card.lvl}</td>
 			    									<td className='center'>{card.bcx}</td>
@@ -279,14 +313,14 @@ class Collectionmodal extends React.Component {
 		    			<div className='modal-summary'>
 		    				<span>{this.state.selected.length} Card{this.state.selected.length === 1 ? '' : 's'} Selected, BCX: {sumProp(this.state.selected, 'bcx')}</span>
 	    					<button className='modal-action-btn' onClick={() => {
-
+	    						this.burn();
 	    					}} disabled={this.state.selected.length === 0}>Burn</button>
 	    					<button className='modal-action-btn' onClick={() => {
 
 	    					}} disabled={this.state.selected.length === 0}>Sell</button>
-	    					<button className='modal-action-btn' onClick={() => {
-
-	    					}} disabled={this.state.selected.length === 0}>Transfer</button>
+	    					<button className='modal-action-btn' onClick={this.toggleTransfer} disabled={this.state.selected.length === 0}>
+	    						Transfer
+	    					</button>
 	    					<button className='modal-clearSelected-btn' onClick={() => {
 	    						this.setState({selected: []});
 	    					}} disabled={this.state.selected.length === 0}>Clear All</button>
@@ -297,6 +331,13 @@ class Collectionmodal extends React.Component {
 	    		<div id='modal-tooMany-toast' className='toast failToast'>
 					<i className='fas fa-times'></i>You have already selected the limit of 45 cards.
 				</div>
+	    		<div id='cardsBurned-toast' className='toast successToast'>
+					<i className='fas fa-check'></i>Successfully burned!
+				</div>
+				<div id='cardsFailed-toast' className='toast failToast'>
+					<i className='fas fa-times'></i>Something went wrong! Please try again.
+				</div>
+				{this.state.renderTransfer ? <TransferModal updateCollection={this.props.updateCollection} closeModal={this.toggleTransfer} info={this.props.info} cards={this.state.selected}/> : ''}
 	    	</div>
 	    );
 	}

@@ -55,7 +55,7 @@ class App extends React.Component {
     if (page === 'market') {
       return <Market updateBalance={this.updateBalance} cardDetails={this.state.cardDetails}/> ;
     } else if (page === 'collection') {
-      return <Collection loggedIn={this.state.loggedIn} cardDetails={this.state.cardDetails}/>
+      return <Collection updateBalance={this.updateBalance} loggedIn={this.state.loggedIn} cardDetails={this.state.cardDetails}/>
     } else if (page === 'packs') {
       return <Packs />
     } else if (page === 'battlechain') {
@@ -192,7 +192,6 @@ class App extends React.Component {
 
   updateBalance() {
     if (this.state.loggedIn) {
-      console.log('beginning DEC' + this.state.DECbalance);
       setTimeout(() => {$.ajax({
         type: 'GET',
         url: 'https://game-api.splinterlands.com/players/balances?username=' + this.state.username,
@@ -202,7 +201,6 @@ class App extends React.Component {
           let DECbalance = 0;
           for (let i = 0; i < balances.length; i++) {
             if (balances[i].token === 'DEC') {
-              console.log('got new DEC' + balances[i].balance);
               DECbalance = balances[i].balance;
             }
           }

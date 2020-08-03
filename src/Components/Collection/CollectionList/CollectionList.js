@@ -68,9 +68,9 @@ class CollectionList extends React.Component {
               <p className='noCards'>No cards were found. Please update the filters.</p> : 
               this.props.cards.map(card => {
                 if (this.state.renderStyle === 'list') {
-                  return (<CollectionListView info={card} />);
+                  return (<CollectionListView info={card} updateBalance={this.props.updateBalance} updateCollection={this.props.updateCollection} />);
                 } else if (this.state.renderStyle === 'card') {
-                  return (<CollectionCard info={card} />);
+                  return (<CollectionCard info={card} updateBalance={this.props.updateBalance} updateCollection={this.props.updateCollection} />);
                 }
               })
            }

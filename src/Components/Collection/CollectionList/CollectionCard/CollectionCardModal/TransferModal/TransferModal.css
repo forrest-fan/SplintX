@@ -1,0 +1,46 @@
+.mini.modal-content {
+	width: 70vw;
+	height: 40vh;
+	text-align: center;	
+	display: block;
+}
+
+.mini.modal-content p {
+	font-size: 18px;
+}
+
+.transferAct {
+	display: inline-block;
+	font-size: 18px;
+	padding: 10px 0px;
+}
+
+.transferAct input {
+	outline: none;
+	width: 200px;
+	border: none;
+	border-bottom: 1px solid var(--navbar-bg);
+	font-family: Source Sans Pro;
+	font-size: 16px;
+	margin-left: 5px;
+	transition: 0.3s;
+}
+
+.transferAct input:focus {
+	border-color: var(--login-btn);
+}
+
+.mini.modal-content button {
+	padding: 10px 10px;
+	margin: 20px 0px;
+	font-size: 13px;
+	font-weight: bold;
+	border-radius: 10px;
+	border: 2px solid var(--login-btn);
+	cursor: pointer;
+	transition: 0.3s
+}
+
+.mini.modal-content button:focus {
+	outline: none;
+}

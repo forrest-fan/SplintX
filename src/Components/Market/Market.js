@@ -5,6 +5,66 @@ import MarketList from './MarketList/MarketList';
 import MarketCart from './MarketCart/MarketCart';
 import $ from 'jquery';
 
+const sort = (cards, method) => {
+	if (method === 'az') {
+		cards.sort((a, b) => {
+			if (a.name < b.name) {
+				return -1;
+			} else {
+				return 1;
+			}
+		});
+	} else if (method === 'za') {
+		cards.sort((a, b) => {
+			if (a.name < b.name) {
+				return 1;
+			} else {
+				return -1;
+			}
+		});
+	} else if (method === 'priceAsc') {
+		cards.sort((a, b) => {
+			return a.lowPrice - b.lowPrice;
+		});
+	} else if (method === 'priceDec') {
+		cards.sort((a, b) => {
+			return b.lowPrice - a.lowPrice;
+		}); 
+	} else if (method === 'priceBCXAsc') {
+		cards.sort((a, b) => {
+			return a.lowPriceBCX - b.lowPriceBCX;
+		});
+	} else if (method === 'priceBCXDec') {
+		cards.sort((a, b) => {
+			return b.lowPriceBCX - a.lowPriceBCX;
+		}); 
+	} else if (method === 'qtyAsc') {
+		cards.sort((a, b) => {
+			return a.qty - b.qty;
+		}); 
+	} else if (method === 'qtyDec') {
+		cards.sort((a, b) => {
+			return b.qty - a.qty;
+		}); 
+	} else if (method === 'splinter') {
+		cards.sort((a, b) => {
+	    	if (a.element < b.element) {
+	    		return -1;
+	    	} else if (a.element > b.element) {
+	    		return 1;
+	    	} else {
+	    		if (a.gold) {
+	    			return 1;
+	    		} else {
+	    			return -1;
+	    		}
+	    	}
+	    });
+	}
+
+	return cards;
+}
+
 class Market extends React.Component {
 	constructor(props) {
 		super(props);
@@ -21,6 +81,7 @@ class Market extends React.Component {
 				element: []
 			},
 			filterCount: 0,
+			sortMethod: 'splinter',
 			cards: [],
 			mobileFilters: false,
 			loading: true,
@@ -114,70 +175,16 @@ class Market extends React.Component {
 		this.setState({
 			filters: filters,
 			filterCount: filterCount,
-			cards: cards,
+			cards: sort(cards, this.state.sortMethod),
 			loading: false
 		});
 	}
 
 	updateSort(method) {
-		let cards = this.state.cards;
-		if (method === 'az') {
-			cards.sort((a, b) => {
-				if (a.name < b.name) {
-					return -1;
-				} else {
-					return 1;
-				}
-			});
-		} else if (method === 'za') {
-			cards.sort((a, b) => {
-				if (a.name < b.name) {
-					return 1;
-				} else {
-					return -1;
-				}
-			});
-		} else if (method === 'priceAsc') {
-			cards.sort((a, b) => {
-				return a.lowPrice - b.lowPrice;
-			});
-		} else if (method === 'priceDec') {
-			cards.sort((a, b) => {
-				return b.lowPrice - a.lowPrice;
-			}); 
-		} else if (method === 'priceBCXAsc') {
-			cards.sort((a, b) => {
-				return a.lowPriceBCX - b.lowPriceBCX;
-			});
-		} else if (method === 'priceBCXDec') {
-			cards.sort((a, b) => {
-				return b.lowPriceBCX - a.lowPriceBCX;
-			}); 
-		} else if (method === 'qtyAsc') {
-			cards.sort((a, b) => {
-				return a.qty - b.qty;
-			}); 
-		} else if (method === 'qtyDec') {
-			cards.sort((a, b) => {
-				return b.qty - a.qty;
-			}); 
-		} else if (method === 'splinter') {
-			cards.sort((a, b) => {
-		    	if (a.element < b.element) {
-		    		return -1;
-		    	} else if (a.element > b.element) {
-		    		return 1;
-		    	} else {
-		    		if (a.gold) {
-		    			return 1;
-		    		} else {
-		    			return -1;
-		    		}
-		    	}
-		    });
-		}
-
-		this.setState({cards: cards});
+		this.setState({
+			cards: sort(this.state.cards, method),
+			sortMethod: method
+		});
 	}
 
 	showMobileFilters() {

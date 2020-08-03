@@ -17,6 +17,66 @@ const calculateValue = (cards) => {
   return value;
 }
 
+const sort = (cards, method) => {
+	if (method === 'az') {
+		cards.sort((a, b) => {
+			if (a.name < b.name) {
+				return -1;
+			} else {
+				return 1;
+			}
+		})
+	} else if (method === 'za') {
+		cards.sort((a, b) => {
+			if (a.name < b.name) {
+				return 1;
+			} else {
+				return -1;
+			}
+		})
+	} else if (method === 'qtyAsc') {
+		cards.sort((a, b) => {
+			return a.count - b.count;
+		})
+	} else if (method === 'qtyDes') {
+		cards.sort((a, b) => {
+			return b.count - a.count;
+		})
+	} else if (method === 'bcxAsc') {
+		cards.sort((a, b) => {
+			return a.totalBCX - b.totalBCX;
+		})
+	} else if (method === 'bcxDes') {
+		cards.sort((a, b) => {
+			return b.totalBCX - a.totalBCX;
+		})
+	} else if (method === 'valueAsc') {
+		cards.sort((a, b) => {
+			return (a.totalBCX * a.lowPriceBCX) - (b.totalBCX * b.lowPriceBCX);
+		})
+	} else if (method === 'valueDes') {
+		cards.sort((a, b) => {
+			return (b.totalBCX * b.lowPriceBCX) - (a.totalBCX * a.lowPriceBCX);
+		})
+	} else if (method === 'splinter') {
+	    cards.sort((a, b) => {
+	    	if (a.element < b.element) {
+	    		return -1;
+	    	} else if (a.element > b.element) {
+	    		return 1;
+	    	} else {
+	    		if (a.gold) {
+	    			return -1;
+	    		} else {
+	    			return 1;
+	    		}
+	    	}
+	    });
+	}
+
+	return cards;
+}
+
 class Collection extends React.Component {
 	constructor(props) {
 		super(props);
@@ -32,6 +92,7 @@ class Collection extends React.Component {
 				element: []
 			},
 			filterCount: 0,
+			sortMethod: 'splinter',
 			cards: [],
 			mobileFilters: false,
 			loading: this.props.loggedIn,
@@ -43,7 +104,10 @@ class Collection extends React.Component {
 		this.hideMobileFilters = this.hideMobileFilters.bind(this);
 		this.getBCX = this.getBCX.bind(this);
 		this.getCollection = this.getCollection.bind(this);
+		this.updateCollection = this.updateCollection.bind(this);
 	}
+
+		
 
 	updateFilters(filter, category, action) {
 		let filters = this.state.filters;
@@ -125,70 +189,18 @@ class Collection extends React.Component {
 		this.setState({
 			filters: filters,
 			filterCount: filterCount,
-			cards: cards,
+			cards: sort(cards, this.state.sortMethod),
 			loading: false
 		});
 	}
 
-	updateSort(method) {
-		let cards = this.state.cards;
-		if (method === 'az') {
-			cards.sort((a, b) => {
-				if (a.name < b.name) {
-					return -1;
-				} else {
-					return 1;
-				}
-			})
-		} else if (method === 'za') {
-			cards.sort((a, b) => {
-				if (a.name < b.name) {
-					return 1;
-				} else {
-					return -1;
-				}
-			})
-		} else if (method === 'qtyAsc') {
-			cards.sort((a, b) => {
-				return a.count - b.count;
-			})
-		} else if (method === 'qtyDes') {
-			cards.sort((a, b) => {
-				return b.count - a.count;
-			})
-		} else if (method === 'bcxAsc') {
-			cards.sort((a, b) => {
-				return a.totalBCX - b.totalBCX;
-			})
-		} else if (method === 'bcxDes') {
-			cards.sort((a, b) => {
-				return b.totalBCX - a.totalBCX;
-			})
-		} else if (method === 'valueAsc') {
-			cards.sort((a, b) => {
-				return (a.totalBCX * a.lowPriceBCX) - (b.totalBCX * b.lowPriceBCX);
-			})
-		} else if (method === 'valueDes') {
-			cards.sort((a, b) => {
-				return (b.totalBCX * b.lowPriceBCX) - (a.totalBCX * a.lowPriceBCX);
-			})
-		} else if (method === 'splinter') {
-		    cards.sort((a, b) => {
-		    	if (a.element < b.element) {
-		    		return -1;
-		    	} else if (a.element > b.element) {
-		    		return 1;
-		    	} else {
-		    		if (a.gold) {
-		    			return -1;
-		    		} else {
-		    			return 1;
-		    		}
-		    	}
-		    });
-		}
 
-		this.setState({cards: cards});
+
+	updateSort(method) {
+		this.setState({
+			cards: sort(this.state.cards, method),
+			sortMethod: method
+		});
 	}
 
 	showMobileFilters() {
@@ -202,7 +214,7 @@ class Collection extends React.Component {
 	getBCX(xp, edition, rarity, detailID, gold) {
 		if (xp === 0) {
 			return 1;
-		} else if (edition === 4 || (edition === 1 && detailID > 223)) {
+		} else if (edition === 4 || (edition === 3 && detailID > 223)) {
 			return xp;
 		}
 
@@ -336,9 +348,32 @@ class Collection extends React.Component {
 		});
 	}
 
+	updateCollection(action, selected) {
+		if (action === 'remove') {
+			let cards = this.state.cards;
+			for (let i = 0; i < cards.length; i++) {
+				for(let j = 0; j < cards[i].count; j++) {
+					if (cards[i].cards[j].uid === selected[0]) {
+						cards[i].cards.splice(j, 1);
+						cards[i].count -= 1;
+						for (let k = 1; k < selected.length; k++) {
+							for (let l = 0; l < cards[i].count; l++) {
+								if (cards[i].cards[l].uid === selected[k]) {
+									cards[i].cards.splice(l, 1);
+									cards[i].count -= 1;
+								}
+							}
+						}
+					}
+					break;
+				}
+			}
+			this.setState({cards: cards});
+		}
+	}
+
 	componentDidMount() {
 		if (this.props.loggedIn) {
-
 			this.getCollection();
 		}
 	}
@@ -366,7 +401,7 @@ class Collection extends React.Component {
 				<div className='collection-container'>
 					<Filter updateFilters={this.updateFilters} mobileFilters={this.state.mobileFilters} hideMobileFilters={this.hideMobileFilters}/>
 					{this.props.loggedIn ?
-						<CollectionList cards={this.state.cards} loading={this.state.loading} updateSort={this.updateSort} filterCount={this.state.filterCount} showMobileFilters={this.showMobileFilters} totalValue={this.state.totalValue}/> :
+						<CollectionList updateCollection={this.updateCollection} updateBalance={this.props.updateBalance} cards={this.state.cards} loading={this.state.loading} updateSort={this.updateSort} filterCount={this.state.filterCount} showMobileFilters={this.showMobileFilters} totalValue={this.state.totalValue}/> :
 						<div className='collection-login-prompt'>Please log in to see your cards.</div> }
 				</div>
 			</div>

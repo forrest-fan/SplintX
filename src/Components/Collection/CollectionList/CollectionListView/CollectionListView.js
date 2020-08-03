@@ -28,7 +28,7 @@ class CollectionListView extends React.Component {
 	    			<p className='center'>{this.props.info.totalBCX}</p>
 	    			<p className='center'>{(this.props.info.totalBCX * this.props.info.lowPriceBCX).toFixed(3)}</p>
 	    		</div>
-	    		{this.state.renderModal ? <CollectionCardModal info={this.props.info} closeModal={this.toggleModal} cart={this.props.cart} addToCart={this.props.addToCart} /> : ''}
+	    		{this.state.renderModal ? <CollectionCardModal updateCollection={this.props.updateCollection} updateBalance={this.props.updateBalance} info={this.props.info} closeModal={this.toggleModal} cart={this.props.cart} addToCart={this.props.addToCart} /> : ''}
 	    	</div>
 	    );
 	}

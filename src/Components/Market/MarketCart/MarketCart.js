@@ -42,15 +42,21 @@ class MarketCart extends React.Component {
 				app: 'SplintXApp'
 			});
 			window.hive_keychain.requestCustomJson(localStorage.getItem('username'), "sm_market_purchase", "Active", jsonRequest, "Buy Card(s)", function(response) {
-			    let toast = document.getElementById('cart-purchased-toast');
-	    		toast.className += 'show';
-	       		setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
-			    this.setState({
-					totalDEC: 0,
-					totalUSD: 0
-				});
-				this.props.updateBalance();
-				this.props.clearCart();
+			    if (response.success) {
+				    let toast = document.getElementById('cart-purchased-toast');
+		    		toast.className += 'show';
+		       		setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
+				    this.setState({
+						totalDEC: 0,
+						totalUSD: 0
+					});
+					this.props.updateBalance();
+					this.props.clearCart();
+				} else {
+					let toast = document.getElementById('cardsFailed-toast');
+		    		toast.className += 'show';
+		       		setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
+				}
 			}.bind(this));
 		} else if (this.props.cart.length > 45 ) {
 			let toast = document.getElementById('cart-tooMany-toast');
@@ -144,6 +150,9 @@ class MarketCart extends React.Component {
 		        </div>
 				<div id='cart-tooMany-toast' className='toast failToast'>
 					<i className='fas fa-times'></i>You have over 45 cards in your cart.
+				</div>
+				<div id='cardsFailed-toast' className='toast failToast'>
+					<i className='fas fa-times'></i>Something went wrong! Please try again.
 				</div>
 	    	</div>
 	    );
