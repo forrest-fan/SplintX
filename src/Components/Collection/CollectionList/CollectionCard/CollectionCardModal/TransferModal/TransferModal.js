@@ -17,7 +17,6 @@ class TransferModal extends React.Component {
 				app: 'steemmonsters/0.7.34'
 			});
 			window.hive_keychain.requestCustomJson(localStorage.getItem('username'), 'sm_gift_cards', 'Active', transferJSON, 'Transfer Card(s)', function(response) {
-				console.log(response);
 				if (response.success) {
 					this.props.updateCollection('remove', selected);
 					let toast = document.getElementById('cardsTransferred-toast');

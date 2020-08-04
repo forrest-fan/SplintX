@@ -1,6 +1,7 @@
 import React from 'react';
 import './CollectionCardModal.css';
 import TransferModal from './TransferModal/TransferModal';
+import SellModal from './SellModal/SellModal';
 
 const pivot = (obj) => {
 	let arr = [];
@@ -51,15 +52,27 @@ class Collectionmodal extends React.Component {
 			renderTransfer: false,
 			renderSell: false
 		};
+		this.clearSelected = this.clearSelected.bind(this);
 		this.toggleTransfer = this.toggleTransfer.bind(this);
+		this.toggleSell = this.toggleSell.bind(this);
 		this.getBurn = this.getBurn.bind(this);
 		this.updateSort = this.updateSort.bind(this);
 		this.burn = this.burn.bind(this);
 	}
 
+	clearSelected() {
+		this.setState({selected: []});
+	}
+
 	toggleTransfer() {
 		this.setState({
 			renderTransfer: this.state.renderTransfer ? false : true
+		});
+	}
+
+	toggleSell() {
+		this.setState({
+			renderSell: this.state.renderSell ? false : true
 		});
 	}
 
@@ -103,10 +116,10 @@ class Collectionmodal extends React.Component {
 			if(this.props.info.edition === 'Alpha' || this.props.info.edition === 'Promo') {
 				burn_value *= 2;
 			} else if (this.props.info.edition === 'Untamed') {
-				burn_value = untamed_burn_rate[rarity - 1];
+				burn_value = untamed_burn_rate[rarity - 1] * BCX;
 			} else {
 				if(this.props.info.tier) {
-					burn_value = untamed_burn_rate[rarity - 1];
+					burn_value = untamed_burn_rate[rarity - 1] * BCX;
 				} 
 			} 
 		}
@@ -312,18 +325,18 @@ class Collectionmodal extends React.Component {
 		    			</div> : '' }
 		    			<div className='modal-summary'>
 		    				<span>{this.state.selected.length} Card{this.state.selected.length === 1 ? '' : 's'} Selected, BCX: {sumProp(this.state.selected, 'bcx')}</span>
-	    					<button className='modal-action-btn' onClick={() => {
-	    						this.burn();
-	    					}} disabled={this.state.selected.length === 0}>Burn</button>
-	    					<button className='modal-action-btn' onClick={() => {
-
-	    					}} disabled={this.state.selected.length === 0}>Sell</button>
+	    					<button className='modal-action-btn' onClick={this.burn} disabled={this.state.selected.length === 0}>
+	    						Burn
+	    					</button>
+	    					<button className='modal-action-btn' onClick={this.toggleSell} disabled={this.state.selected.length === 0}>
+	    						Sell
+	    					</button>
 	    					<button className='modal-action-btn' onClick={this.toggleTransfer} disabled={this.state.selected.length === 0}>
 	    						Transfer
 	    					</button>
-	    					<button className='modal-clearSelected-btn' onClick={() => {
-	    						this.setState({selected: []});
-	    					}} disabled={this.state.selected.length === 0}>Clear All</button>
+	    					<button className='modal-clearSelected-btn' onClick={this.clearSelected} disabled={this.state.selected.length === 0}>
+	    						Clear All
+	    					</button>
 	    				</div>
 		    			</div>
 		    		</div>
@@ -338,6 +351,7 @@ class Collectionmodal extends React.Component {
 					<i className='fas fa-times'></i>Something went wrong! Please try again.
 				</div>
 				{this.state.renderTransfer ? <TransferModal updateCollection={this.props.updateCollection} closeModal={this.toggleTransfer} info={this.props.info} cards={this.state.selected}/> : ''}
+	    		{this.state.renderSell ? <SellModal clearSelected={this.clearSelected} closeModal={this.toggleSell} info={this.props.info} cards={this.state.selected}/> : ''}
 	    	</div>
 	    );
 	}
