@@ -1,0 +1,12 @@
+.modal-table .modal-status {
+	font-size: 15px;
+	padding: 0px 3px;
+}
+
+.modal-table .modal-status.true {
+	color: var(--navbar-bg);
+}
+
+.modal-table .modal-status.false {
+	color: #bbb;
+}

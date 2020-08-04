@@ -27,9 +27,6 @@
 	height: 80vh;
 	background: #fff;
 	border-radius: 15px;
-	display: flex;
-	flex-wrap: wrap;
-	align-content: flex-start;
 }
 
 .modal-exit {
@@ -53,6 +50,12 @@
 
 .modal-content h2.gold {
 	color: var(--login-btn);
+}
+
+.modal-flex {
+	display: flex;
+	flex-wrap: nowrap;
+	align-content: flex-start;
 }
 
 .modal-img-container {
@@ -296,31 +299,21 @@
 	background: var(--login-btn);
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 1300px) {
 	.modal-img-container {
 		display: none;
 	}
 
-	.modal-content {
+	.modal-flex {
 		display: block;
 	}
 }
 
-@media (max-width: 890px) {
+@media (max-width: 930px) {
 	.modal-table-container {
 		white-space: nowrap;
 		overflow-x: auto;
-		height: 40vh;
-	}
-
-	.modal-summary button {
-		display: block;
-		margin: 5px 0px;
-	}
-
-	.modal-summary {
-		left: 10px;
-	}
+	}	
 }
 
 @media (max-width: 750px) {
@@ -336,6 +329,10 @@
 		display: block;
 	}
 
+	.modal-table-container {
+		height: 40vh;
+	}
+
 	.modal-multiselect .multiselect-half {
 		padding: 5px;
 		display: block;
@@ -349,5 +346,14 @@
 
 	.modal-stats span {
 		display: block;
+	}
+
+	.modal-summary button {
+		display: block;
+		margin: 5px 0px;
+	}
+
+	.modal-summary {
+		left: 10px;
 	}
 }

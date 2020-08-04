@@ -291,7 +291,10 @@ class Collection extends React.Component {
 	          						lvl: lvl,
 					          		uid: Eelement.cards[l].uid,
 				          			xp: Eelement.cards[l].xp,
-					          		bcx: bcx
+					          		bcx: bcx,
+					          		cooldown: Eelement.cards[l].last_used_player !== localStorage.getItem('username') && (Date.parse(Eelement.cards[l].last_used_date) > (new Date() - 604800000)),
+					          		listed: Eelement.cards[l].market_id !== null,
+					          		leased: Eelement.cards[l].delegation_tx !== null
 	          					});
 			              		cards[i] = card;
 			              		break;
@@ -319,7 +322,10 @@ class Collection extends React.Component {
 				          		lvl: lvl,
 				          		uid: Eelement.cards[l].uid,
 				          		xp: Eelement.cards[l].xp,
-				          		bcx: bcx
+				          		bcx: bcx,
+				          		cooldown: Eelement.cards[l].last_used_player !== localStorage.getItem('username') && (Date.parse(Eelement.cards[l].last_used_date) > (new Date() - 604800000)),
+				          		listed: Eelement.cards[l].market_id !== null,
+				          		leased: Eelement.cards[l].delegation_tx !== null
 				          	}]
 						});
 	            		distinctCards.push(distinctID);
