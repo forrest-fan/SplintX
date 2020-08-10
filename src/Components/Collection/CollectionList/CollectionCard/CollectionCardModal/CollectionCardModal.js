@@ -152,6 +152,7 @@ class Collectionmodal extends React.Component {
 			toast.className += ' show';
 			setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
 		} else {
+
 			this.setState({
 				renderProgress: true,
 				progressMsg: 'Broadcasting request to the blockchain'
@@ -190,6 +191,7 @@ class Collectionmodal extends React.Component {
 									toast.className += ' show';
 									setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
 									this.props.updateBalance();
+									this.props.closeModal();
 									this.props.updateCollection('remove', selected);
 									this.setState({selected: []});
 								}
@@ -415,8 +417,8 @@ class Collectionmodal extends React.Component {
 				<div id='ineligible-toast' className='toast failToast'>
 					<i className='fas fa-times'></i>One or more cards are ineligible to be burned.
 				</div>
-				{this.state.renderTransfer ? <TransferModal updateCollection={this.props.updateCollection} closeModal={this.toggleTransfer} info={this.props.info} cards={this.state.selected}/> : ''}
-	    		{this.state.renderSell ? <SellModal clearSelected={this.clearSelected} closeModal={this.toggleSell} info={this.props.info} cards={this.state.selected}/> : ''}
+				{this.state.renderTransfer ? <TransferModal updateCollection={this.props.updateCollection} closeParentModal={this.props.closeModal} closeModal={this.toggleTransfer} info={this.props.info} cards={this.state.selected}/> : ''}
+	    		{this.state.renderSell ? <SellModal clearSelected={this.clearSelected} closeParentModal={this.props.closeModal} closeModal={this.toggleSell} info={this.props.info} cards={this.state.selected}/> : ''}
 	    		{this.state.renderProgress ? <ActionProgress action='Burning' message={this.state.progressMsg} /> : '' }
 	    	</div>
 	    );

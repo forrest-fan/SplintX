@@ -23,7 +23,7 @@ class TransferModal extends React.Component {
 			let selected = this.props.cards.map(card => {return card.uid});
 			let transferJSON = JSON.stringify({
 				to: receive,
-				cards: ['C34-123123123'],			
+				cards: selected,			
 				app: 'steemmonsters/0.7.34'
 			});
 			window.hive_keychain.requestCustomJson(localStorage.getItem('username'), 'sm_gift_cards', 'Active', transferJSON, 'Transfer Card(s)', function(response) {
@@ -57,6 +57,7 @@ class TransferModal extends React.Component {
 									setTimeout(() => {
 										toast.className = toast.className.replace(' show', '');
 										this.props.closeModal();
+										this.props.closeParentModal();
 									}, 3000);
 								}
 							}.bind(this),
@@ -105,7 +106,7 @@ class TransferModal extends React.Component {
 				<div id='noAddress-toast' className='toast failToast'>
 					<i className='fas fa-times'></i>Please enter a receiving account.
 				</div>
-				{this.state.renderProgress ? <ActionProgress action='Burning' message={this.state.progressMsg} /> : '' }
+				{this.state.renderProgress ? <ActionProgress action='Transferring' message={this.state.progressMsg} /> : '' }
 			</div>
 		);
 	}

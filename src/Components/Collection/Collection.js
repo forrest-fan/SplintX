@@ -370,6 +370,9 @@ class Collection extends React.Component {
 								}
 							}
 						}
+						if (cards[i].count === 0) {
+							cards.splice(i, 1);
+						}
 					}
 					break;
 				}
