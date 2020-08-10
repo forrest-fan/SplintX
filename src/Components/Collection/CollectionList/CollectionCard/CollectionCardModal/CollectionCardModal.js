@@ -2,6 +2,8 @@ import React from 'react';
 import './CollectionCardModal.css';
 import TransferModal from './TransferModal/TransferModal';
 import SellModal from './SellModal/SellModal';
+import ActionProgress from './ActionProgress/ActionProgress';
+import $ from 'jquery';
 
 const pivot = (obj) => {
 	let arr = [];
@@ -42,6 +44,7 @@ const summoner = [[[1, 1, 1, 1, 0], [2, 2, 2, 1, 1], [3, 3, 2, 2, 1], [4, 4, 3, 
 class Collectionmodal extends React.Component {
 	constructor(props) {
 		super(props);
+		console.log(this.props.info);
 		this.state = {
 			cards: this.props.info.cards.sort((a, b) => {
 				return (Number(b.xp) - Number(a.xp));
@@ -50,7 +53,9 @@ class Collectionmodal extends React.Component {
 			sortMethod: 'bcxDec',
 			selected: [],
 			renderTransfer: false,
-			renderSell: false
+			renderSell: false,
+			renderProgress: false,
+			progressMsg: ''
 		};
 		this.clearSelected = this.clearSelected.bind(this);
 		this.toggleTransfer = this.toggleTransfer.bind(this);
@@ -127,7 +132,7 @@ class Collectionmodal extends React.Component {
 			burn_value *= 50;
 		}
 		let xp_levels = [[20,60,160,360,760,1560,2560,4560,7560],[100,300,700,1500,2500,4500,8500],[250,750,1750,3750,7750],[1000,3000,7000]];
-		let max_xp = xp_levels[rarity][xp_levels[rarity].length - 1];
+		let max_xp = xp_levels[rarity - 1][xp_levels[rarity - 1].length - 1];
 		if (xp >= max_xp) {
 			burn_value *= 1.05;
 		}
@@ -135,25 +140,74 @@ class Collectionmodal extends React.Component {
 	}
 
 	burn() {
-		let selected = this.state.selected.map(card => {return card.uid});
-		let burnJSON = JSON.stringify({
-			cards: selected,
-			app: 'steemmonsters/0.7.34'
-		});
-		window.hive_keychain.requestCustomJson(localStorage.getItem('username'), 'sm_burn_cards', 'Active', burnJSON, 'Burn Card(s)', function(response) {
-			if (response.success) {
-				let toast = document.getElementById('cardsBurned-toast');
-				toast.className += ' show';
-				setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
-				this.props.updateBalance();
-				this.props.updateCollection('remove', selected);
-				this.setState({selected: []});
-			} else {
-				let toast = document.getElementById('cardsFailed-toast');
-				toast.className += ' show';
-				setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
+		let eligible = true;
+		let selected = this.state.selected.map(card => {
+			if (card.leased || card.listed) {
+				eligible = false;
 			}
-		}.bind(this));
+			return card.uid;
+		});
+		if (!eligible) {
+			let toast = document.getElementById('ineligible-toast');
+			toast.className += ' show';
+			setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
+		} else {
+			this.setState({
+				renderProgress: true,
+				progressMsg: 'Broadcasting request to the blockchain'
+			});
+			let burnJSON = JSON.stringify({
+				cards: selected,
+				app: 'steemmonsters/0.7.34'
+			});
+			window.hive_keychain.requestCustomJson(localStorage.getItem('username'), 'sm_burn_cards', 'Active', burnJSON, 'Burn Card(s)', function(response) {
+				if (response.success) {
+					this.setState({progressMsg: 'Step 1 of 2 complete - Request successfully broadcasted'}, () => {
+						setTimeout(() => {
+							this.setState({progressMsg: 'Gathering request results.'});
+						}, 2000);
+					});					
+					let id = response.result.id;
+					let url = 'https://game-api.splinterlands.io/transactions/lookup?trx_id=' + id;
+					console.log(response);
+					setTimeout(() => {
+						$.ajax({
+							type: 'GET',
+				  			url: url,
+				  			jsonpCallback: 'testing',
+				  			dataType: 'json',
+							success: function(response) { 
+								console.log(response.error)
+								if (response.error) {
+									this.setState({renderProgress: false});
+									let toast = document.getElementById('cardsFailed-toast');
+									toast.innerHTML = '<i class=\'fas fa-times\'></i> There was an error: ' + response.error;
+									toast.className += ' show';
+									setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
+								} else {
+									this.setState({renderProgress: false});
+									let toast = document.getElementById('cardsBurned-toast');
+									toast.className += ' show';
+									setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
+									this.props.updateBalance();
+									this.props.updateCollection('remove', selected);
+									this.setState({selected: []});
+								}
+							}.bind(this),
+							error: function(e) {
+								console.log('Something went wrong');
+							}
+						});
+					}, 10000);
+				} else {
+					this.setState({renderProgress: false});
+					let toast = document.getElementById('cardsFailed-toast');
+					toast.innerHTML = '<i class=\'fas fa-times\'></i> There was an error broadcasting to the blockchain.';
+					toast.className += ' show';
+					setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
+				}
+			}.bind(this));
+		}
 	}
 
 	render() {
@@ -358,8 +412,12 @@ class Collectionmodal extends React.Component {
 				<div id='cardsFailed-toast' className='toast failToast'>
 					<i className='fas fa-times'></i>Something went wrong! Please try again.
 				</div>
+				<div id='ineligible-toast' className='toast failToast'>
+					<i className='fas fa-times'></i>One or more cards are ineligible to be burned.
+				</div>
 				{this.state.renderTransfer ? <TransferModal updateCollection={this.props.updateCollection} closeModal={this.toggleTransfer} info={this.props.info} cards={this.state.selected}/> : ''}
 	    		{this.state.renderSell ? <SellModal clearSelected={this.clearSelected} closeModal={this.toggleSell} info={this.props.info} cards={this.state.selected}/> : ''}
+	    		{this.state.renderProgress ? <ActionProgress action='Burning' message={this.state.progressMsg} /> : '' }
 	    	</div>
 	    );
 	}

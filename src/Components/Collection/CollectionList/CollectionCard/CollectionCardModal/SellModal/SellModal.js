@@ -1,13 +1,23 @@
 import React from 'react';
 import './SellModal.css';
+import ActionProgress from '../ActionProgress/ActionProgress';
+import $ from 'jquery';
 
 class SellModal extends React.Component {
 	constructor(props) {
 		super(props);
 		this.sell = this.sell.bind(this);
+		this.state = {
+			renderProgress: false,
+			progressMsg: ''
+		};
 	}
 
 	sell() {
+		this.setState({
+			renderProgress: true,
+			progressMsg: 'Broadcasting request to the blockchain.'
+		});
 		let priceBCX = document.getElementById('sellPrice-input').value;
 		if (priceBCX !== '') {
 			let cards = JSON.stringify(this.props.cards.map(card => {
@@ -19,17 +29,48 @@ class SellModal extends React.Component {
 				};
 			}));
 			window.hive_keychain.requestCustomJson(localStorage.getItem('username'), 'sm_sell_cards', 'Active', cards, 'Sell Card(s)', function(response) {
-				console.log(response);
 				if (response.success) {
-					this.props.clearSelected();
-					let toast = document.getElementById('cardsSold-toast');
-					toast.className += ' show';
+					this.setState({progressMsg: 'Step 1 of 2 complete - Request successfully broadcasted'}, () => {
+						setTimeout(() => {
+							this.setState({progressMsg: 'Gathering request results.'});
+						}, 2000);
+					});
+					let id = response.result.id;
+					let url = 'https://game-api.splinterlands.io/transactions/lookup?trx_id=' + id;
 					setTimeout(() => {
-						toast.className = toast.className.replace(' show', '');
-						this.props.closeModal();
-					}, 3000);
+						$.ajax({
+							type: 'GET',
+				  			url: url,
+				  			jsonpCallback: 'testing',
+				  			dataType: 'json',
+							success: function(response) { 
+								console.log(response.error)
+								if (response.error) {
+									this.setState({renderProgress: false});
+									let toast = document.getElementById('cardsFailed-toast');
+									toast.innerHTML = '<i class=\'fas fa-times\'></i> There was an error: ' + response.error;
+									toast.className += ' show';
+									setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
+								} else {
+									this.setState({renderProgress: false});
+									this.props.clearSelected();
+									let toast = document.getElementById('cardsSold-toast');
+									toast.className += ' show';
+									setTimeout(() => {
+										toast.className = toast.className.replace(' show', '');
+										this.props.closeModal();
+									}, 3000);
+								}
+							}.bind(this),
+							error: function(e) {
+								console.log('Something went wrong');
+							}
+						});
+					}, 10000);	
 				} else {
+					this.setState({renderProgress: false});
 					let toast = document.getElementById('cardsFailed-toast');
+					toast.innerHTML = '<i class=\'fas fa-times\'></i> There was an error broadcasting to the blockchain.';
 					toast.className += ' show';
 					setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
 				}
@@ -66,6 +107,7 @@ class SellModal extends React.Component {
 				<div id='noPrice-toast' className='toast failToast'>
 					<i className='fas fa-times'></i>Please enter your listing price.
 				</div>
+				{this.state.renderProgress ? <ActionProgress action='Burning' message={this.state.progressMsg} /> : '' }
 			</div>
 		);
 	}

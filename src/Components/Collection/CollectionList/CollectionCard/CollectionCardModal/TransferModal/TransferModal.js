@@ -1,32 +1,75 @@
 import React from 'react';
 import './TransferModal.css';
+import ActionProgress from '../ActionProgress/ActionProgress';
+import $ from 'jquery';
 
 class TransferModal extends React.Component {
 	constructor(props) {
 		super(props);
 		this.transfer = this.transfer.bind(this);
+		this.state = {
+			renderProgress: false,
+			progressMsg: ''
+		};
 	}
 
 	transfer() {
+		this.setState({
+			renderProgress: true,
+			progressMsg: 'Broadcasting request to the blockchain.'
+		});
 		let receive = document.getElementById('transferAct-input').value;
 		if (receive !== '') {
 			let selected = this.props.cards.map(card => {return card.uid});
 			let transferJSON = JSON.stringify({
 				to: receive,
-				cards: selected,			
+				cards: ['C34-123123123'],			
 				app: 'steemmonsters/0.7.34'
 			});
 			window.hive_keychain.requestCustomJson(localStorage.getItem('username'), 'sm_gift_cards', 'Active', transferJSON, 'Transfer Card(s)', function(response) {
 				if (response.success) {
-					this.props.updateCollection('remove', selected);
-					let toast = document.getElementById('cardsTransferred-toast');
-					toast.className += ' show';
+					this.setState({progressMsg: 'Step 1 of 2 complete - Request successfully broadcasted'}, () => {
+						setTimeout(() => {
+							this.setState({progressMsg: 'Gathering request results.'});
+						}, 2000);
+					});
+					let id = response.result.id;
+					let url = 'https://game-api.splinterlands.io/transactions/lookup?trx_id=' + id;
 					setTimeout(() => {
-						toast.className = toast.className.replace(' show', '');
-						this.props.closeModal();
-					}, 3000);
-				} else {
+						$.ajax({
+							type: 'GET',
+				  			url: url,
+				  			jsonpCallback: 'testing',
+				  			dataType: 'json',
+							success: function(response) { 
+								console.log(response.error)
+								if (response.error) {
+									this.setState({renderProgress: false});
+									let toast = document.getElementById('cardsFailed-toast');
+									toast.innerHTML = '<i class=\'fas fa-times\'></i> There was an error: ' + response.error;
+									toast.className += ' show';
+									setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
+								} else {
+									this.setState({renderProgress: false});
+									this.props.updateCollection('remove', selected);
+									let toast = document.getElementById('cardsTransferred-toast');
+									toast.className += ' show';
+									setTimeout(() => {
+										toast.className = toast.className.replace(' show', '');
+										this.props.closeModal();
+									}, 3000);
+								}
+							}.bind(this),
+							error: function(e) {
+								console.log('Something went wrong');
+							}
+						});
+					}, 10000);
+					
+				} else {					
+					this.setState({renderProgress: false});
 					let toast = document.getElementById('cardsFailed-toast');
+					toast.innerHTML = '<i class=\'fas fa-times\'></i> There was an error broadcasting to the blockchain.';
 					toast.className += ' show';
 					setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
 				}
@@ -62,6 +105,7 @@ class TransferModal extends React.Component {
 				<div id='noAddress-toast' className='toast failToast'>
 					<i className='fas fa-times'></i>Please enter a receiving account.
 				</div>
+				{this.state.renderProgress ? <ActionProgress action='Burning' message={this.state.progressMsg} /> : '' }
 			</div>
 		);
 	}
