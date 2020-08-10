@@ -1,0 +1,14 @@
+.progress.modal-content {
+	height: 40vh;
+	width: 50vw;
+}
+
+.progress-msg {
+	width: 80%;
+	position: absolute;
+	bottom: 20px;
+	left: 50%;
+	transform: translateX(-50%);
+	font-size: 18px;
+	text-align: center;
+}

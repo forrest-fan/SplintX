@@ -42,18 +42,25 @@ class CollectionList extends React.Component {
                 <option value='splinter'>Splinter</option>
                 <option value='az'>Name: A - Z</option>
                 <option value='za'>Name: Z - A</option>
-                <option value='manaAsc'>Mana: Low - High</option>
-                <option value='manaDes'>Mana: High - Low</option>
+                <option value='qtyAsc'>Cards: Low - High</option>
+                <option value='qtyDes'>Cards: High - Low</option>
+                <option value='bcxAsc'>BCX: Low - High</option>
+                <option value='bcxDes'>BCX: High - Low</option>
+                <option value='valueAsc'>Value: Low - High</option>
+                <option value='valueDes'>Value: High - Low</option>
               </select>
             </span>
           </span>
+          <p className='totalValue'>Total Collection Value: ${this.props.totalValue.toFixed(3)} USD</p>
         </div>
       	<div className='list'>
           {this.state.renderStyle === 'list' ?
-          <div className='collection list-item header'>
+          <div className='list-item header'>
             <p className='center'></p>
             <p>Name</p>
-            <p className='center'>Quantity</p>
+            <p className='center'>Cards</p>
+            <p className='center'>BCX</p>
+            <p className='center'>Value</p>
           </div> : '' }
 	         {this.props.loading ?
             <div className='loader-container'><div className='loader'></div></div> :
@@ -61,9 +68,9 @@ class CollectionList extends React.Component {
               <p className='noCards'>No cards were found. Please update the filters.</p> : 
               this.props.cards.map(card => {
                 if (this.state.renderStyle === 'list') {
-                  return (<CollectionListView info={card} />);
+                  return (<CollectionListView info={card} updateBalance={this.props.updateBalance} updateCollection={this.props.updateCollection} />);
                 } else if (this.state.renderStyle === 'card') {
-                  return (<CollectionCard info={card} />);
+                  return (<CollectionCard info={card} updateBalance={this.props.updateBalance} updateCollection={this.props.updateCollection} />);
                 }
               })
            }

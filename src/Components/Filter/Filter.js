@@ -1,6 +1,5 @@
 import React from 'react';
-import './CollectionFilter.css';
-
+import './Filter.css';
 const filters = {
   foil: ['Regular', 'Gold'],
   type: ['Monster', 'Summoner'],
@@ -9,7 +8,7 @@ const filters = {
   element: ['Fire', 'Water', 'Earth', 'Life', 'Death', 'Dragon', 'Neutral']
 };
 
-class CollectionFilter extends React.Component {
+class Filter extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -97,4 +96,4 @@ class CollectionFilter extends React.Component {
   }
 }
 
-export default CollectionFilter;
+export default Filter;
