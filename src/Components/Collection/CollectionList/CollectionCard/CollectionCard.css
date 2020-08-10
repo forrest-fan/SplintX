@@ -2,7 +2,7 @@
 	display: block;
 	width: 19%;
 	padding: 15px;
-	padding-bottom: 30px;
+	padding-bottom: 40px;
 	border: none;
 	box-sizing: border-box;
 	position: relative;
@@ -77,7 +77,7 @@
 	bottom: 0px;
 	left: 50%;
 	width: 65%;
-	transform: translate(-50%, -15px);
+	transform: translate(-50%, -10px);
 	box-shadow: 1px 1px 4px 2px #444;
 }
 
