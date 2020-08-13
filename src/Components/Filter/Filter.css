@@ -1,4 +1,4 @@
-.collection-filter-pane {
+.filter-pane {
 	text-align: left;
 	padding: 10px;
 	display: inline-block;
@@ -22,7 +22,7 @@
 	color: #d43d3d;
 }
 
-.collection-filter-search {
+.filter-search {
 	padding: 4px;
 	border: none;
 	border-bottom: 1px solid var(--navbar-bg);
@@ -37,22 +37,22 @@
 	background-size: auto 50%;
 }
 
-.collection-filter-search:focus {
+.filter-search:focus {
 	outline: none;
 	border-bottom: 1px solid var(--input-focus);
 }
 
-.collection-filter-header {
+.filter-header {
 	font-size: 22px;
 	margin: 0.4em 0;
 }
 
-.collection-activeFilters-container {
+.activeFilters-container {
 	display: flex;
 	flex-wrap: wrap;
 }
 
-.collection-activeFilter {
+.activeFilter {
 	margin: 3px 10px 3px 0;
 	padding: 4px 8px;
 	border: 1.5px solid var(--navbar-bg);
@@ -64,29 +64,29 @@
 	font-size: 14px;
 }
 
-.collection-activeFilter:hover {
+.activeFilter:hover {
 	color: #fff;
 	background-color: #d64545;
 	border-color: #d64545;
 }
 
-.collection-clearFilters {
+.clearFilters {
 	text-decoration: underline;
 	cursor: pointer;
 }
 
-.collection-filter-section {
+.filter-section {
 	margin: 10px;
 }
 
-.collection-filter-section-header {
+.filter-section-header {
 	font-weight: bold;
 	font-size: 16px;
 	letter-spacing: 1px;
 	margin: 0;
 }
 
-.collection-filter-selection {
+.filter-selection {
 	margin: 0.5em 0 0.5em 7px;
 	font-size: 16px;
 	cursor: pointer;
@@ -174,14 +174,14 @@
 }
 
 @media (max-width: 900px) {
-	.collection-filter-pane {
+	.filter-pane {
 		width: 200px;
 		padding: 5px;
 	}
 }
 
 @media (max-width: 750px) {
-	.collection-filter-pane {
+	.filter-pane {
 		position: fixed;
 		left: 0;
 		top: 0;
@@ -195,16 +195,16 @@
 		overflow: auto;
 	}
 
-	.collection-filter-pane::-webkit-scrollbar {
+	.filter-pane::-webkit-scrollbar {
 	    width: 5px;
 		padding: 2px;
 	}
 
-	.collection-filter-pane::-webkit-scrollbar-track {
+	.filter-pane::-webkit-scrollbar-track {
 		background: #fff;
 	}
 
-	.collection-filter-pane::-webkit-scrollbar-thumb {
+	.filter-pane::-webkit-scrollbar-thumb {
 	    border-radius: 10px;
 	    background-color: rgba(0, 0, 0, 0.5);
 	}
