@@ -19,11 +19,11 @@
 	padding: 10px;
 }
 
-.item-description {
+.item-text {
 	text-align: left;
 }
 
-.item-description h2 {
+.item-text h2 {
 	font-size: 25px;
 	margin: 0.3em 0;
 }

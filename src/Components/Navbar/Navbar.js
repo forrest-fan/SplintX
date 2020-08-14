@@ -42,7 +42,7 @@ class Navbar extends React.Component {
     toast.className += ' show';
     setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000)
     localStorage.removeItem("username");
-    this.setState({loggedIn: false});
+    this.setState({renderLogin: false})
     this.props.login('');
   }
 

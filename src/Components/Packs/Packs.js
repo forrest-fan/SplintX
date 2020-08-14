@@ -1,8 +1,9 @@
 import React from 'react';
 import './Packs.css';
 import PackItem from './PackItem/PackItem';
+import InvItem from './InvItem/InvItem';
 
-const inventory = ['LEGENDARY', 'GOLD', 'UNTAMED', 'ORB', 'ALPHA', 'BETA'];
+const inventory = ['LEGENDARY', 'GOLD', 'UNTAMED', 'ORB', 'ALPHA', 'BETA', 'MYSTERY', 'QUEST'];
 
 const packs = [
 	{
@@ -23,19 +24,21 @@ class Packs extends React.Component {
 				</div>
 				<div>
 					<h2>Packs and Items</h2>
-					{packs.map(packItem => {
-					  	return <PackItem item={packItem} />;
-					})}
+					<div className='packs-container'>
+						{packs.map(packItem => {
+						  	return <PackItem item={packItem} />;
+						})}
+					</div>
 				</div>
 				<div>
 					<h2>Inventory</h2>
-					{Object.keys(this.props.balance).map(key => {
-						if (inventory.includes(key)) {
-							if (this.props.balance[key] > 0) {
-								return <p>{key}</p>;
+					<div className='inventory-container'>
+						{this.props.loggedIn ? Object.keys(this.props.balance).map(key => {
+							if (inventory.includes(key) && this.props.balance[key] > 0) {
+								return <InvItem name={key} balance={this.props.balance[key]} />;
 							}
-						}
-					})}
+						}) : <p style={{fontSize: '20px', textAlign: 'center'}}>Please log in to view your inventory</p>}
+					</div>
 				</div>
 			</div>
 		);

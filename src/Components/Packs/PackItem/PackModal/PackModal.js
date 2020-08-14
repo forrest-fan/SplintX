@@ -40,10 +40,24 @@ class PackModal extends React.Component {
 		    	<div className='modal-exit' onClick={this.props.closeModal}><i className='fas fa-times'></i></div>
 		    	<h2>Buy {this.props.item.name}</h2>
 			    <img src={this.props.item.img} className='item-modal-img'/>
-				<p>{this.props.item.description}</p>
+				<p id='description-large'>{this.props.item.description}</p>
+				<div id='description-small'>
+					<p className='dropdown-btn' onClick={()=> {
+						let text = document.getElementById('description-small-collapse');
+						let arrow = document.getElementById('dropdown-arrow');
+						if (text.style.maxHeight) {
+							text.style.maxHeight = null;
+							arrow.className = 'fas fa-chevron-down';
+						} else {
+							text.style.maxHeight = text.scrollHeight + 'px';
+							arrow.className = 'fas fa-chevron-up';
+						}
+					}}>Description <i class='fas fa-chevron-down' id='dropdown-arrow'></i></p>
+					<p id='description-small-collapse'>{this.props.item.description}</p>
+				</div>
 		    	<input type='number' min='1' placeholder='Purchase Quantity' onChange={this.updatePrice} className='item-qty'/>
 			    <div className='buy-container'>
-			    	<span className='total-price'>Total Price: {this.state.totalPrice.toLocaleString()} DEC</span>
+			    	<p className='total-price'>Total Price: {this.state.totalPrice.toLocaleString()} DEC</p>
 			    	<button className='buy-item-btn'>Buy Pack</button>
 			    </div>
 		    </div>

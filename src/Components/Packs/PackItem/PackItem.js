@@ -18,7 +18,7 @@ class PackItem extends React.Component {
 			<div>
 				<div className='item-container' onClick={this.toggleModal}>
 				    <img src={this.props.item.img} className='item-img'/>
-				    <div className='item-description'>
+				    <div className='item-text'>
 				    	<h2>{this.props.item.name}</h2>
 				    	<p className='price'>{this.props.item.price.toLocaleString()} DEC PER PACK</p>
 				    </div>

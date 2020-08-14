@@ -30,6 +30,30 @@
 	font-size: 19px;
 }
 
+#description-small {
+	display: none;
+}
+
+#description-small .dropdown-btn {
+	border-bottom: 1px solid #555;
+	padding-bottom: 5px;
+	margin-bottom: 0px;
+	font-size: 19px;
+	font-weight: bold;
+}
+
+#description-small i {
+	font-size: 14px;
+	margin-left: 10px;
+}
+
+#description-small-collapse {
+	max-height: 0;
+	overflow: hidden;
+	transition: 0.3s;
+	margin-top: 5px;
+}
+
 .item-qty {
 	outline: none;
 	font-size: 18px;
@@ -76,8 +100,20 @@
 }
 
 @media (max-width: 700px) {
+	#itemModal {
+		padding: 20px;
+	}
+
 	#itemModal p {
 		font-size: 16px;
+	}
+
+	#description-large {
+		display: none;
+	}
+
+	#description-small {
+		display: block;
 	}
 }
 
