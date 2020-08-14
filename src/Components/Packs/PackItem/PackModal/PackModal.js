@@ -1,5 +1,6 @@
 import React from 'react';
 import './PackModal.css';
+import '../../../Collection/CollectionList/CollectionCard/CollectionCardModal/ActionProgress/ActionProgress';
 
 class PackModal extends React.Component {
 	constructor(props) {
@@ -13,15 +14,17 @@ class PackModal extends React.Component {
 		let qty = this.state.totalPrice / this.props.item.price;
 		
   		var json = JSON.stringify({
-    		type: "booster_pack",
+    		type: this.props.item.code,
    			qty: qty,
     		currency: "DEC",
     		market: "splintx",
     		app: "SplintXApp"
   		});
-  		alert(json);
-		window.hive_keychain.requestCustomJson(localStorage.getItem('username'), "sm_purchase", "Active", json, "Booster Pack Purchase", function (response) {
+		window.hive_keychain.requestCustomJson(localStorage.getItem('username'), "sm_purchase", "Active", json, "Pack Purchase", function (response) {
 		  console.log(response);
+		  if (response.success) {
+		  	
+		  }
 		});
 		this.props.updateBalance();
 	}

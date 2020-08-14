@@ -10,6 +10,7 @@ const packs = [
 		name: 'Untamed Booster Pack',
 		description: `Each pack contains 5 cards randomly selected from the UNTAMED set. Each pack is guaranteed to contain at least one RARE card or better. Every 100,000 packs sold will unlock a new card that will be airdropped to players who have already purchased packs and will be added to packs going forward.`,
 		price: 2000,
+		code: 'booster_pack',
 		img: 'https://d36mxiodymuqjm.cloudfront.net/website/ui_elements/shop/img_pack_untamed.png'
 	}
 ];
