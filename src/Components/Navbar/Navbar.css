@@ -137,6 +137,7 @@
 	font-size: 18px;
 	letter-spacing: 0.5px;
 	color: var(--navbar-bg);
+	cursor: pointer;
 }
 
 .login-side {

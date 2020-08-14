@@ -1,4 +1,5 @@
 import React from 'react';
+import './PackModal.css';
 
 class PackModal extends React.Component {
 	constructor(props) {
@@ -9,15 +10,16 @@ class PackModal extends React.Component {
 	}
 
 	buyPack() {
-		let totalPrice = this.state.totalPrice / 2000;
-		alert("buyPack function");
+		let qty = this.state.totalPrice / this.props.item.price;
+		
   		var json = JSON.stringify({
     		type: "booster_pack",
-   			qty: totalPrice,
+   			qty: qty,
     		currency: "DEC",
     		market: "splintx",
     		app: "SplintXApp"
-  		});	
+  		});
+  		alert(json);
 		window.hive_keychain.requestCustomJson(localStorage.getItem('username'), "sm_purchase", "Active", json, "Booster Pack Purchase", function (response) {
 		  console.log(response);
 		});
@@ -32,20 +34,18 @@ class PackModal extends React.Component {
 
 	render() {
 		return (
-		  <div className='item-modal' id='untamedModal'>
-		    <div className='item-modal-content'>
-		      <img src={this.props.item.img} className='item-modal-img'/>
-		      <div className='close-modal' onClick={this.props.closeModal}>✖</div>
-		      <h2>Buy {this.props.item.name}</h2>
-		      <span style={{marginRight: '10px'}}>Quantity:</span>
-		      <input type='number' min='1' onChange={this.updatePrice} style={{width: '100px', textAlign: 'right'}}/>
-		      <div className='buy-container'>
-		        <span><strong>Buy: </strong></span>
-		        {this.props.item.acceptedCurrencies.map(currency => {
-		        	let btnClass = 'buy-btn ' + currency + '-price';
-		        	return (<span className={btnClass} onClick={this.buyPack} style={{cursor:'pointer'}}>{this.state.totalPrice.toLocaleString()} {currency}</span>);
-		        })}
-		      </div>
+		  <div className='modal'>
+		  	<div className='modal-overlay' onClick={this.props.closeModal}></div>
+		    <div className='modal-content' id='itemModal'>
+		    	<div className='modal-exit' onClick={this.props.closeModal}><i className='fas fa-times'></i></div>
+		    	<h2>Buy {this.props.item.name}</h2>
+			    <img src={this.props.item.img} className='item-modal-img'/>
+				<p>{this.props.item.description}</p>
+		    	<input type='number' min='1' placeholder='Purchase Quantity' onChange={this.updatePrice} className='item-qty'/>
+			    <div className='buy-container'>
+			    	<span className='total-price'>Total Price: {this.state.totalPrice.toLocaleString()} DEC</span>
+			    	<button className='buy-item-btn'>Buy Pack</button>
+			    </div>
 		    </div>
 		  </div>
 		);

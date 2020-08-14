@@ -194,8 +194,6 @@ class Collection extends React.Component {
 		});
 	}
 
-
-
 	updateSort(method) {
 		this.setState({
 			cards: sort(this.state.cards, method),
@@ -294,7 +292,7 @@ class Collection extends React.Component {
 					          		bcx: bcx,
 					          		cooldown: Eelement.cards[l].last_used_player !== localStorage.getItem('username') && (Date.parse(Eelement.cards[l].last_used_date) > (new Date() - 604800000)),
 					          		listed: Eelement.cards[l].market_id !== null,
-					          		leased: Eelement.cards[l].delegation_tx !== null
+					          		leased: Eelement.cards[l].delegated_to !== null
 	          					});
 			              		cards[i] = card;
 			              		break;
@@ -325,7 +323,7 @@ class Collection extends React.Component {
 				          		bcx: bcx,
 				          		cooldown: Eelement.cards[l].last_used_player !== localStorage.getItem('username') && (Date.parse(Eelement.cards[l].last_used_date) > (new Date() - 604800000)),
 				          		listed: Eelement.cards[l].market_id !== null,
-				          		leased: Eelement.cards[l].delegation_tx !== null
+				          		leased: Eelement.cards[l].delegated_to !== null
 				          	}]
 						});
 	            		distinctCards.push(distinctID);
@@ -402,8 +400,8 @@ class Collection extends React.Component {
 
 	render() {
 		return (
-			<div id='collection'>
-				<div className='collection-header'>
+			<div id='collection' className='page'>
+				<div className='header'>
 					<h2>My Collection</h2>
 					<hr />
 				</div>

@@ -1,0 +1,93 @@
+#itemModal {
+	text-align: center;
+	padding: 20px 50px;
+	overflow: auto;
+}
+
+#itemModal::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+	padding: 2px;
+	cursor: pointer;
+}
+
+#itemModal::-webkit-scrollbar-track {
+	background: #ddd;
+	border-radius: 5px;
+}
+
+#itemModal::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+}
+
+.item-modal-img {
+	width: 200px;
+}
+
+#itemModal p {
+	font-size: 19px;
+}
+
+.item-qty {
+	outline: none;
+	font-size: 18px;
+	font-family: Source Sans Pro;
+	width: 250px;
+	padding: 3px 6px;
+	border: none;
+	border-bottom: 1px solid var(--navbar-bg);
+	transition: border-color 0.3s;
+}
+
+.item-qty:focus {
+	border-color: var(--login-btn);
+}
+
+.item-qty::-webkit-outer-spin-button,
+.item-qty::-webkit-inner-spin-button {
+	-webkit-appearance: button;
+}
+
+.buy-container {
+	padding: 20px 0px;
+}
+
+.total-price {
+	font-size: 18px;
+	font-weight: bold;
+}
+
+.buy-item-btn {
+	display: inline-block;
+	margin-left: 10px;
+	padding: 10px 10px;
+	font-size: 13px;
+	font-weight: bold;
+	vertical-align: middle;
+	border-radius: 10px;
+	border: 2px solid var(--login-btn);
+	cursor: pointer;
+	transition: 0.3s;
+	outline: none;
+	background: var(--login-btn);
+	color: #000;
+}
+
+@media (max-width: 700px) {
+	#itemModal p {
+		font-size: 16px;
+	}
+}
+
+@media (max-width: 550px) {
+	.item-modal-img {
+		width: 125px;
+	}
+
+	.item-qty {
+		width: 150px;
+		font-size: 16px;
+	}
+}
