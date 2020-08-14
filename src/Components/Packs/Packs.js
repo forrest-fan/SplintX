@@ -27,7 +27,7 @@ class Packs extends React.Component {
 					<h2>Packs and Items</h2>
 					<div className='packs-container'>
 						{packs.map(packItem => {
-						  	return <PackItem item={packItem} />;
+						  	return <PackItem item={packItem} balance={this.props.balance} />;
 						})}
 					</div>
 				</div>

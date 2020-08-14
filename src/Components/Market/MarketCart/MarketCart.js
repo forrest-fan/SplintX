@@ -192,7 +192,7 @@ class MarketCart extends React.Component {
 				<div id='cardsFailed-toast' className='toast failToast'>
 					<i className='fas fa-times'></i>Something went wrong! Please try again.
 				</div>
-				{this.state.renderProgress ? <ActionProgress action='Buying' message={this.state.progressMsg} /> : '' }
+				{this.state.renderProgress ? <ActionProgress action='Buying Cards' message={this.state.progressMsg} /> : '' }
 	    	</div>
 	    );
 	}

@@ -7,7 +7,7 @@ class ActionProgress extends React.Component {
 			<div className='modal'>
 				<div className='modal-overlay'></div>
 				<div className='progress modal-content'>
-					<h2>{this.props.action} Cards</h2>
+					<h2>{this.props.action}</h2>
 					<div className='loader-modal-container'><div className='loader-modal'></div></div>
 					<p className='progress-msg'>{this.props.message}</p>
 				</div>

@@ -107,7 +107,7 @@ class SellModal extends React.Component {
 				<div id='noPrice-toast' className='toast failToast'>
 					<i className='fas fa-times'></i>Please enter your listing price.
 				</div>
-				{this.state.renderProgress ? <ActionProgress action='Listing' message={this.state.progressMsg} /> : '' }
+				{this.state.renderProgress ? <ActionProgress action='Listing Cards' message={this.state.progressMsg} /> : '' }
 			</div>
 		);
 	}

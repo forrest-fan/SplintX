@@ -18,7 +18,6 @@ const orb = ['ORB'];
 
 class InvItem extends React.Component {
 	render() {
-		console.log(this.props.name);
 		return (
 			<div className='inv-item-container'>
 				<img src={imgs[this.props.name]} />

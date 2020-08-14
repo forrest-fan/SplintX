@@ -23,7 +23,7 @@ class PackItem extends React.Component {
 				    	<p className='price'>{this.props.item.price.toLocaleString()} DEC PER PACK</p>
 				    </div>
 				</div>
-				{this.state.openModal ? <PackModal item={this.props.item} closeModal={this.toggleModal}/> : ''}
+				{this.state.openModal ? <PackModal balance={this.props.balance} item={this.props.item} closeModal={this.toggleModal}/> : ''}
 			</div>
 		);
 	}

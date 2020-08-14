@@ -106,7 +106,7 @@ class TransferModal extends React.Component {
 				<div id='noAddress-toast' className='toast failToast'>
 					<i className='fas fa-times'></i>Please enter a receiving account.
 				</div>
-				{this.state.renderProgress ? <ActionProgress action='Transferring' message={this.state.progressMsg} /> : '' }
+				{this.state.renderProgress ? <ActionProgress action='Transferring Cards' message={this.state.progressMsg} /> : '' }
 			</div>
 		);
 	}
