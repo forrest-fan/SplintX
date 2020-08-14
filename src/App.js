@@ -57,7 +57,7 @@ class App extends React.Component {
     } else if (page === 'collection') {
       return <Collection updateBalance={this.updateBalance} loggedIn={this.state.loggedIn} cardDetails={this.state.cardDetails}/>
     } else if (page === 'packs') {
-      return <Packs balance={this.state.balance} loggedIn={this.state.loggedIn} />
+      return <Packs balance={this.state.balance} updateBalance={this.updateBalance} loggedIn={this.state.loggedIn} />
     } else if (page === 'battlechain') {
       return <BattleChain loggedIn={this.state.loggedIn}/>
     } else if (page === 'scanner') {
