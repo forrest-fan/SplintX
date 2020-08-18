@@ -4,10 +4,13 @@ import Filter from '../Filter/Filter';
 import CollectionList from './CollectionList/CollectionList';
 import $ from 'jquery';
 
-//const cardIDs = ['C4-182-PPIL8I33XC', 'C3-217-WOC46R14KW', 'C1-1-C0KFFOTWSW', 'C1-1-BSOGK0WS3K'];
 var allCards = [];
-const combineRate = [[1,5,14,30,60,100,150,220,300,400],[1,5,14,25,40,60,85,115],[1,4,10,20,32,46],[1,3,6,11]];
-const combineRateGold = [[0,0,1,2,5,9,14,20,27,38],[0,1,2,4,7,11,16,22],[0,1,2,4,7,10],[0,1,2,4]];
+const combineRateU = [[1,5,14,30,60,100,150,220,300,400],[1,5,14,25,40,60,85,115],[1,4,10,20,32,46],[1,3,6,11]];
+const combineRateGoldU = [[0,0,1,2,5,9,14,20,27,38],[0,1,2,4,7,11,16,22],[0,1,2,4,7,10],[0,1,2,4]];
+const combineRateB = [[1,3,5,12,25,52,105,172,305,505],[1,3,5,11,21,35,61,115],[1,3,6,11,23,46],[1,3,5,11]];
+const combineRateGoldB = [[0,0,0,1,2,4,8,13,23,38],[0,0,1,2,4,7,12,22],[0,0,1,3,5,10],[0,1,2,4]];
+const combineRateA = [[1,2,4,9,19,39,79,129,229,379],[1,2,4,8,16,26,46,86],[1,2,4,8,16,32],[1,2,4,8]];
+const combineRateGoldA = [[0,0,0,1,2,4,7,11,19,31],[0,0,1,2,3,5,9,17],[0,0,1,2,4,8],[0,1,2,3]];
 
 const calculateValue = (cards) => {
   let value = 0;
@@ -266,7 +269,14 @@ class Collection extends React.Component {
 					}
 		          	let xp = Eelement.cards[l].xp;
 		          	let lvl = 0;
-					let xpRates = gold ? combineRateGold[cardData.rarity - 1] : combineRate[cardData.rarity - 1];
+		          	let xpRates = [];
+	          		if (Eelement.cards[l].edition === 0) {
+	          			xpRates = gold ? combineRateGoldA[cardData.rarity - 1] : combineRateA[cardData.rarity - 1];
+	          		} else if (Eelement.cards[l].edition === 1 || Eelement.cards[l].edition === 2 || (Eelement.cards[l].edition === 3 && detailID <= 223)) {
+	          			xpRates = gold ? combineRateGoldB[cardData.rarity - 1] : combineRateB[cardData.rarity - 1];
+	          		} else if (Eelement.cards[l].edition === 4 || (Eelement.cards[l].edition === 3 && detailID > 223)) {
+	          			xpRates = gold ? combineRateGoldU[cardData.rarity - 1] : combineRateU[cardData.rarity - 1];
+	          		}
 					let bcx = this.getBCX(Eelement.cards[l].xp, Eelement.cards[l].edition, cardData.rarity, detailID, gold);
 		          	for (let i = 0; i < xpRates.length; i++) {
 						if (bcx >= xpRates[i]) {
