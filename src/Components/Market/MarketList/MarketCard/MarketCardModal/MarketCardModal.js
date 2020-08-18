@@ -3,8 +3,12 @@ import './MarketCardModal.css';
 import $ from 'jquery';
 import Chart from 'chart.js';
 
-const combineRate = [[1,5,14,30,60,100,150,220,300,400],[1,5,14,25,40,60,85,115],[1,4,10,20,32,46],[1,3,6,11]];
-const combineRateGold = [[0,0,1,2,5,9,14,20,27,38],[0,1,2,4,7,11,16,22],[0,1,2,4,7,10],[0,1,2,4]];
+const combineRateU = [[1,5,14,30,60,100,150,220,300,400],[1,5,14,25,40,60,85,115],[1,4,10,20,32,46],[1,3,6,11]];
+const combineRateGoldU = [[0,0,1,2,5,9,14,20,27,38],[0,1,2,4,7,11,16,22],[0,1,2,4,7,10],[0,1,2,4]];
+const combineRateB = [[1,3,5,12,25,52,105,172,305,505],[1,3,5,11,21,35,61,115],[1,3,6,11,23,46],[1,3,5,11]];
+const combineRateGoldB = [[0,0,0,1,2,4,8,13,23,38],[0,0,1,2,4,7,12,22],[0,0,1,3,5,10],[0,1,2,4]];
+const combineRateA = [[1,2,4,9,19,39,79,129,229,379],[1,2,4,8,16,26,46,86],[1,2,4,8,16,32],[1,2,4,8]];
+const combineRateGoldA = [[0,0,0,1,2,4,7,11,19,31],[0,0,1,2,3,5,9,17],[0,0,1,2,4,8],[0,1,2,3]];
 const summoner = [[[1, 1, 1, 1, 0], [2, 2, 2, 1, 1], [3, 3, 2, 2, 1], [4, 4, 3, 2, 2], [5, 5, 4, 3, 2], [6, 6, 5, 4, 2], [7, 7, 6, 4, 3], [8, 8, 6, 5, 3], [9, 9, 7, 5, 4], [10, 10, 8, 6, 4]], [[1, 1, 1, 1, 1], [2, 3, 2, 2, 1], [3, 4, 3, 2, 2], [4, 5, 4, 3, 2], [5, 6, 5, 4, 3], [6, 8, 6, 5, 3], [7, 9, 7, 5, 4], [8, 10, 8, 6, 4]], [[1, 2, 1, 1, 1], [2, 3, 3, 2, 1], [3, 5, 4, 3, 2], [4, 7, 5, 4, 3], [5, 8, 7, 5, 3], [6, 10, 8, 6, 4]], [[1, 3, 2, 2, 1], [2, 5, 4, 3, 2], [3, 8, 6, 5, 3], [4, 10, 8, 6, 4]]];
 
 const sumProp = (array, prop) => {
@@ -253,7 +257,6 @@ class MarketCardModal extends React.Component {
 			jsonpCallback: 'testing',
 		  	dataType: 'json',
 		  	success: function(saleData) {
-				saleData.sort((a, b) => parseFloat(a.buy_price) / parseFloat(a.xp) === parseFloat(b.buy_price) / parseFloat(b.xp) ? parseFloat(a.buy_price) === parseFloat(b.buy_price) ? parseFloat(a.xp) - parseFloat(b.xp) : parseFloat(a.buy_price) - parseFloat(b.buy_price) : parseFloat(a.buy_price) / parseFloat(a.xp) - parseFloat(b.buy_price) / parseFloat(b.xp));
 		  		this.setState({
 		  			forSale: forSale = saleData.map(listing => {
 			  			let rarity = this.props.info.rarity === 'Common' ? 1 : this.props.info.rarity === 'Rare' ? 2 : this.props.info.rarity === 'Epic' ? 3 : 4;
@@ -261,7 +264,15 @@ class MarketCardModal extends React.Component {
 						let detailID = this.props.info.detailID;
 						let lvl = 0;
 						let bcx = this.getBCX(listing.xp);
-						let xpRates = this.props.info.gold ? combineRateGold[rarity - 1] : combineRate[rarity - 1];
+						let gold = this.props.info.gold;
+						let xpRates = []
+						if (edition === 'Alpha') {
+		          			xpRates = gold ? combineRateGoldA[rarity - 1] : combineRateA[rarity - 1];
+		          		} else if (edition === 'Beta' || edition === 'Promo' || (edition === 'Reward' && detailID <= 223)) {
+		          			xpRates = gold ? combineRateGoldB[rarity - 1] : combineRateB[rarity - 1];
+		          		} else if (edition === 'Untamed' || (edition === 'Reward' && detailID > 223)) {
+		          			xpRates = gold ? combineRateGoldU[rarity - 1] : combineRateU[rarity - 1];
+		          		}
 						for (let i = 0; i < xpRates.length; i++) {
 							if (bcx >= xpRates[i]) {
 								lvl++;
@@ -283,6 +294,7 @@ class MarketCardModal extends React.Component {
 		  			}),
 		  			loading: false
 		  		});
+		  		this.updateSort('priceBcxAsc');
 		  	}.bind(this),
 		  	error: function(e) {
 		  		console.log('There was an error retrieving the sale data.');
