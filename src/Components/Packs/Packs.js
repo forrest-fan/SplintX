@@ -48,7 +48,7 @@ class Packs extends React.Component {
 		return (
 			<div id='packs' className='page'>
 				<div className='header'>
-					<h2>Buy Packs</h2>
+					<h2>Packs & Potions</h2>
 					<hr />
 				</div>
 				<div>

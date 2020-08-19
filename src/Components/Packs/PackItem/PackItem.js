@@ -20,7 +20,7 @@ class PackItem extends React.Component {
 				    <img src={this.props.item.img} className='item-img'/>
 				    <div className='item-text'>
 				    	<h2>{this.props.item.name}</h2>
-				    	<p className='price'>{this.props.item.price.toLocaleString()} DEC PER PACK</p>
+				    	<p className='price'>{this.props.item.price.toLocaleString()} DEC</p>
 				    </div>
 				</div>
 				{this.state.openModal ? <PackModal updateBalance={this.props.updateBalance} balance={this.props.balance} item={this.props.item} closeModal={this.toggleModal}/> : ''}
