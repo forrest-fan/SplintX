@@ -1,16 +1,21 @@
 .item-container {
+	width: 30%;
+	padding: 20px;
+	box-sizing: border-box;
+}
+
+.pack-item {
 	box-sizing: border-box;
 	padding: 20px;
 	background-color: #fff;
 	border-radius: 20px;
 	box-shadow: 1px 1px 4px 1px #555;
 	transition: box-shadow 0.3s;
-	width: 30%;
 	cursor: pointer;
 	text-align: center;
 }
 
-.item-container:hover {
+.pack-item:hover {
 	box-shadow: 1px 1px 8px 1px #555;
 }
 

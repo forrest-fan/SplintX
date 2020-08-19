@@ -74,8 +74,8 @@ class Filter extends React.Component {
                 } else if (filterSection === 'element') {
                   iconClass += ' ' + filter.toLowerCase() + ' fas ';
                   iconClass += filter === 'Fire' ? 'fa-fire' : filter === 'Water' ? 'fa-tint' : filter === 'Earth' ? 'fa-leaf' : filter === 'Life' ? 'fa-star-of-life' : filter === 'Death' ? 'fa-skull' : filter === 'Dragon' ? 'fa-dragon' : 'fa-dumbbell';
-                } else if (filterSection === 'gold') {
-                  iconClass += ' fas fa-star';
+                } else if (filterSection === 'foil') {
+                  iconClass += filter === 'Gold' ? ' fas fa-star gold' : ' fas fa-stop regular';
                 }
                 return (
                   <p className='filter-selection' id={filter} onClick={() => {

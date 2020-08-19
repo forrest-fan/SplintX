@@ -22,13 +22,17 @@ class PackModal extends React.Component {
 				renderProgress: true,
 				progressMsg: 'Broadcasting request to the blockchain'
 			});
-			var json = JSON.stringify({
+			var json = {
 	    		type: this.props.item.code,
 	   			qty: qty,
 	    		currency: "DEC",
 	    		market: "splintx",
 	    		app: "SplintXApp"
-	  		});
+	  		};
+	  		if (json.type === 'potion') {
+	  			json.data = {potion_type: this.props.item.potion_type};
+	  		}
+	  		json = JSON.stringify(json);
 			window.hive_keychain.requestCustomJson(localStorage.getItem('username'), "sm_purchase", "Active", json, "Pack Purchase", function (response) {
 				if (response.success) {
 					this.setState({progressMsg: 'Step 1 of 2 complete - Request successfully broadcasted'}, () => {
@@ -55,16 +59,18 @@ class PackModal extends React.Component {
 									this.setState({renderProgress: false});
 									let toast = document.getElementById('buySuccess-toast');
 									toast.className += ' show';
-									setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
-									this.props.updateBalance();
-									this.props.closeModal();
+									setTimeout(() => {
+										toast.className = toast.className.replace(' show', '');
+										this.props.updateBalance();
+										this.props.closeModal();
+									}, 3000);	
 								}
 							}.bind(this),
 							error: function(e) {
 								console.log('Something went wrong');
 							}
 						});
-					}, 10000);
+					}, 12000);
 				} else {
 					this.setState({renderProgress: false});
 					let toast = document.getElementById('cardsFailed-toast');

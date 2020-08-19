@@ -1,3 +1,11 @@
+.packs-container {
+	display: flex;
+	width: 100%;
+	flex-wrap: wrap;
+}
+
 .inventory-container {
 	display: flex;
+	width: 100%;
+	flex-wrap: wrap;
 }

@@ -15,8 +15,8 @@ class PackItem extends React.Component {
 
 	render() {
 		return (
-			<div>
-				<div className='item-container' onClick={this.toggleModal}>
+			<div className='item-container'>
+				<div className='pack-item' onClick={this.toggleModal}>
 				    <img src={this.props.item.img} className='item-img'/>
 				    <div className='item-text'>
 				    	<h2>{this.props.item.name}</h2>
