@@ -127,7 +127,7 @@ class PackModal extends React.Component {
 					<i className='fas fa-times'></i>You don't have enough DEC to purchase this.
 				</div>
 				<div id='buySuccess-toast' className='toast successToast'>
-					<i className='fas fa-times'></i>Successfully purchased!
+					<i className='fas fa-check'></i>Successfully purchased!
 				</div>
 				{this.state.renderProgress ? <ActionProgress action='Buying Packs' message={this.state.progressMsg} /> : '' }
 			</div>
