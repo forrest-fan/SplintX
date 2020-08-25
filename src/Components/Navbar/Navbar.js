@@ -5,7 +5,8 @@ import crystal from './crystal.png';
 
 const pages = {
   market: 'Market',
-  collection: 'My Collection'
+  collection: 'My Collection',
+  packs: 'Packs'
 };
 
 class Navbar extends React.Component {
@@ -41,14 +42,14 @@ class Navbar extends React.Component {
     toast.className += ' show';
     setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000)
     localStorage.removeItem("username");
-    this.setState({loggedIn: false});
+    this.setState({renderLogin: false})
     this.props.login('');
   }
 
   render() {
     return(
       <nav>
-        {this.props.loggedIn ? <div className='DECbalance'><img src={crystal} height='25px' /><span>{this.props.balance} DEC</span></div> : ''}
+        {this.props.loggedIn ? <div className='DECbalance'><img src={crystal} height='25px' /><span>{this.props.balance.DEC} DEC</span></div> : ''}
         <div className="navbar">
           <div className="navbar-title" href="">Splint<span className='navbar-x-accent'>X</span></div>
           <div className="navbar-links-container">

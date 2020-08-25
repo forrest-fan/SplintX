@@ -197,8 +197,6 @@ class Collection extends React.Component {
 		});
 	}
 
-
-
 	updateSort(method) {
 		this.setState({
 			cards: sort(this.state.cards, method),
@@ -377,12 +375,69 @@ class Collection extends React.Component {
 								if (cards[i].cards[l].uid === selected[k]) {
 									cards[i].cards.splice(l, 1);
 									cards[i].count -= 1;
+									break;
 								}
 							}
 						}
 						if (cards[i].count === 0) {
 							cards.splice(i, 1);
 						}
+					}
+					break;
+				}
+			}
+			this.setState({cards: cards});
+		} else if (action === 'combine') {
+			let cards = this.state.cards;
+			for (let i = 0; i < cards.length; i++) {
+				for(let j = 0; j < cards[i].count; j++) {
+					if (cards[i].cards[j].uid === selected[0]) {
+						let totalbcx = cards[i].cards[j].bcx;
+						let totalxp = cards[i].cards[j].xp;
+						let cooldown = cards[i].cards[j].cooldown;
+						for (let k = 1; k < selected.length; k++) {
+							for (let l = 0; l < cards[i].count; l++) {
+								if (selected[k] === cards[i].cards[l].uid) {
+									totalbcx += cards[i].cards[l].bcx;
+									totalxp += cards[i].cards[l].xp;
+									if (cards[i].cards[l].cooldown) {
+										cooldown = true;
+									}
+									cards[i].cards.splice(l, 1);
+									cards[i].count -= 1;
+									break;
+								}
+							}
+						}
+						let rarity = cards[i].rarity === 'Common' ? 1 : cards[i].rarity === 'Rare' ? 2 : cards[i].rarity === 'Epic' ? 3 : 4;
+						let edition = cards[i].edition;
+						let detailID = cards[i].detailID;
+						let gold = cards[i].gold;
+						let xpRates = []
+						if (edition === 'Alpha') {
+				  			xpRates = gold ? combineRateGoldA : combineRateA;
+				  		} else if (edition === 'Beta' || edition === 'Promo' || (edition === 'Reward' && detailID <= 223)) {
+				  			xpRates = gold ? combineRateGoldB : combineRateB;
+				  		} else if (edition === 'Untamed' || (edition === 'Reward' && detailID > 223)) {
+				  			xpRates = gold ? combineRateGoldU : combineRateU;
+				  		}
+				  		let newLvl = 0;
+				  		for (let k = 0; k < xpRates[rarity - 1].length; k++) {
+				  			if (totalbcx >= xpRates[rarity - 1][k]) {
+				  				newLvl++;
+				  			} else {
+				  				break;
+				  			}
+				  		}
+				  		cards[i].cards[j] = {
+				  			lvl: newLvl,
+			          		uid: cards[i].cards[j].uid,
+			          		xp: totalxp,
+			          		bcx: totalbcx,
+			          		cooldown: cooldown,
+			          		listed: false,
+			          		leased: false
+				  		}
 					}
 					break;
 				}
@@ -412,8 +467,8 @@ class Collection extends React.Component {
 
 	render() {
 		return (
-			<div id='collection'>
-				<div className='collection-header'>
+			<div id='collection' className='page'>
+				<div className='header'>
 					<h2>My Collection</h2>
 					<hr />
 				</div>

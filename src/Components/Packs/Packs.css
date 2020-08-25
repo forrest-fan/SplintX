@@ -1,103 +1,11 @@
-#packs {
-	margin: 10px 5% 0 5%;
+.packs-container {
+	display: flex;
+	width: 100%;
+	flex-wrap: wrap;
 }
 
-#packs h1 {
-	font-size: 30px;
-}
-
-.item-container {
-	margin: 20px 10px;
-	background-color: #2e2b27;
-	color: #fff;
-	border-radius: 20px;
-	transition: box-shadow 0.3s;
-}
-
-.item-container:hover {
-	cursor: pointer;
-	box-shadow: 0px 0px 4px 1px #555;
-}
-
-.item-img {
-	display: inline-block;
-	width: 20%;
-	padding: 25px;
-}
-
-.item-description {
-	display: inline-block;
-	width: 79%;
-	vertical-align: top;
-	padding: 20px;
-	text-align: left;
-}
-
-.item-description h2 {
-	font-size: 25px;
-}
-
-.price {
-	color: #ebb734;
-	letter-spacing: 2px;
-	font-weight: bold;
-}
-
-.item-modal {
-	position: fixed;
-	width: 100vw;
-	height: 100vh;
-	top: 0;
-	left: 0;
-	background: rgba(0,0,0,0.4);
-}
-
-.item-modal-content {
-	position: fixed;
-	text-align: center;
-	width: 80%;
-	left: 50%;
-	top: 50%;
-	transform: translate(-50%, -50%);
-	background: #fff;
-	padding: 20px;
-	border-radius: 20px;
-}
-
-.close-modal {
-	position: absolute;
-	right: 10px;
-	top: 5px;
-	font-size: 20px;
-	font-weight: bold;
-	color: #000;
-	transition: color 0.3s;
-}
-
-.close-modal:hover {
-	cursor: pointer;
-	color: #f00;
-}
-
-.item-modal-img {
-	max-width: 300px;
-}
-
-.buy-container {
-	overflow: auto;
-	padding: 20px 0px;
-}
-
-.buy-btn {
-	color: #fff;
-	padding: 8px 12px;
-	margin: 0px 10px;
-}
-
-.Credits-price {
-	background-color: #ebb734;
-}
-
-.DEC-price {
-	background-color: #8713bd;
+.inventory-container {
+	display: flex;
+	width: 100%;
+	flex-wrap: wrap;
 }

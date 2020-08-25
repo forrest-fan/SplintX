@@ -44,7 +44,6 @@ const summoner = [[[1, 1, 1, 1, 0], [2, 2, 2, 1, 1], [3, 3, 2, 2, 1], [4, 4, 3, 
 class Collectionmodal extends React.Component {
 	constructor(props) {
 		super(props);
-		console.log(this.props.info);
 		this.state = {
 			cards: this.props.info.cards.sort((a, b) => {
 				return (Number(b.xp) - Number(a.xp));
@@ -55,13 +54,16 @@ class Collectionmodal extends React.Component {
 			renderTransfer: false,
 			renderSell: false,
 			renderProgress: false,
+			renderCombineProgress: false,
 			progressMsg: ''
 		};
 		this.clearSelected = this.clearSelected.bind(this);
+		this.selectAll = this.selectAll.bind(this);
 		this.toggleTransfer = this.toggleTransfer.bind(this);
 		this.toggleSell = this.toggleSell.bind(this);
 		this.getBurn = this.getBurn.bind(this);
 		this.updateSort = this.updateSort.bind(this);
+		this.combine = this.combine.bind(this);
 		this.burn = this.burn.bind(this);
 	}
 
@@ -69,16 +71,49 @@ class Collectionmodal extends React.Component {
 		this.setState({selected: []});
 	}
 
-	toggleTransfer() {
+	selectAll() {
 		this.setState({
-			renderTransfer: this.state.renderTransfer ? false : true
+			selected: this.state.cards
 		});
+
+	}
+
+	toggleTransfer() {
+		let eligible = true;
+		let selected = this.state.selected;
+		for (let i = 0; i < selected.length; i++) {
+			if (selected[i].leased || selected[i].listed) {
+				eligible = false;
+			}
+		}
+		if (eligible) {
+			this.setState({
+				renderTransfer: this.state.renderTransfer ? false : true
+			});
+		} else {
+			let toast = document.getElementById('ineligible-toast');
+			toast.className += ' show';
+			setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
+		}
 	}
 
 	toggleSell() {
-		this.setState({
-			renderSell: this.state.renderSell ? false : true
-		});
+		let eligible = true;
+		let selected = this.state.selected;
+		for (let i = 0; i < selected.length; i++) {
+			if (selected[i].leased || selected[i].listed) {
+				eligible = false;
+			}
+		}
+		if (eligible) {
+			this.setState({
+				renderSell: this.state.renderSell ? false : true
+			});
+		} else {
+			let toast = document.getElementById('ineligible-toast');
+			toast.className += ' show';
+			setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
+		}
 	}
 
 	updateSort(method) {
@@ -139,6 +174,74 @@ class Collectionmodal extends React.Component {
 	 	return burn_value;
 	}
 
+	combine() {
+		let eligible = true;
+		let selected = this.state.selected.map(card => {
+			if (card.leased || card.listed) {
+				eligible = false;
+			}
+			return card.uid;
+		});
+		if (!eligible) {
+			let toast = document.getElementById('ineligible-toast');
+			toast.className += ' show';
+			setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
+		} else {
+			this.setState({
+				renderCombineProgress: true,
+				progressMsg: 'Broadcasting request to the blockchain'
+			});
+			let combineJSON = JSON.stringify({
+				cards: selected,
+				app: 'steemmonsters/0.7.34'
+			});
+			window.hive_keychain.requestCustomJson(localStorage.getItem('username'), 'sm_combine_cards', 'Active', combineJSON, 'Combine Card(s)', function(response) {
+				if (response.success) {
+					this.setState({progressMsg: 'Step 1 of 2 complete - Request successfully broadcasted'}, () => {
+						setTimeout(() => {
+							this.setState({progressMsg: 'Gathering request results.'});
+						}, 2000);
+					});					
+					let id = response.result.id;
+					let url = 'https://game-api.splinterlands.io/transactions/lookup?trx_id=' + id;
+					setTimeout(() => {
+						$.ajax({
+							type: 'GET',
+				  			url: url,
+				  			jsonpCallback: 'testing',
+				  			dataType: 'json',
+							success: function(response) {
+								if (response.error) {
+									this.setState({renderCombineProgress: false});
+									let toast = document.getElementById('cardsFailed-toast');
+									toast.innerHTML = '<i class=\'fas fa-times\'></i> There was an error: ' + response.error;
+									toast.className += ' show';
+									setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
+								} else {
+									this.setState({renderCombineProgress: false});
+									let toast = document.getElementById('cardsCombined-toast');
+									toast.className += ' show';
+									setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
+									this.props.updateCollection('combine', selected);
+									this.setState({selected: []});
+								}
+							}.bind(this),
+							error: function(e) {
+								console.log('Something went wrong');
+							}
+						});
+					}, 10000);
+				} else {
+					this.setState({renderProgress: false});
+					let toast = document.getElementById('cardsFailed-toast');
+					toast.innerHTML = '<i class=\'fas fa-times\'></i> There was an error broadcasting to the blockchain.';
+					toast.className += ' show';
+					setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
+				}
+			}.bind(this));
+		}
+	}
+
 	burn() {
 		let eligible = true;
 		let selected = this.state.selected.map(card => {
@@ -152,7 +255,6 @@ class Collectionmodal extends React.Component {
 			toast.className += ' show';
 			setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
 		} else {
-
 			this.setState({
 				renderProgress: true,
 				progressMsg: 'Broadcasting request to the blockchain'
@@ -170,15 +272,13 @@ class Collectionmodal extends React.Component {
 					});					
 					let id = response.result.id;
 					let url = 'https://game-api.splinterlands.io/transactions/lookup?trx_id=' + id;
-					console.log(response);
 					setTimeout(() => {
 						$.ajax({
 							type: 'GET',
 				  			url: url,
 				  			jsonpCallback: 'testing',
 				  			dataType: 'json',
-							success: function(response) { 
-								console.log(response.error)
+							success: function(response) {
 								if (response.error) {
 									this.setState({renderProgress: false});
 									let toast = document.getElementById('cardsFailed-toast');
@@ -191,7 +291,9 @@ class Collectionmodal extends React.Component {
 									toast.className += ' show';
 									setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
 									this.props.updateBalance();
-									this.props.closeModal();
+									if (this.state.selected.length === this.state.cards.length) {
+										this.props.closeModal();
+									}
 									this.props.updateCollection('remove', selected);
 									this.setState({selected: []});
 								}
@@ -388,6 +490,9 @@ class Collectionmodal extends React.Component {
 			    			</div> : '' }
 			    			<div className='modal-summary'>
 			    				<span>{this.state.selected.length} Card{this.state.selected.length === 1 ? '' : 's'} Selected, BCX: {sumProp(this.state.selected, 'bcx')}</span>
+		    					<button className='modal-action-btn' onClick={this.combine} disabled={this.state.selected.length === 0}>
+		    						Combine
+		    					</button>
 		    					<button className='modal-action-btn' onClick={this.burn} disabled={this.state.selected.length === 0}>
 		    						Burn
 		    					</button>
@@ -400,6 +505,9 @@ class Collectionmodal extends React.Component {
 		    					<button className='modal-clearSelected-btn' onClick={this.clearSelected} disabled={this.state.selected.length === 0}>
 		    						Clear All
 		    					</button>
+		    					<button className='modal-clearSelected-btn' onClick={this.selectAll}>
+		    						Select All
+		    					</button>
 		    				</div>
 			    			</div>
 			    		</div>
@@ -411,15 +519,19 @@ class Collectionmodal extends React.Component {
 	    		<div id='cardsBurned-toast' className='toast successToast'>
 					<i className='fas fa-check'></i>Successfully burned!
 				</div>
+				<div id='cardsCombined-toast' className='toast successToast'>
+					<i className='fas fa-check'></i>Successfully combined!
+				</div>
 				<div id='cardsFailed-toast' className='toast failToast'>
 					<i className='fas fa-times'></i>Something went wrong! Please try again.
 				</div>
 				<div id='ineligible-toast' className='toast failToast'>
-					<i className='fas fa-times'></i>One or more cards are ineligible to be burned.
+					<i className='fas fa-times'></i>One or more cards are ineligible.
 				</div>
 				{this.state.renderTransfer ? <TransferModal updateCollection={this.props.updateCollection} closeParentModal={this.props.closeModal} closeModal={this.toggleTransfer} info={this.props.info} cards={this.state.selected}/> : ''}
 	    		{this.state.renderSell ? <SellModal clearSelected={this.clearSelected} closeParentModal={this.props.closeModal} closeModal={this.toggleSell} info={this.props.info} cards={this.state.selected}/> : ''}
-	    		{this.state.renderProgress ? <ActionProgress action='Burning' message={this.state.progressMsg} /> : '' }
+	    		{this.state.renderProgress ? <ActionProgress action='Burning Cards' message={this.state.progressMsg} /> : '' }
+	    		{this.state.renderCombineProgress ? <ActionProgress action='Combining Cards' message={this.state.progressMsg} /> : '' }
 	    	</div>
 	    );
 	}
