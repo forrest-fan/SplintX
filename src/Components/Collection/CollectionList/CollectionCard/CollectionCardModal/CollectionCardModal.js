@@ -40,6 +40,12 @@ const sumProp = (array, prop) => {
 }
 
 const summoner = [[[1, 1, 1, 1, 0], [2, 2, 2, 1, 1], [3, 3, 2, 2, 1], [4, 4, 3, 2, 2], [5, 5, 4, 3, 2], [6, 6, 5, 4, 2], [7, 7, 6, 4, 3], [8, 8, 6, 5, 3], [9, 9, 7, 5, 4], [10, 10, 8, 6, 4]], [[1, 1, 1, 1, 1], [2, 3, 2, 2, 1], [3, 4, 3, 2, 2], [4, 5, 4, 3, 2], [5, 6, 5, 4, 3], [6, 8, 6, 5, 3], [7, 9, 7, 5, 4], [8, 10, 8, 6, 4]], [[1, 2, 1, 1, 1], [2, 3, 3, 2, 1], [3, 5, 4, 3, 2], [4, 7, 5, 4, 3], [5, 8, 7, 5, 3], [6, 10, 8, 6, 4]], [[1, 3, 2, 2, 1], [2, 5, 4, 3, 2], [3, 8, 6, 5, 3], [4, 10, 8, 6, 4]]];
+const combineRateU = [[1,5,14,30,60,100,150,220,300,400],[1,5,14,25,40,60,85,115],[1,4,10,20,32,46],[1,3,6,11]];
+const combineRateGoldU = [[0,0,1,2,5,9,14,20,27,38],[0,1,2,4,7,11,16,22],[0,1,2,4,7,10],[0,1,2,4]];
+const combineRateB = [[1,3,5,12,25,52,105,172,305,505],[1,3,5,11,21,35,61,115],[1,3,6,11,23,46],[1,3,5,11]];
+const combineRateGoldB = [[0,0,0,1,2,4,8,13,23,38],[0,0,1,2,4,7,12,22],[0,0,1,3,5,10],[0,1,2,4]];
+const combineRateA = [[1,2,4,9,19,39,79,129,229,379],[1,2,4,8,16,26,46,86],[1,2,4,8,16,32],[1,2,4,8]];
+const combineRateGoldA = [[0,0,0,1,2,4,7,11,19,31],[0,0,1,2,3,5,9,17],[0,0,1,2,4,8],[0,1,2,3]];
 
 class Collectionmodal extends React.Component {
 	constructor(props) {
@@ -176,69 +182,94 @@ class Collectionmodal extends React.Component {
 
 	combine() {
 		let eligible = true;
+		let totalbcx = 0;
 		let selected = this.state.selected.map(card => {
 			if (card.leased || card.listed) {
 				eligible = false;
 			}
+			totalbcx += card.bcx;
 			return card.uid;
 		});
-		if (!eligible) {
-			let toast = document.getElementById('ineligible-toast');
-			toast.className += ' show';
-			setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
-		} else {
-			this.setState({
-				renderCombineProgress: true,
-				progressMsg: 'Broadcasting request to the blockchain'
-			});
-			let combineJSON = JSON.stringify({
-				cards: selected,
-				app: 'steemmonsters/0.7.34'
-			});
-			window.hive_keychain.requestCustomJson(localStorage.getItem('username'), 'sm_combine_cards', 'Active', combineJSON, 'Combine Card(s)', function(response) {
-				if (response.success) {
-					this.setState({progressMsg: 'Step 1 of 2 complete - Request successfully broadcasted'}, () => {
+		let rarity = this.props.info.rarity === 'Common' ? 1 : this.props.info.rarity === 'Rare' ? 2 : this.props.info.rarity === 'Epic' ? 3 : 4;
+		let edition = this.props.info.edition;
+		let detailID = this.props.info.detailID;
+		let newLvl = 0;
+		let gold = this.props.info.gold;
+		let xpRates = []
+		if (edition === 'Alpha') {
+  			xpRates = gold ? combineRateGoldA[rarity - 1] : combineRateA[rarity - 1];
+  		} else if (edition === 'Beta' || edition === 'Promo' || (edition === 'Reward' && detailID <= 223)) {
+  			xpRates = gold ? combineRateGoldB[rarity - 1] : combineRateB[rarity - 1];
+  		} else if (edition === 'Untamed' || (edition === 'Reward' && detailID > 223)) {
+  			xpRates = gold ? combineRateGoldU[rarity - 1] : combineRateU[rarity - 1];
+  		}
+		for (let i = 0; i < xpRates.length; i++) {
+			if (totalbcx >= xpRates[i]) {
+				newLvl++;
+			} else {
+				break;
+			}
+		}
+		var proceed = window.confirm('Combine ' + totalbcx + ' BCX for a Level ' + newLvl + ' ' + this.props.info.name + '?');
+		if (proceed) {
+			if (!eligible) {
+				let toast = document.getElementById('ineligible-toast');
+				toast.className += ' show';
+				setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
+			} else {
+				this.setState({
+					renderCombineProgress: true,
+					progressMsg: 'Broadcasting request to the blockchain'
+				});
+				let combineJSON = JSON.stringify({
+					cards: selected,
+					app: 'steemmonsters/0.7.34'
+				});
+				window.hive_keychain.requestCustomJson(localStorage.getItem('username'), 'sm_combine_cards', 'Active', combineJSON, 'Combine Card(s)', function(response) {
+					if (response.success) {
+						this.setState({progressMsg: 'Step 1 of 2 complete - Request successfully broadcasted'}, () => {
+							setTimeout(() => {
+								this.setState({progressMsg: 'Gathering request results.'});
+							}, 2000);
+						});					
+						let id = response.result.id;
+						let url = 'https://game-api.splinterlands.io/transactions/lookup?trx_id=' + id;
 						setTimeout(() => {
-							this.setState({progressMsg: 'Gathering request results.'});
-						}, 2000);
-					});					
-					let id = response.result.id;
-					let url = 'https://game-api.splinterlands.io/transactions/lookup?trx_id=' + id;
-					setTimeout(() => {
-						$.ajax({
-							type: 'GET',
-				  			url: url,
-				  			jsonpCallback: 'testing',
-				  			dataType: 'json',
-							success: function(response) {
-								if (response.error) {
-									this.setState({renderCombineProgress: false});
-									let toast = document.getElementById('cardsFailed-toast');
-									toast.innerHTML = '<i class=\'fas fa-times\'></i> There was an error: ' + response.error;
-									toast.className += ' show';
-									setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
-								} else {
-									this.setState({renderCombineProgress: false});
-									let toast = document.getElementById('cardsCombined-toast');
-									toast.className += ' show';
-									setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
-									this.props.updateCollection('combine', selected);
-									this.setState({selected: []});
+							$.ajax({
+								type: 'GET',
+					  			url: url,
+					  			jsonpCallback: 'testing',
+					  			dataType: 'json',
+								success: function(response) {
+									if (response.error) {
+										this.setState({renderCombineProgress: false});
+										let toast = document.getElementById('cardsFailed-toast');
+										toast.innerHTML = '<i class=\'fas fa-times\'></i> There was an error: ' + response.error;
+										toast.className += ' show';
+										setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
+									} else {
+										this.setState({renderCombineProgress: false});
+										let toast = document.getElementById('cardsCombined-toast');
+										toast.className += ' show';
+										setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
+										this.props.updateCollection('combine', selected);
+										this.setState({selected: []});
+									}
+								}.bind(this),
+								error: function(e) {
+									console.log('Something went wrong');
 								}
-							}.bind(this),
-							error: function(e) {
-								console.log('Something went wrong');
-							}
-						});
-					}, 10000);
-				} else {
-					this.setState({renderProgress: false});
-					let toast = document.getElementById('cardsFailed-toast');
-					toast.innerHTML = '<i class=\'fas fa-times\'></i> There was an error broadcasting to the blockchain.';
-					toast.className += ' show';
-					setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
-				}
-			}.bind(this));
+							});
+						}, 10000);
+					} else {
+						this.setState({renderProgress: false});
+						let toast = document.getElementById('cardsFailed-toast');
+						toast.innerHTML = '<i class=\'fas fa-times\'></i> There was an error broadcasting to the blockchain.';
+						toast.className += ' show';
+						setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
+					}
+				}.bind(this));
+			}
 		}
 	}
 
