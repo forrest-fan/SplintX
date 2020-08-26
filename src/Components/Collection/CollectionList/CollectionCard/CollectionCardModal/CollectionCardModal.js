@@ -78,48 +78,59 @@ class Collectionmodal extends React.Component {
 	}
 
 	selectAll() {
+		let selected = this.state.cards.map(card => {return card});
 		this.setState({
-			selected: this.state.cards
+			selected: selected
 		});
-
 	}
 
 	toggleTransfer() {
-		let eligible = true;
-		let selected = this.state.selected;
-		for (let i = 0; i < selected.length; i++) {
-			if (selected[i].leased || selected[i].listed) {
-				eligible = false;
-			}
-		}
-		if (eligible) {
-			this.setState({
-				renderTransfer: this.state.renderTransfer ? false : true
-			});
+		let rendered = this.state.renderTransfer;
+		if (rendered) {
+			this.setState({renderTransfer: false});
 		} else {
-			let toast = document.getElementById('ineligible-toast');
-			toast.className += ' show';
-			setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
+			let eligible = true;
+			let selected = this.state.selected;
+			for (let i = 0; i < selected.length; i++) {
+				if (selected[i].leased || selected[i].listed) {
+					eligible = false;
+				}
+			}
+			if (eligible) {
+				this.setState({
+					renderTransfer: true
+				});
+			} else {
+				let toast = document.getElementById('ineligible-toast');
+				toast.className += ' show';
+				setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
+			}
 		}
 	}
 
 	toggleSell() {
-		let eligible = true;
-		let selected = this.state.selected;
-		for (let i = 0; i < selected.length; i++) {
-			if (selected[i].leased || selected[i].listed) {
-				eligible = false;
+		let rendered = this.state.renderSell;
+		if (rendered) {
+			this.setState({renderSell: false});
+		} else {
+			let eligible = true;
+			let selected = this.state.selected;
+			for (let i = 0; i < selected.length; i++) {
+				if (selected[i].leased || selected[i].listed) {
+					eligible = false;
+				}
+			}
+			if (eligible) {
+				this.setState({
+					renderSell: true
+				});
+			} else {
+				let toast = document.getElementById('ineligible-toast');
+				toast.className += ' show';
+				setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
 			}
 		}
-		if (eligible) {
-			this.setState({
-				renderSell: this.state.renderSell ? false : true
-			});
-		} else {
-			let toast = document.getElementById('ineligible-toast');
-			toast.className += ' show';
-			setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
-		}
+		
 	}
 
 	updateSort(method) {
@@ -567,7 +578,7 @@ class Collectionmodal extends React.Component {
 					<i className='fas fa-times'></i>One or more cards are ineligible.
 				</div>
 				{this.state.renderTransfer ? <TransferModal updateCollection={this.props.updateCollection} closeParentModal={this.props.closeModal} closeModal={this.toggleTransfer} info={this.props.info} cards={this.state.selected}/> : ''}
-	    		{this.state.renderSell ? <SellModal clearSelected={this.clearSelected} closeParentModal={this.props.closeModal} closeModal={this.toggleSell} info={this.props.info} cards={this.state.selected}/> : ''}
+	    		{this.state.renderSell ? <SellModal updateCollection={this.props.updateCollection} clearSelected={this.clearSelected} closeParentModal={this.props.closeModal} closeModal={this.toggleSell} info={this.props.info} cards={this.state.selected}/> : ''}
 	    		{this.state.renderProgress ? <ActionProgress action='Burning Cards' message={this.state.progressMsg} /> : '' }
 	    		{this.state.renderCombineProgress ? <ActionProgress action='Combining Cards' message={this.state.progressMsg} /> : '' }
 	    	</div>

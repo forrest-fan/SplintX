@@ -7,74 +7,115 @@ class SellModal extends React.Component {
 	constructor(props) {
 		super(props);
 		this.sell = this.sell.bind(this);
+		this.keychainRequest = this.keychainRequest.bind(this);
 		this.state = {
 			renderProgress: false,
 			progressMsg: ''
 		};
 	}
 
-	sell() {
+	keychainRequest(price, selected, index) {
+		let cardRangeLow = (index + 1) * 40 - 39;
+		let cardRangeHigh = index < selected.length - 1 ? (index + 1) * 40 : cardRangeLow + selected[index].length - 1;
+		let total = selected.length * 40 - 40 + selected[selected.length - 1].length;
+		
+		let cardRangeStr = cardRangeLow !== cardRangeHigh ? 'Cards ' + cardRangeLow + '-' + cardRangeHigh + ' of ' + total : 'Card ' + cardRangeLow + ' of ' + total;
+		
 		this.setState({
-			renderProgress: true,
-			progressMsg: 'Broadcasting request to the blockchain.'
+			progressMsg: ('Broadcasting request for ' + cardRangeStr + ' to the blockchain.')
 		});
+
+		let cards = selected[index];
+		let uids = cards.map(card => {return card.uid});
+		let sellJSON = JSON.stringify(cards.map(card => {
+			return {
+				cards: [card.uid],
+				currency: 'USD',
+				price: (card.bcx * price).toString(),
+				fee_pct: 500
+			}
+		}));
+		console.log(sellJSON);
+
+		window.hive_keychain.requestCustomJson(localStorage.getItem('username'), 'sm_sell_cards', 'Active', sellJSON, 'Transfer card(s)', function(response) {
+			if (index < selected.length - 1) {
+				this.keychainRequest(price, selected, index + 1);
+			}
+			if (response.success) {
+				if (index === selected.length - 1) {
+					this.setState({
+						progressMsg: ('Successfully broadcasted request for ' + cardRangeStr)
+					});
+				}
+				let id = response.result.id;
+				let url = 'https://game-api.splinterlands.io/transactions/lookup?trx_id=' + id;
+				setTimeout(() => {
+					$.ajax({
+						type: 'GET',
+			  			url: url,
+			  			jsonpCallback: 'testing',
+			  			dataType: 'json',
+						success: function(response) {
+							if (response.error) {
+								if (index === selected.length - 1) {
+									this.setState({renderProgress: false});
+								}
+								let toast = document.getElementById('cardsFailed-toast');
+								toast.innerHTML = '<i class=\'fas fa-times\'></i> There was an error for ' + cardRangeStr;
+								toast.className += ' show';
+								setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
+							} else {
+								if (index === selected.length - 1) {
+									this.setState({renderProgress: false});
+								}
+								this.props.updateCollection('list', uids);
+								let toast = document.getElementById('cardsSold-toast');
+								toast.innerHTML = '<i class=\'fas fa-check\'></i> ' + cardRangeStr + ' successfully listed!';
+								toast.className += ' show';
+								setTimeout(() => {
+									toast.className = toast.className.replace(' show', '');
+									if (index === selected.length - 1) {
+										setTimeout(() => {
+											this.props.closeModal();
+											this.props.closeParentModal();
+										}, 200)
+									}
+								}, 3000);
+							}
+						}.bind(this),
+						error: function(e) {
+							console.log('Something went wrong');
+						}
+					});
+				}, 12000);
+			} else {
+				let toast = document.getElementById('cardsFailed-toast');
+				toast.innerHTML = '<i class=\'fas fa-times\'></i> There was an error broadcasting ' + cardRangeStr;
+				toast.className += ' show';
+				setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
+			}
+		}.bind(this));
+	}
+
+	sell() {
 		let priceBCX = document.getElementById('sellPrice-input').value;
 		if (priceBCX !== '') {
-			let cards = JSON.stringify(this.props.cards.map(card => {
-				return {
-					cards: [card.uid],
-					currency: 'USD',
-					price: (card.bcx * priceBCX).toString(),
-					fee_pct: 500
-				};
-			}));
-			window.hive_keychain.requestCustomJson(localStorage.getItem('username'), 'sm_sell_cards', 'Active', cards, 'Sell Card(s)', function(response) {
-				if (response.success) {
-					this.setState({progressMsg: 'Step 1 of 2 complete - Request successfully broadcasted'}, () => {
-						setTimeout(() => {
-							this.setState({progressMsg: 'Gathering request results.'});
-						}, 2000);
-					});
-					let id = response.result.id;
-					let url = 'https://game-api.splinterlands.io/transactions/lookup?trx_id=' + id;
-					setTimeout(() => {
-						$.ajax({
-							type: 'GET',
-				  			url: url,
-				  			jsonpCallback: 'testing',
-				  			dataType: 'json',
-							success: function(response) { 
-								console.log(response.error)
-								if (response.error) {
-									this.setState({renderProgress: false});
-									let toast = document.getElementById('cardsFailed-toast');
-									toast.innerHTML = '<i class=\'fas fa-times\'></i> There was an error: ' + response.error;
-									toast.className += ' show';
-									setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
-								} else {
-									this.setState({renderProgress: false});
-									this.props.clearSelected();
-									let toast = document.getElementById('cardsSold-toast');
-									toast.className += ' show';
-									setTimeout(() => {
-										toast.className = toast.className.replace(' show', '');
-										this.props.closeModal();
-									}, 3000);
-								}
-							}.bind(this),
-							error: function(e) {
-								console.log('Something went wrong');
-							}
-						});
-					}, 10000);	
-				} else {
-					this.setState({renderProgress: false});
-					let toast = document.getElementById('cardsFailed-toast');
-					toast.innerHTML = '<i class=\'fas fa-times\'></i> There was an error broadcasting to the blockchain.';
-					toast.className += ' show';
-					setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
+			let selected = [];
+			let counter = 0;
+			while (counter < this.props.cards.length) {
+				let segment = [];
+				let segmentLength = this.props.cards.length - 40 > counter ? 40 : this.props.cards.length - counter;
+				for (let i = 0; i < segmentLength; i++) {
+					segment.push(this.props.cards[counter]);
+					counter++;
 				}
-			}.bind(this));
+				selected.push(segment);
+			}
+			this.setState({
+				renderProgress: true,
+				progressMsg: 'Compiling sale details'
+			});
+			this.keychainRequest(priceBCX, selected, 0);
 		} else {
 			let toast = document.getElementById('noPrice-toast');
 			toast.className += ' show';

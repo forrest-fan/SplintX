@@ -35,7 +35,11 @@ class TransferModal extends React.Component {
 				this.keychainRequest(receive, selected, index + 1);
 			}
 			if (response.success) {
-				this.setState({progressMsg: 'Successfully broadcasted request for ' + cardRangeStr});
+				if (index === selected.length - 1) {
+					this.setState({
+						progressMsg: ('Successfully broadcasted request for ' + cardRangeStr)
+					});
+				}
 				let id = response.result.id;
 				let url = 'https://game-api.splinterlands.io/transactions/lookup?trx_id=' + id;
 				setTimeout(() => {
@@ -79,7 +83,7 @@ class TransferModal extends React.Component {
 				}, 12000);
 			} else {
 				let toast = document.getElementById('cardsFailed-toast');
-				toast.innerHTML = '<i class=\'fas fa-times\'></i> There was an error for card ' + selected[index][0];
+				toast.innerHTML = '<i class=\'fas fa-times\'></i> There was an error broadcasting ' + cardRangeStr;
 				toast.className += ' show';
 				setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
 			}
@@ -100,92 +104,11 @@ class TransferModal extends React.Component {
 				}
 				selected.push(segment);
 			}
-			
-			console.log(selected);
 			this.setState({
-				renderProgress: true
+				renderProgress: true,
+				progressMsg: 'Compiling transfer details'
 			});
 			this.keychainRequest(receive, selected, 0);
-
-			// for (let i = 0; i < selected.length; i++) {
-			// 	this.setState({
-			// 		renderProgress: true,
-			// 		progressMsg: ('Broadcasting request for card ' + (i + 1) + ' of ' + selected.length + ' to the blockchain.')
-			// 	});
-			// 	let transferJSON = JSON.stringify({
-			// 		to: receive,
-			// 		cards: selected[i],			
-			// 		app: 'steemmonsters/0.7.34'
-			// 	});
-			// 	window.hive_keychain.requestCustomJson(localStorage.getItem('username'), 'sm_gift_cards', 'Active', transferJSON, 'Transfer Card(s)', function(response) {
-			// 		console.log(response);
-			// 	});
-			// }
-
-			// for (let i = 0; i < selected.length; i++) {
-			// 	this.setState({
-			// 		renderProgress: true,
-			// 		progressMsg: ('Broadcasting request for card ' + (i + 1) + ' of ' + selected.length + ' to the blockchain.')
-			// 	});
-			// 	let transferJSON = JSON.stringify({
-			// 		to: receive,
-			// 		cards: selected[i],			
-			// 		app: 'steemmonsters/0.7.34'
-			// 	});
-			// 	window.hive_keychain.requestCustomJson(localStorage.getItem('username'), 'sm_gift_cards', 'Active', transferJSON, 'Transfer Card(s)', function(response) {
-			// 		console.log(response);
-			// 		if (response.success) {
-			// 			this.setState({progressMsg: 'Request for card ' (i + 1) + ' of ' + selected.length + ' successfully broadcasted'});
-			// 			let id = response.result.id;
-			// 			let url = 'https://game-api.splinterlands.io/transactions/lookup?trx_id=' + id;
-			// 			setTimeout(() => {
-			// 				$.ajax({
-			// 					type: 'GET',
-			// 		  			url: url,
-			// 		  			jsonpCallback: 'testing',
-			// 		  			dataType: 'json',
-			// 					success: function(response) { 
-			// 						console.log(response.error)
-			// 						if (response.error) {
-			// 							if (i === selected.length - 1) {
-			// 								this.setState({renderProgress: false});
-			// 							}
-			// 							let toast = document.getElementById('cardsFailed-toast');
-			// 							toast.innerHTML = '<i class=\'fas fa-times\'></i> There was an error for card ' + selected[i][0];
-			// 							toast.className += ' show';
-			// 							setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
-			// 						} else {
-			// 							if (i === selected.length - 1) {
-			// 								this.setState({renderProgress: false});
-			// 							}
-			// 							this.props.updateCollection('remove', selected);
-			// 							let toast = document.getElementById('cardsTransferred-toast');
-			// 							toast.innerHTML = '<i className=\'fas fa-check\'></i> Card ' + selected[i][0] + ' Successfully transferred!';
-			// 							toast.className += ' show';
-			// 							setTimeout(() => {
-			// 								toast.className = toast.className.replace(' show', '');
-			// 								if (i === selected.length - 1) {
-			// 									this.props.closeModal();
-			// 									this.props.closeParentModal();
-			// 								}
-			// 							}, 3000);
-			// 						}
-			// 					}.bind(this),
-			// 					error: function(e) {
-			// 						console.log('Something went wrong');
-			// 					}
-			// 				});
-			// 			}, 10000);
-						
-			// 		} else {					
-			// 			this.setState({renderProgress: false});
-			// 			let toast = document.getElementById('cardsFailed-toast');
-			// 			toast.innerHTML = '<i class=\'fas fa-times\'></i> There was an error broadcasting to the blockchain.';
-			// 			toast.className += ' show';
-			// 			setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
-			// 		}
-			// 	}.bind(this));
-			// }
 		} else {
 			let toast = document.getElementById('noAddress-toast');
 			toast.className += ' show';

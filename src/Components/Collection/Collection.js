@@ -366,7 +366,7 @@ class Collection extends React.Component {
 		if (action === 'remove') {
 			let cards = this.state.cards;
 			for (let i = 0; i < cards.length; i++) {
-				for(let j = 0; j < cards[i].count; j++) {
+				for (let j = 0; j < cards[i].count; j++) {
 					if (cards[i].cards[j].uid === selected[0]) {
 						cards[i].cards.splice(j, 1);
 						cards[i].count -= 1;
@@ -375,7 +375,6 @@ class Collection extends React.Component {
 								if (cards[i].cards[l].uid === selected[k]) {
 									cards[i].cards.splice(l, 1);
 									cards[i].count -= 1;
-									break;
 								}
 							}
 						}
@@ -383,7 +382,6 @@ class Collection extends React.Component {
 							cards.splice(i, 1);
 						}
 					}
-					break;
 				}
 			}
 			this.setState({cards: cards});
@@ -405,7 +403,6 @@ class Collection extends React.Component {
 									}
 									cards[i].cards.splice(l, 1);
 									cards[i].count -= 1;
-									break;
 								}
 							}
 						}
@@ -439,7 +436,24 @@ class Collection extends React.Component {
 			          		leased: false
 				  		}
 					}
-					break;
+				}
+			}
+			this.setState({cards: cards});
+		} else if (action === 'list') {
+			let cards = this.state.cards;
+			for (let i = 0; i < cards.length; i++) {
+				for(let j = 0; j < cards[i].count; j++) {
+					if (cards[i].cards[j].uid === selected[0]) {
+						console.log('found card');
+						console.log(cards[i]);
+						for (let k = 0; k < selected.length; k++) {
+							for (let l = 0; l < cards[i].count; l++) {
+								if (selected[k] === cards[i].cards[l].uid) {
+									cards[i].cards[l].listed = true;
+								}
+							}
+						}
+					}
 				}
 			}
 			this.setState({cards: cards});
