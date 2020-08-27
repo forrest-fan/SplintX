@@ -158,7 +158,7 @@ class Market extends React.Component {
 			}
 
 			if (foilFilters.length === 1) {
-				if (foilFilters[0] === 'Regular' && card.gold || foilFilters[0] === 'Gold' && !card.gold) {
+				if ((foilFilters[0] === 'Regular' && card.gold) || (foilFilters[0] === 'Gold' && !card.gold)) {
 					foilPass = false;
 				}
 			}
@@ -231,7 +231,7 @@ class Market extends React.Component {
 	}
 
 	componentDidMount() {
-		if (sessionStorage.getItem('forSaleGrouped') && JSON.parse(sessionStorage.getItem('forSaleGrouped')).expiry < (new Date())) {
+		if (sessionStorage.getItem('forSaleGrouped') && new Date(JSON.parse(sessionStorage.getItem('forSaleGrouped')).expiry) > (new Date())) {
 			let cards = JSON.parse(sessionStorage.getItem('forSaleGrouped')).data;
 			this.updateFilters('Untamed', 'edition', 'add');
 		} else {
@@ -246,8 +246,8 @@ class Market extends React.Component {
 					    var detailID = forSaleCards[l].card_detail_id;
 			            let cardData = this.props.cardDetails[detailID - 1];
 			          	let gold = forSaleCards[l].gold;
-			          	let edition = forSaleCards[l].edition === 0 ? 'Alpha' : forSaleCards[l].edition === 1 ? 'Beta' : forSaleCards[l].edition === 3 ? 'Reward' : forSaleCards[l].edition === 4 ? 'Untamed' : 'Promo';
-			          	let distinctID = gold ? 'G' : 'C' + forSaleCards[l].edition + detailID;
+			          	let edition = forSaleCards[l].edition === 0 ? 'Alpha' : forSaleCards[l].edition === 1 ? 'Beta' : forSaleCards[l].edition === 2 ? 'Promo' : forSaleCards[l].edition === 3 ? 'Reward' : forSaleCards[l].edition === 4 ? 'Untamed' : 'Dice';
+			          	let distinctID = (gold ? 'G' : 'C') + forSaleCards[l].edition + detailID;
 			          	let name = cardData.name;
 			          	let type = cardData.type;
 			          	let rarity = cardData.rarity === 1 ? 'Common' : cardData.rarity === 2 ? 'Rare' : cardData.rarity === 3 ? 'Epic' : 'Legendary';
@@ -288,7 +288,7 @@ class Market extends React.Component {
 				    	}
 				    });
 				    let expiry = new Date();
-					expiry.setDate(expiry.getDate() + 3);
+					expiry.setDate(expiry.getDate() + 1);
 					expiry.setUTCHours(0, 0, 0, 0);
 				    let cardsObj = {
 				    	expiry: expiry, 
