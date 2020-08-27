@@ -66,7 +66,7 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    if (sessionStorage.getItem('cardDetails') && JSON.parse(sessionStorage.getItem('cardDetails')).expiry < (new Date())) {
+    if (sessionStorage.getItem('cardDetails') && (new Date(JSON.parse(sessionStorage.getItem('cardDetails')).expiry)) > (new Date())) {
       if (this.state.loggedIn) {
         $.ajax({
           type: 'GET',
@@ -145,7 +145,7 @@ class App extends React.Component {
           jsonpCallback: 'testing',
           success: function(cardDetails) {
             let expiry = new Date();
-            expiry.setDate(expiry.getDate() + 3);
+            expiry.setDate(expiry.getDate() + 1);
             expiry.setUTCHours(0, 0, 0, 0);
             let detailObj = {
               expiry: expiry, 

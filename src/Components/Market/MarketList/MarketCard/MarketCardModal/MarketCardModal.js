@@ -249,7 +249,7 @@ class MarketCardModal extends React.Component {
 		var url = 'https://game-api.splinterlands.io/market/for_sale_by_card?'
 		const urlID = 'card_detail_id=' + this.props.info.detailID;
 		const urlGold = '&gold=' + this.props.info.gold;
-		const urlEdition = '&edition=' + (this.props.info.edition === 'Alpha' ? '0' : this.props.info.edition === 'Beta' ? '1' : this.props.info.edition === 'Promo' ? '2' : this.props.info.edition === 'Reward' ? '3' : '4');
+		const urlEdition = '&edition=' + (this.props.info.edition === 'Alpha' ? '0' : this.props.info.edition === 'Beta' ? '1' : this.props.info.edition === 'Promo' ? '2' : this.props.info.edition === 'Reward' ? '3' : this.props.info.edition === 'Untamed' ? '4' : this.props.info.edition === 'Dice' ? '5' : '');
 		url += urlID + urlGold + urlEdition;
 		$.ajax({
 			type: 'GET',
@@ -270,7 +270,7 @@ class MarketCardModal extends React.Component {
 		          			xpRates = gold ? combineRateGoldA[rarity - 1] : combineRateA[rarity - 1];
 		          		} else if (edition === 'Beta' || edition === 'Promo' || (edition === 'Reward' && detailID <= 223)) {
 		          			xpRates = gold ? combineRateGoldB[rarity - 1] : combineRateB[rarity - 1];
-		          		} else if (edition === 'Untamed' || (edition === 'Reward' && detailID > 223)) {
+		          		} else {
 		          			xpRates = gold ? combineRateGoldU[rarity - 1] : combineRateU[rarity - 1];
 		          		}
 						for (let i = 0; i < xpRates.length; i++) {
@@ -589,7 +589,7 @@ class MarketCardModal extends React.Component {
 				    							} else if (key === 'abilities') {
 				    								return this.props.info.stats.abilities.map(ability => {
 				    									return(
-				    										<li><strong>{ability}</strong> ability</li>
+				    										<li>All friendly monsters receive the <strong>{ability}</strong> ability</li>
 				    									);
 				    								})
 				    							}
