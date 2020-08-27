@@ -3,19 +3,27 @@ import './Packs.css';
 import PackItem from './PackItem/PackItem';
 import InvItem from './InvItem/InvItem';
 
-const inventory = ['LEGENDARY', 'GOLD', 'UNTAMED', 'ORB', 'ALPHA', 'BETA', 'MYSTERY', 'QUEST'];
+const inventory = ['LEGENDARY', 'GOLD', 'UNTAMED', 'DICE', 'ORB', 'ALPHA', 'BETA', 'MYSTERY', 'QUEST'];
 
 const packs = [
 	{
 		name: 'Untamed Pack',
 		description: 'Each pack contains 5 cards randomly selected from the UNTAMED set. Each pack is guaranteed to contain at least one RARE card or better. Every 100,000 packs sold will unlock a new card that will be airdropped to players who have already purchased packs and will be added to packs going forward.',
 		price: 2000,
+		keychainCode: 'sm_purchase',
 		code: 'booster_pack',
 		img: 'https://d36mxiodymuqjm.cloudfront.net/website/ui_elements/shop/img_pack_untamed.png'
+	}, {
+		name: 'Azmare Dice',
+		description: 'Each pack contains 5 cards randomly selected from the DICE set. Each pack is guaranteed to contain at least one RARE card or better. Every 50,000 packs sold will unlock a new card that will be airdropped to players who have already purchased packs and will be added to packs going forward.',
+		price: 3000,
+		keychainCode: 'sm_purchase_dice',
+		img: 'https://d36mxiodymuqjm.cloudfront.net/website/ui_elements/shop/img_azmare-dice_250.png'
 	}, {
 		name: 'Legendary Potion',
 		description: 'Improves the drop rate of legendary cards!',
 		price: 40,
+		keychainCode: 'sm_purchase',
 		code: 'potion',
 		img: 'https://s3.amazonaws.com/steemmonsters/website/ui_elements/shop/potions/potion_legendary.png',
 		potion_type: 'LEGENDARY'
@@ -23,6 +31,7 @@ const packs = [
 		name: 'Alchemy Potion',
 		description: 'Improves the drop rate of gold cards!',
 		price: 50,
+		keychainCode: 'sm_purchase',
 		code: 'potion',
 		img: 'https://d36mxiodymuqjm.cloudfront.net/website/ui_elements/shop/potions/potion_6.png',
 		potion_type: 'GOLD'
@@ -30,6 +39,7 @@ const packs = [
 		name: 'Quest Potion',
 		description: 'Receive 5 Loot Chests after completing quests!',
 		price: 750,
+		keychainCode: 'sm_purchase',
 		code: 'potion',
 		img: 'https://d36mxiodymuqjm.cloudfront.net/website/ui_elements/shop/potions/potion_9.png',
 		potion_type: 'QUEST'
@@ -37,6 +47,7 @@ const packs = [
 		name: 'Mystery Potion',
 		description: 'Receive a daily random mystery prize!',
 		price: 1200,
+		keychainCode: 'sm_purchase',
 		code: 'potion',
 		img: 'https://d36mxiodymuqjm.cloudfront.net/website/ui_elements/shop/potions/potion_12.png',
 		potion_type: 'MYSTERY'
