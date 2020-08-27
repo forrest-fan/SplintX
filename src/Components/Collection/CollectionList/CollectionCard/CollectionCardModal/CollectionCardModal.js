@@ -156,7 +156,7 @@ class Collectionmodal extends React.Component {
   			xpRates = gold ? combineRateGoldA : combineRateA;
   		} else if (edition === 'Beta' || edition === 'Promo' || (edition === 'Reward' && detailID <= 223)) {
   			xpRates = gold ? combineRateGoldB : combineRateB;
-  		} else if (edition === 'Untamed' || (edition === 'Reward' && detailID > 223)) {
+  		} else {
   			xpRates = gold ? combineRateGoldU : combineRateU;
   		}
 
@@ -176,7 +176,6 @@ class Collectionmodal extends React.Component {
 			toast.className += ' show';
 			setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
 		} else {
-
 			this.setState({
 				renderProgress: true,
 				progressMsg: 'Broadcasting request to the blockchain'

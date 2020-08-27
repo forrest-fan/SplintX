@@ -254,7 +254,7 @@ class MarketCardModal extends React.Component {
   			xpRates = gold ? combineRateGoldA : combineRateA;
   		} else if (edition === 'Beta' || edition === 'Promo' || (edition === 'Reward' && detailID <= 223)) {
   			xpRates = gold ? combineRateGoldB : combineRateB;
-  		} else if (edition === 'Untamed' || (edition === 'Reward' && detailID > 223)) {
+  		} else {
   			xpRates = gold ? combineRateGoldU : combineRateU;
   		}
 
