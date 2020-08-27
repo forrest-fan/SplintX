@@ -62,6 +62,7 @@ class MarketCardModal extends React.Component {
 		this.handlePanelChange = this.handlePanelChange.bind(this);
 		this.multiSelectBCX = this.multiSelectBCX.bind(this);
 		this.multiSelectPrice = this.multiSelectPrice.bind(this);
+		this.getCombine = this.getCombine.bind(this);
 	}
 
 	updateSort(method) {
@@ -241,6 +242,23 @@ class MarketCardModal extends React.Component {
 				panel: 'forSale'
 			});
 		}
+	}
+
+	getCombine(lvl) {
+		let rarity = this.props.info.rarity === 'Common' ? 1 : this.props.info.rarity === 'Rare' ? 2 : this.props.info.rarity === 'Epic' ? 3 : 4;
+		let edition = this.props.info.edition;
+		let detailID = this.props.info.detailID;
+		let gold = this.props.info.gold;
+		let xpRates = []
+		if (edition === 'Alpha') {
+  			xpRates = gold ? combineRateGoldA : combineRateA;
+  		} else if (edition === 'Beta' || edition === 'Promo' || (edition === 'Reward' && detailID <= 223)) {
+  			xpRates = gold ? combineRateGoldB : combineRateB;
+  		} else if (edition === 'Untamed' || (edition === 'Reward' && detailID > 223)) {
+  			xpRates = gold ? combineRateGoldU : combineRateU;
+  		}
+
+  		return xpRates[rarity - 1][lvl - 1];
 	}
 
 	componentDidMount() {
@@ -552,6 +570,7 @@ class MarketCardModal extends React.Component {
 				    					<thead>
 				    						<tr className='modal-table-header'>
 				    							<th>Level</th>
+				    							<th>Cards</th>
 				    							<th>{this.props.info.attackType === 'attack' ? 'Melee' : this.props.info.attackType === 'ranged' ? 'Ranged' : 'Magic'}</th>
 				    							<th>Speed</th>
 				    							<th>Health</th>
@@ -564,6 +583,7 @@ class MarketCardModal extends React.Component {
 				    							return (
 				    								<tr>
 				    									<td className='center'>{level.lvl}</td>
+				    									<td className='center'>{this.getCombine(level.lvl) === 0 ? 'N/A' : this.getCombine(level.lvl)}</td>
 				    									<td className='center'>{level[this.props.info.attackType]}</td>
 				    									<td className='center'>{level.speed}</td>
 				    									<td className='center'>{level.health}</td>
@@ -600,6 +620,7 @@ class MarketCardModal extends React.Component {
 					    					<thead>
 					    						<tr className='modal-table-header'>
 					    							<th>Level</th>
+					    							<th>Cards</th>
 					    							<th>Common</th>
 					    							<th>Rare</th>
 					    							<th>Epic</th>
@@ -610,9 +631,12 @@ class MarketCardModal extends React.Component {
 					    						{summoner[(this.props.info.rarity === 'Common' ? 1 : this.props.info.rarity === 'Rare' ? 2 : this.props.info.rarity === 'Epic' ? 3 : 4) - 1].map(level => {
 					    							return (
 					    								<tr>
-					    									{level.map(data => {
-					    										return <td className='center'>{data}</td>
-					    									})}
+					    									<td className='center'>{level[0]}</td>
+					    									<td className='center'>{this.getCombine(level[0]) === 0 ? 'N/A' : this.getCombine(level[0])}</td>
+					    									<td className='center'>{level[1]}</td>
+					    									<td className='center'>{level[2]}</td>
+					    									<td className='center'>{level[3]}</td>
+					    									<td className='center'>{level[4]}</td>
 					    								</tr>
 					    							);
 					    						})}

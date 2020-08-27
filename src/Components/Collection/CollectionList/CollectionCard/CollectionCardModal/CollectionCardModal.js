@@ -40,6 +40,12 @@ const sumProp = (array, prop) => {
 }
 
 const summoner = [[[1, 1, 1, 1, 0], [2, 2, 2, 1, 1], [3, 3, 2, 2, 1], [4, 4, 3, 2, 2], [5, 5, 4, 3, 2], [6, 6, 5, 4, 2], [7, 7, 6, 4, 3], [8, 8, 6, 5, 3], [9, 9, 7, 5, 4], [10, 10, 8, 6, 4]], [[1, 1, 1, 1, 1], [2, 3, 2, 2, 1], [3, 4, 3, 2, 2], [4, 5, 4, 3, 2], [5, 6, 5, 4, 3], [6, 8, 6, 5, 3], [7, 9, 7, 5, 4], [8, 10, 8, 6, 4]], [[1, 2, 1, 1, 1], [2, 3, 3, 2, 1], [3, 5, 4, 3, 2], [4, 7, 5, 4, 3], [5, 8, 7, 5, 3], [6, 10, 8, 6, 4]], [[1, 3, 2, 2, 1], [2, 5, 4, 3, 2], [3, 8, 6, 5, 3], [4, 10, 8, 6, 4]]];
+const combineRateU = [[1,5,14,30,60,100,150,220,300,400],[1,5,14,25,40,60,85,115],[1,4,10,20,32,46],[1,3,6,11]];
+const combineRateGoldU = [[0,0,1,2,5,9,14,20,27,38],[0,1,2,4,7,11,16,22],[0,1,2,4,7,10],[0,1,2,4]];
+const combineRateB = [[1,3,5,12,25,52,105,172,305,505],[1,3,5,11,21,35,61,115],[1,3,6,11,23,46],[1,3,5,11]];
+const combineRateGoldB = [[0,0,0,1,2,4,8,13,23,38],[0,0,1,2,4,7,12,22],[0,0,1,3,5,10],[0,1,2,4]];
+const combineRateA = [[1,2,4,9,19,39,79,129,229,379],[1,2,4,8,16,26,46,86],[1,2,4,8,16,32],[1,2,4,8]];
+const combineRateGoldA = [[0,0,0,1,2,4,7,11,19,31],[0,0,1,2,3,5,9,17],[0,0,1,2,4,8],[0,1,2,3]];
 
 class Collectionmodal extends React.Component {
 	constructor(props) {
@@ -62,6 +68,7 @@ class Collectionmodal extends React.Component {
 		this.toggleSell = this.toggleSell.bind(this);
 		this.getBurn = this.getBurn.bind(this);
 		this.updateSort = this.updateSort.bind(this);
+		this.getCombine = this.getCombine.bind(this);
 		this.burn = this.burn.bind(this);
 	}
 
@@ -137,6 +144,23 @@ class Collectionmodal extends React.Component {
 			burn_value *= 1.05;
 		}
 	 	return burn_value;
+	}
+
+	getCombine(lvl) {
+		let rarity = this.props.info.rarity === 'Common' ? 1 : this.props.info.rarity === 'Rare' ? 2 : this.props.info.rarity === 'Epic' ? 3 : 4;
+		let edition = this.props.info.edition;
+		let detailID = this.props.info.detailID;
+		let gold = this.props.info.gold;
+		let xpRates = []
+		if (edition === 'Alpha') {
+  			xpRates = gold ? combineRateGoldA : combineRateA;
+  		} else if (edition === 'Beta' || edition === 'Promo' || (edition === 'Reward' && detailID <= 223)) {
+  			xpRates = gold ? combineRateGoldB : combineRateB;
+  		} else if (edition === 'Untamed' || (edition === 'Reward' && detailID > 223)) {
+  			xpRates = gold ? combineRateGoldU : combineRateU;
+  		}
+
+  		return xpRates[rarity - 1][lvl - 1];
 	}
 
 	burn() {
@@ -317,6 +341,7 @@ class Collectionmodal extends React.Component {
 				    					<thead>
 				    						<tr className='modal-table-header'>
 				    							<th>Level</th>
+				    							<th>Cards</th>
 				    							<th>{this.props.info.attackType === 'attack' ? 'Melee' : this.props.info.attackType === 'ranged' ? 'Ranged' : 'Magic'}</th>
 				    							<th>Speed</th>
 				    							<th>Health</th>
@@ -329,6 +354,7 @@ class Collectionmodal extends React.Component {
 				    							return (
 				    								<tr>
 				    									<td className='center'>{level.lvl}</td>
+				    									<td className='center'>{this.getCombine(level.lvl)}</td>
 				    									<td className='center'>{level[this.props.info.attackType]}</td>
 				    									<td className='center'>{level.speed}</td>
 				    									<td className='center'>{level.health}</td>
@@ -365,6 +391,7 @@ class Collectionmodal extends React.Component {
 					    					<thead>
 					    						<tr className='modal-table-header'>
 					    							<th>Level</th>
+					    							<th>Cards</th>
 					    							<th>Common</th>
 					    							<th>Rare</th>
 					    							<th>Epic</th>
@@ -375,9 +402,12 @@ class Collectionmodal extends React.Component {
 					    						{summoner[(this.props.info.rarity === 'Common' ? 1 : this.props.info.rarity === 'Rare' ? 2 : this.props.info.rarity === 'Epic' ? 3 : 4) - 1].map(level => {
 					    							return (
 					    								<tr>
-					    									{level.map(data => {
-					    										return <td className='center'>{data}</td>
-					    									})}
+					    									<td className='center'>{level[0]}</td>
+					    									<td className='center'>{this.getCombine(level[0]) === 0 ? 'N/A' : this.getCombine(level[0])}</td>
+					    									<td className='center'>{level[1]}</td>
+					    									<td className='center'>{level[2]}</td>
+					    									<td className='center'>{level[3]}</td>
+					    									<td className='center'>{level[4]}</td>
 					    								</tr>
 					    							);
 					    						})}
