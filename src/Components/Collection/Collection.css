@@ -1,21 +1,3 @@
-#collection {
-	margin: 0 60px;
-}
-
-.collection-header {
-	padding-top: 80px;
-}
-
-.collection-header h2 {
-	font-size: 30px;
-	font-weight: bold;
-	margin: 0.3em 5px;
-}
-
-.collection-header hr {
-	border-bottom: 1px solid #768fb5;
-}
-
 .collection-container {
 	display: flex;
 }
@@ -25,16 +7,4 @@
 	width: 100%;
 	margin: 20px 0px;
 	text-align: center;
-}
-
-@media (max-width: 900px) {
-	#collection {
-		margin: 0 30px;
-	}
-}
-
-@media (max-width: 500px) {
-	#collection {
-		margin: 0 5px;
-	}
 }

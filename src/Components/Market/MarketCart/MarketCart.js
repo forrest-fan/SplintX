@@ -1,5 +1,6 @@
 import React from 'react';
 import './MarketCart.css';
+import ActionProgress from '../../Collection/CollectionList/CollectionCard/CollectionCardModal/ActionProgress/ActionProgress';
 import $ from 'jquery';
 
 const sumProp = (array, prop) => {
@@ -26,12 +27,18 @@ class MarketCart extends React.Component {
 		this.state = {
 			totalDEC: 0,
 			DECexchange: 0,
-			totalUSD: sumProp(this.props.cart, 'buy_price')
+			totalUSD: sumProp(this.props.cart, 'buy_price'),
+			renderProgress: false,
+			progressMsg: ''
 		}
 	}
 	
 	fillOrder() {
 		if (isLoggedIn() && this.props.cart.length <= 45) {
+			this.setState({
+				renderProgress: true,
+				progressMsg: 'Broadcasting request to blockchain.'
+			})
 			let jsonRequest = JSON.stringify({
 				items: this.props.cart.map(card => {
 					return card.market_id;
@@ -43,17 +50,48 @@ class MarketCart extends React.Component {
 			});
 			window.hive_keychain.requestCustomJson(localStorage.getItem('username'), "sm_market_purchase", "Active", jsonRequest, "Buy Card(s)", function(response) {
 			    if (response.success) {
-				    let toast = document.getElementById('cart-purchased-toast');
-		    		toast.className += 'show';
-		       		setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
-				    this.setState({
-						totalDEC: 0,
-						totalUSD: 0
-					});
-					this.props.updateBalance();
-					this.props.clearCart();
+			    	this.setState({progressMsg: 'Step 1 of 2 complete - Request successfully broadcasted'}, () => {
+						setTimeout(() => {
+							this.setState({progressMsg: 'Gathering request results.'});
+						}, 2000);
+					});	
+					let id = response.result.id;
+					let url = 'https://game-api.splinterlands.io/transactions/lookup?trx_id=' + id;
+					setTimeout(() => {
+						$.ajax({
+							type: 'GET',
+				  			url: url,
+				  			jsonpCallback: 'testing',
+				  			dataType: 'json',
+							success: function(response) {
+								if (response.error) {
+									this.setState({renderProgress: false});
+									let toast = document.getElementById('cardsFailed-toast');
+									toast.innerHTML = '<i class=\'fas fa-times\'></i> There was an error: ' + response.error;
+									toast.className += ' show';
+									setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
+								} else {
+									this.setState({renderProgress: false});
+									let toast = document.getElementById('cart-purchased-toast');
+						    		toast.className += ' show';
+						       		setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
+								    this.setState({
+										totalDEC: 0,
+										totalUSD: 0
+									});
+									this.props.updateBalance();
+									this.props.clearCart();
+								}
+							}.bind(this),
+							error: function(e) {
+								console.log('Something went wrong');
+							}
+						});
+					}, 10000);
 				} else {
+					this.setState({renderProgress: false});
 					let toast = document.getElementById('cardsFailed-toast');
+					toast.innerHTML = '<i class=\'fas fa-times\'></i> There was an error broadcasting the transaction';
 		    		toast.className += 'show';
 		       		setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
 				}
@@ -123,7 +161,7 @@ class MarketCart extends React.Component {
 		    								<td>{card.name}</td>
 		    								<td style={{textAlign: 'center'}}>{card.uid}</td>
 		    								<td style={{textAlign: 'center'}}>{card.lvl}</td>
-		    								<td style={{textAlign: 'right'}}>$ {Number(card.buy_price).toFixed(2) + ' ' + card.currency}</td>
+		    								<td style={{textAlign: 'right'}}>$ {Number(card.buy_price).toFixed(3) + ' ' + card.currency}</td>
 		    								<td className='cart-remove-item' onClick={() => {
 		    									this.setState({
 		    										totalUSD: this.state.totalUSD - card.buy_price,
@@ -138,7 +176,7 @@ class MarketCart extends React.Component {
 		    			</table>
 		    		</div>
 	    			<div className='cart-summary'>
-	    				<p>Total: ${this.state.totalUSD.toFixed(2)}</p>
+	    				<p>Total: ${this.state.totalUSD.toFixed(3)}</p>
 	    				<button onClick={this.fillOrder} disabled={this.props.cart.length === 0}>Checkout - {this.state.totalDEC.toFixed(3)} DEC</button>
 	    			</div>
 	    		</div>
@@ -154,6 +192,7 @@ class MarketCart extends React.Component {
 				<div id='cardsFailed-toast' className='toast failToast'>
 					<i className='fas fa-times'></i>Something went wrong! Please try again.
 				</div>
+				{this.state.renderProgress ? <ActionProgress action='Buying Cards' message={this.state.progressMsg} /> : '' }
 	    	</div>
 	    );
 	}

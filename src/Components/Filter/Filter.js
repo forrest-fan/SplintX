@@ -1,10 +1,14 @@
 import React from 'react';
 import './Filter.css';
+import searchIcon from './search.png';
+import clearIcon from './clear.png';
+import $ from 'jquery';
+
 const filters = {
   foil: ['Regular', 'Gold'],
   type: ['Monster', 'Summoner'],
   rarity: ['Common', 'Rare', 'Epic', 'Legendary'],
-  edition: ['Alpha', 'Beta', 'Promo', 'Reward', 'Untamed'],
+  edition: ['Alpha', 'Beta', 'Promo', 'Reward', 'Untamed', 'Dice'],
   element: ['Fire', 'Water', 'Earth', 'Life', 'Death', 'Dragon', 'Neutral']
 };
 
@@ -29,8 +33,19 @@ class Filter extends React.Component {
     return category;
   }
 
-  handleSearchChange(event) {
-    let query = event.target.value;
+  handleSearchChange() {
+    let query = document.getElementById('filter-search').value;
+    let icon = document.getElementById('filter-search-icon');
+    if (query === '') {
+      icon.src = searchIcon;
+      icon.style.cursor = 'default';
+    } else {
+      icon.src = clearIcon;
+      icon.style.cursor = 'pointer';
+      icon.addEventListener('click', function() {
+        $('input#filter-search').val('').change(this.handleSearchChange()).change();
+      }.bind(this));
+    }
     this.props.updateFilters(query, 'search');
   }
 
@@ -43,7 +58,10 @@ class Filter extends React.Component {
     return(
       <div className={this.props.mobileFilters ? 'filter-pane show-sidebar' : 'filter-pane hide-sidebar'} >
         <div className='exit-btn' onClick={this.props.hideMobileFilters}><i className='fas fa-times'></i></div>
-        <input className='filter-search' placeholder='Search Cards' onChange={this.handleSearchChange}/>
+        <div className='filter-search-container'>
+          <input id='filter-search' placeholder='Search Cards' onChange={this.handleSearchChange}/>
+          <img src={searchIcon} id='filter-search-icon' />
+        </div>
         <h2 className='filter-header'>Filters</h2>
         <div className='activeFilters-container'>
           {this.state.activeFilters.map(filter => {
@@ -74,8 +92,8 @@ class Filter extends React.Component {
                 } else if (filterSection === 'element') {
                   iconClass += ' ' + filter.toLowerCase() + ' fas ';
                   iconClass += filter === 'Fire' ? 'fa-fire' : filter === 'Water' ? 'fa-tint' : filter === 'Earth' ? 'fa-leaf' : filter === 'Life' ? 'fa-star-of-life' : filter === 'Death' ? 'fa-skull' : filter === 'Dragon' ? 'fa-dragon' : 'fa-dumbbell';
-                } else if (filterSection === 'gold') {
-                  iconClass += ' fas fa-star';
+                } else if (filterSection === 'foil') {
+                  iconClass += filter === 'Gold' ? ' fas fa-star gold' : ' fas fa-stop regular';
                 }
                 return (
                   <p className='filter-selection' id={filter} onClick={() => {

@@ -23,7 +23,7 @@ class App extends React.Component {
       page: '',
       username: localStorage.getItem('username') || '',
       loggedIn: isLoggedIn(),
-      DECbalance: null,
+      balance: {},
       cardDetails: null
     };
     this.renderPage = this.renderPage.bind(this);
@@ -57,7 +57,7 @@ class App extends React.Component {
     } else if (page === 'collection') {
       return <Collection updateBalance={this.updateBalance} loggedIn={this.state.loggedIn} cardDetails={this.state.cardDetails}/>
     } else if (page === 'packs') {
-      return <Packs />
+      return <Packs balance={this.state.balance} updateBalance={this.updateBalance} loggedIn={this.state.loggedIn} />
     } else if (page === 'battlechain') {
       return <BattleChain loggedIn={this.state.loggedIn}/>
     } else if (page === 'scanner') {
@@ -66,7 +66,7 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    if (sessionStorage.getItem('cardDetails') && JSON.parse(sessionStorage.getItem('cardDetails')).expiry < (new Date())) {
+    if (sessionStorage.getItem('cardDetails') && (new Date(JSON.parse(sessionStorage.getItem('cardDetails')).expiry)) > (new Date())) {
       if (this.state.loggedIn) {
         $.ajax({
           type: 'GET',
@@ -74,15 +74,13 @@ class App extends React.Component {
           jsonpCallback: 'testing',
           dataType: 'json',
           success: function(balances) {
-            let DECbalance = 0;
+            let balance = {};
             for (let i = 0; i < balances.length; i++) {
-              if (balances[i].token === 'DEC') {
-                DECbalance = balances[i].balance;
-              }
+              balance[balances[i].token] = balances[i].balance;
             }
             this.setState({
               page: 'market',
-              DECbalance: DECbalance,
+              balance: balance,
               cardDetails: JSON.parse(sessionStorage.getItem('cardDetails')).data
             });
           }.bind(this),
@@ -109,11 +107,9 @@ class App extends React.Component {
               jsonpCallback: 'testing',
               dataType: 'json',
               success: function(balances) {
-                let DECbalance = 0;
+                let balance = {};
                 for (let i = 0; i < balances.length; i++) {
-                  if (balances[i].token === 'DEC') {
-                    DECbalance = balances[i].balance;
-                  }
+                  balance[balances[i].token] = balances[i].balance;
                 }
                 let expiry = new Date();
                 expiry.setDate(expiry.getDate() + 3);
@@ -125,7 +121,7 @@ class App extends React.Component {
                 sessionStorage.setItem('cardDetails', JSON.stringify(detailObj));
                 this.setState({
                   page: 'market',
-                  DECbalance: DECbalance,
+                  balance: balance,
                   cardDetails: cardDetails
                 });
               }.bind(this),
@@ -145,7 +141,7 @@ class App extends React.Component {
           jsonpCallback: 'testing',
           success: function(cardDetails) {
             let expiry = new Date();
-            expiry.setDate(expiry.getDate() + 3);
+            expiry.setDate(expiry.getDate() + 1);
             expiry.setUTCHours(0, 0, 0, 0);
             let detailObj = {
               expiry: expiry, 
@@ -174,13 +170,11 @@ class App extends React.Component {
           jsonpCallback: 'testing',
           dataType: 'json',
           success: function(balances) {
-            let DECbalance = 0;
+            let balance = {};
             for (let i = 0; i < balances.length; i++) {
-              if (balances[i].token === 'DEC') {
-                DECbalance = balances[i].balance;
-              }
+              balance[balances[i].token] = balances[i].balance;
             }
-            this.setState({DECbalance: DECbalance});
+            this.setState({balance: balance});
           }.bind(this),
           error: function(e) {
             console.log('There was an error getting the DEC balance');
@@ -198,13 +192,11 @@ class App extends React.Component {
         jsonpCallback: 'testing',
         dataType: 'json',
         success: function(balances) {
-          let DECbalance = 0;
+          let balance = {};
           for (let i = 0; i < balances.length; i++) {
-            if (balances[i].token === 'DEC') {
-              DECbalance = balances[i].balance;
-            }
+            balance[balances[i].token] = balances[i].balance;
           }
-          this.setState({DECbalance: DECbalance});
+          this.setState({balance: balance});
         }.bind(this),
         error: function(e) {
           console.log('There was an error getting the DEC balance');
@@ -216,7 +208,7 @@ class App extends React.Component {
   render() {
     return ( 
       <div className = "App" >
-        <Navbar active = {this.state.page} updatePage={this.updatePage} login={this.login} loggedIn={this.state.loggedIn} balance={this.state.DECbalance}/>
+        <Navbar active = {this.state.page} updatePage={this.updatePage} login={this.login} loggedIn={this.state.loggedIn} balance={this.state.balance}/>
         {this.renderPage(this.state.page)}
       </div>
     );
