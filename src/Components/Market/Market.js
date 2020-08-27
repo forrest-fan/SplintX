@@ -306,8 +306,8 @@ class Market extends React.Component {
 
 	render() {
 	    return(
-	      	<div id='market'>
-				<div className='market-header'>
+	      	<div id='market' className='page'>
+				<div className='header'>
 					<h2>Market</h2>
 					<hr />
 				</div>

@@ -193,15 +193,13 @@ class Collectionmodal extends React.Component {
 					});					
 					let id = response.result.id;
 					let url = 'https://game-api.splinterlands.io/transactions/lookup?trx_id=' + id;
-					console.log(response);
 					setTimeout(() => {
 						$.ajax({
 							type: 'GET',
 				  			url: url,
 				  			jsonpCallback: 'testing',
 				  			dataType: 'json',
-							success: function(response) { 
-								console.log(response.error)
+							success: function(response) {
 								if (response.error) {
 									this.setState({renderProgress: false});
 									let toast = document.getElementById('cardsFailed-toast');
@@ -448,7 +446,7 @@ class Collectionmodal extends React.Component {
 				</div>
 				{this.state.renderTransfer ? <TransferModal updateCollection={this.props.updateCollection} closeParentModal={this.props.closeModal} closeModal={this.toggleTransfer} info={this.props.info} cards={this.state.selected}/> : ''}
 	    		{this.state.renderSell ? <SellModal clearSelected={this.clearSelected} closeParentModal={this.props.closeModal} closeModal={this.toggleSell} info={this.props.info} cards={this.state.selected}/> : ''}
-	    		{this.state.renderProgress ? <ActionProgress action='Burning' message={this.state.progressMsg} /> : '' }
+	    		{this.state.renderProgress ? <ActionProgress action='Burning Cards' message={this.state.progressMsg} /> : '' }
 	    	</div>
 	    );
 	}

@@ -197,8 +197,6 @@ class Collection extends React.Component {
 		});
 	}
 
-
-
 	updateSort(method) {
 		this.setState({
 			cards: sort(this.state.cards, method),
@@ -412,8 +410,8 @@ class Collection extends React.Component {
 
 	render() {
 		return (
-			<div id='collection'>
-				<div className='collection-header'>
+			<div id='collection' className='page'>
+				<div className='header'>
 					<h2>My Collection</h2>
 					<hr />
 				</div>

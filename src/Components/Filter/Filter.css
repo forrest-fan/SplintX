@@ -98,11 +98,18 @@
 	font-size: 12px;
 }
 
-.gold-icon {
+.foil-icon {
 	font-size: 12px;
 	margin-right: 10px;
 	vertical-align: middle;
+}
+
+.foil-icon.gold {
 	color: #e89c05;	
+}
+
+.foil-icon.regular {
+	color: #777;
 }
 
 .type-icon {
