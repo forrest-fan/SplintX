@@ -119,7 +119,7 @@ class MarketCardModal extends React.Component {
 	getBCX(xp) {
 		if (xp === 0) {
 			return 1;
-		} else if (this.props.info.edition === 'Untamed' || (this.props.info.edition === 'Reward' && this.props.info.detailID > 223)) {
+		} else if (this.props.info.edition === 'Dice' || this.props.info.edition === 'Untamed' || (this.props.info.edition === 'Reward' && this.props.info.detailID > 223)) {
 			return xp;
 		}
 

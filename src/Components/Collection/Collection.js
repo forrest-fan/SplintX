@@ -215,7 +215,7 @@ class Collection extends React.Component {
 	getBCX(xp, edition, rarity, detailID, gold) {
 		if (xp === 0) {
 			return 1;
-		} else if (edition === 4 || (edition === 3 && detailID > 223)) {
+		} else if (edition === 5 || edition === 4 || (edition === 3 && detailID > 223)) {
 			return xp;
 		}
 
