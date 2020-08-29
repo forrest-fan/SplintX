@@ -378,9 +378,6 @@ class Collection extends React.Component {
 								}
 							}
 						}
-						if (cards[i].count === 0) {
-							cards.splice(i, 1);
-						}
 					}
 				}
 			}
@@ -454,6 +451,14 @@ class Collection extends React.Component {
 							}
 						}
 					}
+				}
+			}
+			this.setState({cards: cards});
+		} else if (action === 'remove-parent') {
+			let cards = this.state.cards;
+			for (let i = 0; i < cards.length; i++) {
+				if (cards[i] === selected) {
+					cards.splice(i, 1);
 				}
 			}
 			this.setState({cards: cards});

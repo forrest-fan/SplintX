@@ -72,7 +72,7 @@ class Collectionmodal extends React.Component {
 		this.combine = this.combine.bind(this);
 		this.burn = this.burn.bind(this);
 		this.keychainRequestBurn = this.keychainRequestBurn.bind(this);
-		// this.keychainRequestCombine = this.keychainRequestCombine.bind(this);
+		this.keychainRequestCombine = this.keychainRequestCombine.bind(this);
 	}
 
 	clearSelected() {
@@ -196,13 +196,21 @@ class Collectionmodal extends React.Component {
 	combine() {
 		let eligible = true;
 		let totalbcx = 0;
-		let selected = this.state.selected.map(card => {
-			if (card.leased || card.listed) {
-				eligible = false;
+		let selected = [];
+		let counter = 0;
+		while (counter < this.state.selected.length) {
+			let segment = [];
+			let segmentLength = this.state.selected.length - 40 > counter ? 40 : this.state.selected.length - counter;
+			for (let i = 0; i < segmentLength; i++) {
+				if (this.state.selected[counter].leased || this.state.selected[counter].listed) {
+					eligible = false;
+				}
+				segment.push(this.state.selected[counter].uid);
+				totalbcx += this.state.selected[counter].bcx;
+				counter++;
 			}
-			totalbcx += card.bcx;
-			return card.uid;
-		});
+			selected.push(segment);
+		}
 		let rarity = this.props.info.rarity === 'Common' ? 1 : this.props.info.rarity === 'Rare' ? 2 : this.props.info.rarity === 'Epic' ? 3 : 4;
 		let edition = this.props.info.edition;
 		let detailID = this.props.info.detailID;
@@ -234,62 +242,122 @@ class Collectionmodal extends React.Component {
 					renderCombineProgress: true,
 					progressMsg: 'Broadcasting request to the blockchain'
 				});
-				let combineJSON = JSON.stringify({
-					cards: selected,
-					app: 'steemmonsters/0.7.34'
-				});
-				window.hive_keychain.requestCustomJson(localStorage.getItem('username'), 'sm_combine_cards', 'Active', combineJSON, 'Combine Card(s)', function(response) {
-					if (response.success) {
-						this.setState({progressMsg: 'Step 1 of 2 complete - Request successfully broadcasted'}, () => {
-							setTimeout(() => {
-								this.setState({progressMsg: 'Gathering request results.'});
-							}, 2000);
-						});					
-						let id = response.result.id;
-						let url = 'https://game-api.splinterlands.io/transactions/lookup?trx_id=' + id;
-						setTimeout(() => {
-							$.ajax({
-								type: 'GET',
-					  			url: url,
-					  			jsonpCallback: 'testing',
-					  			dataType: 'json',
-								success: function(response) {
-									if (response.error) {
-										this.setState({renderCombineProgress: false});
-										let toast = document.getElementById('cardsFailed-toast');
-										toast.innerHTML = '<i class=\'fas fa-times\'></i> There was an error: ' + response.error;
-										toast.className += ' show';
-										setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
-									} else {
-										this.setState({renderCombineProgress: false});
-										let toast = document.getElementById('cardsCombined-toast');
-										toast.className += ' show';
-										setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
-										this.props.updateCollection('combine', selected);
-										this.setState({selected: []});
-									}
-								}.bind(this),
-								error: function(e) {
-									console.log('Something went wrong');
-								}
-							});
-						}, 10000);
-					} else {
-						this.setState({renderProgress: false});
-						let toast = document.getElementById('cardsFailed-toast');
-						toast.innerHTML = '<i class=\'fas fa-times\'></i> There was an error broadcasting to the blockchain.';
-						toast.className += ' show';
-						setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
-					}
-				}.bind(this));
+				this.keychainRequestCombine(selected, 0);				
 			}
 		}
+	}
+
+	keychainRequestCombine(selected, index) {
+		let cardRangeLow = (index + 1) * 40 - 39;
+		let cardRangeHigh = index < selected.length - 1 ? (index + 1) * 40 : cardRangeLow + selected[index].length - 1;
+		let total = selected.length * 40 - 40 + selected[selected.length - 1].length;
+		let cardRangeStr = cardRangeLow !== cardRangeHigh ? 'Cards ' + cardRangeLow + '-' + cardRangeHigh + ' of ' + total : 'Card ' + cardRangeLow + ' of ' + total;
+		
+		this.setState({
+			progressMsg: ('Broadcasting request for ' + cardRangeStr + ' to the blockchain.')
+		});
+
+		let cards = selected[index];
+		let combineJSON = JSON.stringify({
+			cards: cards,
+			app: 'SplintX'
+		});
+
+		window.hive_keychain.requestCustomJson(localStorage.getItem('username'), 'sm_combine_cards', 'Active', combineJSON, 'Combine Card(s)', function(keychainResponse) {
+			if (index < selected.length - 1) {
+				this.keychainRequest(selected, index + 1);
+			}
+			if (keychainResponse.success) {
+				if (index === selected.length - 1) {
+					this.setState({
+						progressMsg: ('Successfully broadcasted request for ' + cardRangeStr)
+					}, () => {
+						setTimeout(() => {
+							this.setState({progressMsg: 'Gathering request results.'});
+						}, 2000)
+					});
+				}
+				let id = keychainResponse.result.id;
+				let url = 'https://game-api.splinterlands.io/transactions/lookup?trx_id=' + id;
+				setTimeout(() => {
+					$.ajax({
+						type: 'GET',
+			  			url: url,
+			  			jsonpCallback: 'testing',
+			  			dataType: 'json',
+						success: function(response) {
+							if (response.error_code === 1) {
+								setTimeout(() => {
+									$.ajax({
+										type: 'GET',
+							  			url: url,
+							  			jsonpCallback: 'testing',
+							  			dataType: 'json',
+										success: function(response2) {
+											if (response2.error) {
+												if (index === selected.length - 1) {
+													this.setState({renderCombineProgress: false});
+												}
+												let toast = document.getElementById('cardsFailed-toast');
+												toast.innerHTML = '<i class=\'fas fa-times\'></i> There was an error for ' + cardRangeStr;
+												toast.className += ' show';
+												setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
+											} else {
+												if (index === selected.length - 1) {
+													this.setState({renderCombineProgress: false});
+												}
+												this.props.updateCollection('combine', cards);
+												let toast = document.getElementById('cardsCombined-toast');
+												toast.innerHTML = '<i class=\'fas fa-check\'></i> ' + cardRangeStr + ' successfully listed!';
+												toast.className += ' show';
+												setTimeout(() => {
+													toast.className = toast.className.replace(' show', '');
+												}, 3000);
+											}
+										}.bind(this),
+										error: function(e) {
+											console.log('Something went wrong');
+										}
+									});
+								}, 5000);
+							} else if (response.error) {
+								if (index === selected.length - 1) {
+									this.setState({renderCombineProgress: false});
+								}
+								let toast = document.getElementById('cardsFailed-toast');
+								toast.innerHTML = '<i class=\'fas fa-times\'></i> There was an error for ' + cardRangeStr;
+								toast.className += ' show';
+								setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
+							} else {
+								if (index === selected.length - 1) {
+									this.setState({renderCombineProgress: false});
+								}
+								this.props.updateCollection('combine', cards);
+								let toast = document.getElementById('cardsCombined-toast');
+								toast.innerHTML = '<i class=\'fas fa-check\'></i> ' + cardRangeStr + ' successfully burned!';
+								toast.className += ' show';
+								setTimeout(() => {
+									toast.className = toast.className.replace(' show', '');
+								}, 3000);
+							}
+						}.bind(this),
+						error: function(e) {
+							console.log('Something went wrong');
+						}
+					});
+				}, 10000);
+			} else {
+				let toast = document.getElementById('cardsFailed-toast');
+				toast.innerHTML = '<i class=\'fas fa-times\'></i> There was an error broadcasting ' + cardRangeStr;
+				toast.className += ' show';
+				setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
+			}
+		}.bind(this));
 	}
 
 	burn() {
 		let eligible = true;
 		let totalBurn = 0;
-		let totalCards = 0;
 		let selected = [];
 		let counter = 0;
 		while (counter < this.state.selected.length) {
@@ -330,7 +398,7 @@ class Collectionmodal extends React.Component {
 		let cards = selected[index];
 		let burnJSON = JSON.stringify({
 			cards: cards,
-			app: 'steemmonsters/0.7.34'
+			app: 'SplintX'
 		});
 		window.hive_keychain.requestCustomJson(localStorage.getItem('username'), 'sm_burn_cards', 'Active', burnJSON, 'Burn card(s)', function(keychainResponse) {
 			if (index < selected.length - 1) {
@@ -362,8 +430,8 @@ class Collectionmodal extends React.Component {
 							  			url: url,
 							  			jsonpCallback: 'testing',
 							  			dataType: 'json',
-										success: function(response) {
-											if (response.error) {
+										success: function(response2) {
+											if (response2.error) {
 												if (index === selected.length - 1) {
 													this.setState({renderProgress: false});
 												}
@@ -381,11 +449,6 @@ class Collectionmodal extends React.Component {
 												toast.className += ' show';
 												setTimeout(() => {
 													toast.className = toast.className.replace(' show', '');
-													if (index === selected.length - 1) {
-														setTimeout(() => {
-															this.props.closeModal();
-														}, 200)
-													}
 												}, 3000);
 											}
 										}.bind(this),
@@ -412,11 +475,6 @@ class Collectionmodal extends React.Component {
 								toast.className += ' show';
 								setTimeout(() => {
 									toast.className = toast.className.replace(' show', '');
-									if (index === selected.length - 1) {
-										setTimeout(() => {
-											this.props.closeModal();
-										}, 200)
-									}
 								}, 3000);
 							}
 						}.bind(this),
@@ -487,9 +545,7 @@ class Collectionmodal extends React.Component {
 				    								this.state.sortMethod === 'bcxDec' ? this.updateSort('bcxAsc') : this.updateSort('bcxDec');
 				    							}} style={{cursor: 'pointer'}}>BCX <i className={'modal-table-sortIcon ' + (this.state.sortMethod === 'bcxAsc' ? 'fas fa-caret-up' : this.state.sortMethod === 'bcxDec' ? 'fas fa-caret-down' : '')}></i></th>
 				    							<th>Status</th>
-				    							<th onClick={() => {
-				    								this.state.sortMethod === 'bcxDec' ? this.updateSort('bcxAsc') : this.updateSort('bcxDec');
-				    							}} style={{cursor: 'pointer'}}>Burn Value <i className={'modal-table-sortIcon ' + (this.state.sortMethod === 'bcxAsc' ? 'fas fa-caret-up' : this.state.sortMethod === 'bcxDec' ? 'fas fa-caret-down' : '')}></i></th>
+				    							<th >Burn Value</th>
 											</tr>
 				    					</thead>
 				    					{this.state.loading ? '' :

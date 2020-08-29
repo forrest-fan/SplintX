@@ -59,8 +59,8 @@ class TransferModal extends React.Component {
 							  			url: url,
 							  			jsonpCallback: 'testing',
 							  			dataType: 'json',
-										success: function(response) {
-											if (response.error) {
+										success: function(response2) {
+											if (response2.error) {
 												if (index === selected.length - 1) {
 													this.setState({renderProgress: false});
 												}
@@ -69,9 +69,6 @@ class TransferModal extends React.Component {
 												toast.className += ' show';
 												setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
 											} else {
-												if (index === selected.length - 1) {
-													this.setState({renderProgress: false});
-												}
 												this.props.updateCollection('remove', cards);
 												let toast = document.getElementById('cardsTransferred-toast');
 												toast.innerHTML = '<i class=\'fas fa-check\'></i> ' + cardRangeStr + ' successfully transferred!';
@@ -80,8 +77,8 @@ class TransferModal extends React.Component {
 													toast.className = toast.className.replace(' show', '');
 													if (index === selected.length - 1) {
 														setTimeout(() => {
+															this.setState({renderProgress: false});
 															this.props.closeModal();
-															this.props.closeParentModal();
 														}, 200)
 													}
 												}, 3000);
@@ -101,9 +98,6 @@ class TransferModal extends React.Component {
 								toast.className += ' show';
 								setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
 							} else {
-								if (index === selected.length - 1) {
-									this.setState({renderProgress: false});
-								}
 								this.props.updateCollection('remove', cards);
 								let toast = document.getElementById('cardsTransferred-toast');
 								toast.innerHTML = '<i class=\'fas fa-check\'></i> ' + cardRangeStr + ' successfully transferred!';
@@ -112,8 +106,8 @@ class TransferModal extends React.Component {
 									toast.className = toast.className.replace(' show', '');
 									if (index === selected.length - 1) {
 										setTimeout(() => {
+											this.setState({renderProgress: false});
 											this.props.closeModal();
-											this.props.closeParentModal();
 										}, 200)
 									}
 								}, 3000);
