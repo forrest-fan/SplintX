@@ -18,7 +18,6 @@ class SellModal extends React.Component {
 		let cardRangeLow = (index + 1) * 40 - 39;
 		let cardRangeHigh = index < selected.length - 1 ? (index + 1) * 40 : cardRangeLow + selected[index].length - 1;
 		let total = selected.length * 40 - 40 + selected[selected.length - 1].length;
-		
 		let cardRangeStr = cardRangeLow !== cardRangeHigh ? 'Cards ' + cardRangeLow + '-' + cardRangeHigh + ' of ' + total : 'Card ' + cardRangeLow + ' of ' + total;
 		
 		this.setState({
@@ -29,25 +28,27 @@ class SellModal extends React.Component {
 		let uids = cards.map(card => {return card.uid});
 		let sellJSON = JSON.stringify(cards.map(card => {
 			return {
-				cards: [card.uid],
+				cards: ['C4-136-FVONMSLR4G'],
 				currency: 'USD',
 				price: (card.bcx * price).toString(),
 				fee_pct: 500
 			}
 		}));
-		console.log(sellJSON);
-
-		window.hive_keychain.requestCustomJson(localStorage.getItem('username'), 'sm_sell_cards', 'Active', sellJSON, 'Transfer card(s)', function(response) {
+		window.hive_keychain.requestCustomJson(localStorage.getItem('username'), 'sm_sell_cards', 'Active', sellJSON, 'List card(s)', function(keychainResponse) {
 			if (index < selected.length - 1) {
 				this.keychainRequest(price, selected, index + 1);
 			}
-			if (response.success) {
+			if (keychainResponse.success) {
 				if (index === selected.length - 1) {
 					this.setState({
 						progressMsg: ('Successfully broadcasted request for ' + cardRangeStr)
+					}, () => {
+						setTimeout(() => {
+							this.setState({progressMsg: 'Gathering request results.'});
+						}, 2000)
 					});
 				}
-				let id = response.result.id;
+				let id = keychainResponse.result.id;
 				let url = 'https://game-api.splinterlands.io/transactions/lookup?trx_id=' + id;
 				setTimeout(() => {
 					$.ajax({
@@ -56,7 +57,47 @@ class SellModal extends React.Component {
 			  			jsonpCallback: 'testing',
 			  			dataType: 'json',
 						success: function(response) {
-							if (response.error) {
+							if (response.error_code === 1) {
+								setTimeout(() => {
+									$.ajax({
+										type: 'GET',
+							  			url: url,
+							  			jsonpCallback: 'testing',
+							  			dataType: 'json',
+										success: function(response) {
+											if (response.error) {
+												if (index === selected.length - 1) {
+													this.setState({renderProgress: false});
+												}
+												let toast = document.getElementById('cardsFailed-toast');
+												toast.innerHTML = '<i class=\'fas fa-times\'></i> There was an error for ' + cardRangeStr;
+												toast.className += ' show';
+												setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
+											} else {
+												if (index === selected.length - 1) {
+													this.setState({renderProgress: false});
+												}
+												this.props.updateCollection('list', uids);
+												let toast = document.getElementById('cardsSold-toast');
+												toast.innerHTML = '<i class=\'fas fa-check\'></i> ' + cardRangeStr + ' successfully listed!';
+												toast.className += ' show';
+												setTimeout(() => {
+													toast.className = toast.className.replace(' show', '');
+													if (index === selected.length - 1) {
+														setTimeout(() => {
+															this.props.closeModal();
+															this.props.closeParentModal();
+														}, 200)
+													}
+												}, 3000);
+											}
+										}.bind(this),
+										error: function(e) {
+											console.log('Something went wrong');
+										}
+									});
+								}, 5000);
+							} else if (response.error) {
 								if (index === selected.length - 1) {
 									this.setState({renderProgress: false});
 								}
@@ -87,7 +128,7 @@ class SellModal extends React.Component {
 							console.log('Something went wrong');
 						}
 					});
-				}, 12000);
+				}, 10000);
 			} else {
 				let toast = document.getElementById('cardsFailed-toast');
 				toast.innerHTML = '<i class=\'fas fa-times\'></i> There was an error broadcasting ' + cardRangeStr;
