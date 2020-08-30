@@ -555,11 +555,7 @@ class Collectionmodal extends React.Component {
 				    								<tr>
 				    									<td className='center'><input type='checkbox' onClick={() => {
 				    										let selected = this.state.selected;
-				    										if (selected.length >= 45 && !selected.includes(card)) {
-				    											let toast = document.getElementById('modal-tooMany-toast');
-				    											toast.className += ' show';
-				    											setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
-				    										} else if (selected.includes(card)) {
+				    										if (selected.includes(card)) {
 				    											for (let i = 0; i < selected.length; i++) {
 				    												if (selected[i].uid === card.uid) {
 				    													selected.splice(i, 1);
@@ -689,9 +685,6 @@ class Collectionmodal extends React.Component {
 			    		</div>
 		    		</div>
 	    		</div>
-	    		<div id='modal-tooMany-toast' className='toast failToast'>
-					<i className='fas fa-times'></i>You have already selected the limit of 45 cards.
-				</div>
 	    		<div id='cardsBurned-toast' className='toast successToast'>
 					<i className='fas fa-check'></i>Successfully burned!
 				</div>
