@@ -96,6 +96,17 @@ class Market extends React.Component {
 		this.removeItem = this.removeItem.bind(this);
 		this.toggleCart = this.toggleCart.bind(this);
 		this.clearCart = this.clearCart.bind(this);
+		$.ajax({
+			type: 'GET',
+			url: 'https://splintx.com/db.php',
+			dataType: 'json',
+			success: function(response) {
+				console.log(response);
+			},
+			error: function(e) {
+				console.log(e);
+			}
+		})
 	}
 
 	updateFilters(filter, category, action) {

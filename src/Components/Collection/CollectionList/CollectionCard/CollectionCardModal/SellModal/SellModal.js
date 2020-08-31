@@ -28,7 +28,7 @@ class SellModal extends React.Component {
 		let uids = cards.map(card => {return card.uid});
 		let sellJSON = JSON.stringify(cards.map(card => {
 			return {
-				cards: ['C4-136-FVONMSLR4G'],
+				cards: [card.uid],
 				currency: 'USD',
 				price: (card.bcx * price).toString(),
 				fee_pct: 500
