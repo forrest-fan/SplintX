@@ -347,6 +347,9 @@ class Collectionmodal extends React.Component {
 					});
 				}, 10000);
 			} else {
+				if (index === selected.length - 1) {
+					this.setState({renderCombineProgress: false});
+				}
 				let toast = document.getElementById('cardsFailed-toast');
 				toast.innerHTML = '<i class=\'fas fa-times\'></i> There was an error broadcasting ' + cardRangeStr;
 				toast.className += ' show';
@@ -484,6 +487,9 @@ class Collectionmodal extends React.Component {
 					});
 				}, 10000);
 			} else {
+				if (index === selected.length - 1) {
+					this.setState({renderProgress: false});
+				}
 				let toast = document.getElementById('cardsFailed-toast');
 				toast.innerHTML = '<i class=\'fas fa-times\'></i> There was an error broadcasting ' + cardRangeStr;
 				toast.className += ' show';

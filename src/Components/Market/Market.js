@@ -203,11 +203,13 @@ class Market extends React.Component {
 		})
 	}
 
-	removeItem(item) {
+	removeItem(items) {
 		let cart = this.state.cart;
-		for (let i = 0; i < cart.length; i++) {
-			if (item.uid === cart[i].uid) {
-				cart.splice(i, 1);
+		for (let i = 0; i < items.length; i++) {
+			for (let j = 0; j < cart.length; j++) {
+				if (items[i].uid === cart[j].uid) {
+					cart.splice(j, 1);
+				}
 			}
 		}
 		localStorage.setItem('cart', JSON.stringify(cart));
