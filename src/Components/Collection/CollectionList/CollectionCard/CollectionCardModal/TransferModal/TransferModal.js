@@ -6,6 +6,7 @@ import $ from 'jquery';
 class TransferModal extends React.Component {
 	constructor(props) {
 		super(props);
+		this.keychainRequest = this.keychainRequest.bind(this);
 		this.transfer = this.transfer.bind(this);
 		this.state = {
 			renderProgress: false,
@@ -13,68 +14,141 @@ class TransferModal extends React.Component {
 		};
 	}
 
-	transfer() {
+	keychainRequest(receive, selected, index) {
+		let cardRangeLow = (index + 1) * 40 - 39;
+		let cardRangeHigh = index < selected.length - 1 ? (index + 1) * 40 : cardRangeLow + selected[index].length - 1;
+		let total = selected.length * 40 - 40 + selected[selected.length - 1].length;
+		let cardRangeStr = cardRangeLow !== cardRangeHigh ? 'Cards ' + cardRangeLow + '-' + cardRangeHigh + ' of ' + total : 'Card ' + cardRangeLow + ' of ' + total;
+		
 		this.setState({
-			renderProgress: true,
-			progressMsg: 'Broadcasting request to the blockchain.'
+			progressMsg: ('Broadcasting request for ' + cardRangeStr + ' to the blockchain.')
 		});
-		let receive = document.getElementById('transferAct-input').value;
-		if (receive !== '') {
-			let selected = this.props.cards.map(card => {return card.uid});
-			let transferJSON = JSON.stringify({
-				to: receive,
-				cards: selected,			
-				app: 'steemmonsters/0.7.34'
-			});
-			window.hive_keychain.requestCustomJson(localStorage.getItem('username'), 'sm_gift_cards', 'Active', transferJSON, 'Transfer Card(s)', function(response) {
-				if (response.success) {
-					this.setState({progressMsg: 'Step 1 of 2 complete - Request successfully broadcasted'}, () => {
+		let cards = selected[index];
+		let transferJSON = JSON.stringify({
+			to: receive,
+			cards: cards,			
+			app: 'steemmonsters/0.7.34'
+		});
+		window.hive_keychain.requestCustomJson(localStorage.getItem('username'), 'sm_gift_cards', 'Active', transferJSON, 'Transfer card(s)', function(keychainResponse) {
+			if (index < selected.length - 1) {
+				this.keychainRequest(receive, selected, index + 1);
+			}
+			if (keychainResponse.success) {
+				if (index === selected.length - 1) {
+					this.setState({
+						progressMsg: ('Successfully broadcasted request for ' + cardRangeStr)
+					}, () => {
 						setTimeout(() => {
 							this.setState({progressMsg: 'Gathering request results.'});
-						}, 2000);
+						}, 2000)
 					});
-					let id = response.result.id;
-					let url = 'https://game-api.splinterlands.io/transactions/lookup?trx_id=' + id;
-					setTimeout(() => {
-						$.ajax({
-							type: 'GET',
-				  			url: url,
-				  			jsonpCallback: 'testing',
-				  			dataType: 'json',
-							success: function(response) { 
-								console.log(response.error)
-								if (response.error) {
-									this.setState({renderProgress: false});
-									let toast = document.getElementById('cardsFailed-toast');
-									toast.innerHTML = '<i class=\'fas fa-times\'></i> There was an error: ' + response.error;
-									toast.className += ' show';
-									setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
-								} else {
-									this.setState({renderProgress: false});
-									this.props.updateCollection('remove', selected);
-									let toast = document.getElementById('cardsTransferred-toast');
-									toast.className += ' show';
-									setTimeout(() => {
-										toast.className = toast.className.replace(' show', '');
-										this.props.closeModal();
-										this.props.closeParentModal();
-									}, 3000);
-								}
-							}.bind(this),
-							error: function(e) {
-								console.log('Something went wrong');
-							}
-						});
-					}, 10000);
-					
-				} else {					
-					this.setState({renderProgress: false});
-					let toast = document.getElementById('cardsFailed-toast');
-					toast.innerHTML = '<i class=\'fas fa-times\'></i> There was an error broadcasting to the blockchain.';
-					toast.className += ' show';
-					setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
 				}
-			}.bind(this));
+				let id = keychainResponse.result.id;
+				let url = 'https://game-api.splinterlands.io/transactions/lookup?trx_id=' + id;
+				setTimeout(() => {
+					$.ajax({
+						type: 'GET',
+			  			url: url,
+			  			jsonpCallback: 'testing',
+			  			dataType: 'json',
+						success: function(response) {
+							if (response.error && response.error_code) {
+								setTimeout(() => {
+									$.ajax({
+										type: 'GET',
+							  			url: url,
+							  			jsonpCallback: 'testing',
+							  			dataType: 'json',
+										success: function(response2) {
+											if (response2.error) {
+												if (index === selected.length - 1) {
+													this.setState({renderProgress: false});
+												}
+												let toast = document.getElementById('cardsFailed-toast');
+												toast.innerHTML = '<i class=\'fas fa-times\'></i> There was an error for ' + cardRangeStr;
+												toast.className += ' show';
+												setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
+											} else {
+												this.props.updateCollection('remove', cards);
+												let toast = document.getElementById('cardsTransferred-toast');
+												toast.innerHTML = '<i class=\'fas fa-check\'></i> ' + cardRangeStr + ' successfully transferred!';
+												toast.className += ' show';
+												setTimeout(() => {
+													toast.className = toast.className.replace(' show', '');
+													if (index === selected.length - 1) {
+														setTimeout(() => {
+															this.setState({renderProgress: false});
+															this.props.closeModal();
+														}, 200)
+													}
+												}, 3000);
+											}
+										}.bind(this),
+										error: function(e) {
+											console.log('Something went wrong');
+										}
+									});
+								}, 5000);
+							} else if (response.error) {
+								if (index === selected.length - 1) {
+									this.setState({renderProgress: false});
+								}
+								let toast = document.getElementById('cardsFailed-toast');
+								toast.innerHTML = '<i class=\'fas fa-times\'></i> There was an error for ' + cardRangeStr;
+								toast.className += ' show';
+								setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
+							} else {
+								this.props.updateCollection('remove', cards);
+								let toast = document.getElementById('cardsTransferred-toast');
+								toast.innerHTML = '<i class=\'fas fa-check\'></i> ' + cardRangeStr + ' successfully transferred!';
+								toast.className += ' show';
+								setTimeout(() => {
+									toast.className = toast.className.replace(' show', '');
+									if (index === selected.length - 1) {
+										setTimeout(() => {
+											this.setState({renderProgress: false});
+											this.props.closeModal();
+										}, 200)
+									}
+								}, 3000);
+							}
+						}.bind(this),
+						error: function(e) {
+							console.log('Something went wrong');
+						}
+					});
+				}, 10000);
+			} else {
+				if (index === selected.length - 1) {
+					this.setState({renderProgress: false});
+				}
+				let toast = document.getElementById('cardsFailed-toast');
+				toast.innerHTML = '<i class=\'fas fa-times\'></i> There was an error broadcasting ' + cardRangeStr;
+				toast.className += ' show';
+				setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
+			}
+		}.bind(this));
+	}
+
+	transfer() {
+		let receive = document.getElementById('transferAct-input').value;
+		if (receive !== '') {
+			let selected = [];
+			let counter = 0;
+			while (counter < this.props.cards.length) {
+				let segment = [];
+				let segmentLength = this.props.cards.length - 40 > counter ? 40 : this.props.cards.length - counter;
+				for (let i = 0; i < segmentLength; i++) {
+					segment.push(this.props.cards[counter].uid);
+					counter++;
+				}
+				selected.push(segment);
+			}
+			this.setState({
+				renderProgress: true,
+				progressMsg: 'Compiling transfer details'
+			});
+			this.keychainRequest(receive, selected, 0);
 		} else {
 			let toast = document.getElementById('noAddress-toast');
 			toast.className += ' show';

@@ -17,6 +17,13 @@ class CollectionCard extends React.Component {
 		});
 	}
 
+	componentDidUpdate(prevProps, prevState) {
+		if (prevState.renderModal && !this.state.renderModal) {
+			if (this.props.info.count === 0) {
+				this.props.updateCollection('remove-parent', this.props.info);
+			}
+		}
+	}
 
 	render() {
 	    return (

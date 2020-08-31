@@ -186,7 +186,7 @@ class MarketCardModal extends React.Component {
 			let i = 0;
 			let bcx = 0;
 			let cards = 0;
-			while (bcx < count && i < forSale.length && cards < 45) {
+			while (bcx < count && i < forSale.length) {
 				if (forSale[i].bcx + bcx <= count && forSale[i].uid !== matchUID[i]) {
 					multi.push(forSale[i]);
 					cards++;
@@ -228,7 +228,7 @@ class MarketCardModal extends React.Component {
 			let i = 0;
 			let price = 0;
 			let cards = 0;
-			while (price < count && i < forSale.length && cards < 45) {
+			while (price < count && i < forSale.length) {
 				if (forSale[i].buy_price + price <= count && forSale[i].uid !== matchUID[i]) {
 					multi.push(forSale[i]);
 					cards++;
@@ -305,7 +305,7 @@ class MarketCardModal extends React.Component {
 	      					lvl: lvl,
 	      					currency: listing.currency,
 	      					market_id: listing.market_id,
-	      					name: this.props.info.name,
+	      					name: this.props.info.name + (gold ? ' (Gold)' : ''),
 	      					bcx: bcx,
 	      					cooldown: Date.parse(listing.last_used_date) > (new Date() - 604800000)
 	      				});
@@ -514,11 +514,7 @@ class MarketCardModal extends React.Component {
 			    								<tr>
 			    									<td className='center'><input type='checkbox' onClick={() => {
 			    										let selected = this.state.selected;
-			    										if (selected.length >= 45 && !selected.includes(listing)) {
-			    											let toast = document.getElementById('modal-tooMany-toast');
-			    											toast.className += ' show';
-			    											setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
-			    										} else if (selected.includes(listing)) {
+			    										if (selected.includes(listing)) {
 			    											for (let i = 0; i < selected.length; i++) {
 			    												if (selected[i].uid === listing.uid) {
 			    													selected.splice(i, 1);
@@ -545,7 +541,6 @@ class MarketCardModal extends React.Component {
 			    			</div> : this.state.panel === 'multiSelect' ? <div className='modal-table-container'>
 				    			<div className='modal-multiselect'>
 				    				<p>{this.state.forSale.length} card{this.state.forSale.length === 1 ? '' : 's'} on the market currently.</p>
-				    				<p>Note: We currently only support purchases up to 45 cards.</p>
 				    				<div className='multiselect-half left'>
 				    					<h4>Select BCX</h4>
 				    					<p>Find desired BCX for lowest total price</p>
@@ -571,7 +566,7 @@ class MarketCardModal extends React.Component {
 				    						<tr className='modal-table-header'>
 				    							<th>Level</th>
 				    							<th>Cards</th>
-				    							<th>{this.props.info.attackType === 'attack' ? 'Melee' : this.props.info.attackType === 'ranged' ? 'Ranged' : 'Magic'}</th>
+				    							<th>{this.props.info.attackType === 'attack' ? 'Melee' : this.props.info.attackType === 'ranged' ? 'Ranged' : this.props.info.attackType === 'magic' ? 'Magic' : 'Attack'}</th>
 				    							<th>Speed</th>
 				    							<th>Health</th>
 				    							<th>Armor</th>
@@ -584,6 +579,7 @@ class MarketCardModal extends React.Component {
 				    								<tr>
 				    									<td className='center'>{level.lvl}</td>
 				    									<td className='center'>{this.getCombine(level.lvl) === 0 ? 'N/A' : this.getCombine(level.lvl)}</td>
+                              <td className='center'>{this.props.info.attackType !== 'none' ? level[this.props.info.attackType] : 'N/A'}</td>
 				    									<td className='center'>{level[this.props.info.attackType]}</td>
 				    									<td className='center'>{level.speed}</td>
 				    									<td className='center'>{level.health}</td>
@@ -666,9 +662,6 @@ class MarketCardModal extends React.Component {
 	    		</div>
 				<div id='modal-toast' className='toast successToast'>
 					<i className='fas fa-check'></i>Successfully added to cart!
-				</div>
-				<div id='modal-tooMany-toast' className='toast failToast'>
-					<i className='fas fa-times'></i>You have already selected the limit of 45 cards.
 				</div>
 				<div id='modal-required-toast' className='toast failToast'>
 					<i className='fas fa-times'></i>Please fill all required fields.

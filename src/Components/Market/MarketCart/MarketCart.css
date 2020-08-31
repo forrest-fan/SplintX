@@ -69,6 +69,10 @@
 	position: relative;
 }
 
+.cart-table-container.summary {
+	height: 27vh;
+}
+
 .cart-table-container::-webkit-scrollbar {
 	width: 5px;
     height: 5px;
@@ -102,6 +106,18 @@
 .cart-table td {
 	padding: 4px 7px;
 	border: 1px solid #ddd;
+}
+
+.cart-table .center {
+	text-align: center;
+}
+
+.cart-table .right {
+	text-align: right;
+}
+
+.cart-table .footer {
+	font-weight: bold;
 }
 
 .cart-remove-item {
