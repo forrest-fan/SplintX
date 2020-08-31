@@ -16,73 +16,87 @@ class PackModal extends React.Component {
 	}
 
 	buyPack() {
-		let qty = document.getElementById('qty-input').value || 1;
-		if (this.state.totalPrice < this.props.balance.DEC) {
-			this.setState({
-				renderProgress: true,
-				progressMsg: 'Broadcasting request to the blockchain'
-			});
-			var json = {
-	    		type: this.props.item.code,
-	   			qty: qty,
-	    		currency: "DEC",
-	    		market: "splintx",
-	    		app: "SplintXApp"
-	  		};
-	  		if (json.type === 'potion') {
-	  			json.data = {potion_type: this.props.item.potion_type};
-	  		}
-	  		json = JSON.stringify(json);
-			window.hive_keychain.requestCustomJson(localStorage.getItem('username'), "sm_purchase", "Active", json, "Pack Purchase", function (response) {
-				if (response.success) {
-					this.setState({progressMsg: 'Step 1 of 2 complete - Request successfully broadcasted'}, () => {
-						setTimeout(() => {
-							this.setState({progressMsg: 'Gathering request results.'});
-						}, 2000);
-					});
-					let id = response.result.id;
-					let url = 'https://game-api.splinterlands.io/transactions/lookup?trx_id=' + id;
-					setTimeout(() => {
-						$.ajax({
-							type: 'GET',
-				  			url: url,
-				  			jsonpCallback: 'testing',
-				  			dataType: 'json',
-							success: function(response) {
-								if (response.error) {
-									this.setState({renderProgress: false});
-									let toast = document.getElementById('cardsFailed-toast');
-									toast.innerHTML = '<i class=\'fas fa-times\'></i> There was an error: ' + response.error;
-									toast.className += ' show';
-									setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
-								} else {
-									this.setState({renderProgress: false});
-									let toast = document.getElementById('buySuccess-toast');
-									toast.className += ' show';
-									setTimeout(() => {
-										toast.className = toast.className.replace(' show', '');
-										this.props.updateBalance();
-										this.props.closeModal();
-									}, 3000);	
-								}
-							}.bind(this),
-							error: function(e) {
-								console.log('Something went wrong');
-							}
-						});
-					}, 12000);
+		if (localStorage.getItem('username')) {
+			let qty = document.getElementById('qty-input').value || 1;
+			if (this.state.totalPrice < this.props.balance.DEC) {
+				this.setState({
+					renderProgress: true,
+					progressMsg: 'Broadcasting request to the blockchain'
+				});
+				var json = {};
+				if (this.props.item.keychainCode === 'sm_purchase') {
+					json = {
+			    		type: this.props.item.code,
+			   			qty: qty,
+			    		currency: "DEC",
+			    		market: "splintx",
+			    		app: "SplintXApp"
+			  		};
+			  		if (json.type === 'potion') {
+			  			json.data = {potion_type: this.props.item.potion_type};
+			  		}
 				} else {
-					this.setState({renderProgress: false});
-					let toast = document.getElementById('cardsFailed-toast');
-					toast.innerHTML = '<i class=\'fas fa-times\'></i> There was an error broadcasting to the blockchain.';
-					toast.className += ' show';
-					setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
+					json = {
+						qty: qty,
+			    		app: "SplintXApp"	
+					};
 				}
-			}.bind(this));
+		  		json = JSON.stringify(json);
+				window.hive_keychain.requestCustomJson(localStorage.getItem('username'), this.props.item.keychainCode, "Active", json, "Pack Purchase", function (response) {
+					if (response.success) {
+						this.setState({progressMsg: 'Step 1 of 2 complete - Request successfully broadcasted'}, () => {
+							setTimeout(() => {
+								this.setState({progressMsg: 'Gathering request results.'});
+							}, 2000);
+						});
+						let id = response.result.id;
+						let url = 'https://game-api.splinterlands.io/transactions/lookup?trx_id=' + id;
+						setTimeout(() => {
+							$.ajax({
+								type: 'GET',
+					  			url: url,
+					  			jsonpCallback: 'testing',
+					  			dataType: 'json',
+								success: function(response) {
+									if (response.error) {
+										this.setState({renderProgress: false});
+										let toast = document.getElementById('cardsFailed-toast');
+										toast.innerHTML = '<i class=\'fas fa-times\'></i> There was an error: ' + response.error;
+										toast.className += ' show';
+										setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
+									} else {
+										this.setState({renderProgress: false});
+										let toast = document.getElementById('buySuccess-toast');
+										toast.className += ' show';
+										setTimeout(() => {
+											toast.className = toast.className.replace(' show', '');
+											this.props.updateBalance();
+											this.props.closeModal();
+										}, 3000);	
+									}
+								}.bind(this),
+								error: function(e) {
+									console.log('Something went wrong');
+								}
+							});
+						}, 12000);
+					} else {
+						this.setState({renderProgress: false});
+						let toast = document.getElementById('cardsFailed-toast');
+						toast.innerHTML = '<i class=\'fas fa-times\'></i> There was an error broadcasting to the blockchain.';
+						toast.className += ' show';
+						setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
+					}
+				}.bind(this));
+			} else {
+				let toast = document.getElementById('noMoney-toast');
+				toast.className += ' show';
+				setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
+			}
 		} else {
-			let toast = document.getElementById('noMoney-toast');
-			toast.className += ' show';
-			setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
+				let toast = document.getElementById('login-toast');
+				toast.className += ' show';
+				setTimeout(() => {toast.className = toast.className.replace(' show', '')}, 3000);
 		}
 	}
 
@@ -125,6 +139,9 @@ class PackModal extends React.Component {
 				</div>
 				<div id='noMoney-toast' className='toast failToast'>
 					<i className='fas fa-times'></i>You don't have enough DEC to purchase this.
+				</div>
+				<div id='login-toast' className='toast failToast'>
+					<i className='fas fa-times'></i>Please log in to purchase packs and items.
 				</div>
 				<div id='buySuccess-toast' className='toast successToast'>
 					<i className='fas fa-check'></i>Successfully purchased!

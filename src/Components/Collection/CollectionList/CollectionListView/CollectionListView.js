@@ -23,7 +23,7 @@ class CollectionListView extends React.Component {
 	    	<div className='list-item-container' id={this.props.info.distinctID}>
 	    		<div className='list-item' onClick={this.toggleModal}>
 	    			<i className={(this.props.info.gold ? 'gold' : this.props.info.element.toLowerCase()) + ' fas center ' + (this.props.info.element === 'Fire' ? 'fa-fire' : this.props.info.element === 'Water' ? 'fa-tint' : this.props.info.element === 'Earth' ? 'fa-leaf' : this.props.info.element === 'Life' ? 'fa-star-of-life' : this.props.info.element === 'Death' ? 'fa-skull' : this.props.info.element === 'Dragon' ? 'fa-dragon' : 'fa-dumbbell')}></i>
-	    			<p className={'name' + (this.props.info.gold ? ' gold' : '')}>{this.props.info.name}</p>
+	    			<p className={'name' + (this.props.info.gold ? ' gold' : '')}>{this.props.info.name} - <span style={{fontFamily: 'Odibee Sans'}}>{this.props.info.edition.charAt(0)}</span></p>
 	    			<p className='qty center'>{this.props.info.count}</p>
 	    			<p className='center'>{this.props.info.totalBCX}</p>
 	    			<p className='center'>{(this.props.info.totalBCX * this.props.info.lowPriceBCX).toFixed(3)}</p>

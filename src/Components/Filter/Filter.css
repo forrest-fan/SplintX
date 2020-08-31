@@ -22,24 +22,33 @@
 	color: #d43d3d;
 }
 
-.filter-search {
-	padding: 4px;
+.filter-search-container {
+	padding: 4px 6px;
+	margin: 5px 0px;
+	margin-bottom: 10px;
+	position: relative;
+}
+
+#filter-search {
+	font-size: 16px;
+	font-family: Source Sans Pro;
 	border: none;
 	border-bottom: 1px solid var(--navbar-bg);
 	transition: 0.3s;
-	margin: 5px 0px;
-	margin-bottom: 10px;
 	width: 90%;
-	font-size: 14px;
-	background-image: url('./search.png');
-	background-repeat: no-repeat;
-	background-position: right center;
-	background-size: auto 50%;
 }
 
-.filter-search:focus {
+#filter-search:focus {
 	outline: none;
 	border-bottom: 1px solid var(--input-focus);
+}
+
+#filter-search-icon {
+	position: absolute;
+	width: 13px;
+	right: 12%;
+	top: 50%;
+	transform: translateY(-50%);
 }
 
 .filter-header {

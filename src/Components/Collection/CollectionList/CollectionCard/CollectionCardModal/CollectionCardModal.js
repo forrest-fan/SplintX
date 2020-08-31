@@ -70,6 +70,7 @@ class Collectionmodal extends React.Component {
 		this.getBurn = this.getBurn.bind(this);
 		this.updateSort = this.updateSort.bind(this);
 		this.combine = this.combine.bind(this);
+		this.getCombine = this.getCombine.bind(this);
 		this.burn = this.burn.bind(this);
 		this.keychainRequestBurn = this.keychainRequestBurn.bind(this);
 		this.keychainRequestCombine = this.keychainRequestCombine.bind(this);
@@ -191,6 +192,23 @@ class Collectionmodal extends React.Component {
 			burn_value *= 1.05;
 		}
 	 	return burn_value;
+	}
+  
+	getCombine(lvl) {
+		let rarity = this.props.info.rarity === 'Common' ? 1 : this.props.info.rarity === 'Rare' ? 2 : this.props.info.rarity === 'Epic' ? 3 : 4;
+		let edition = this.props.info.edition;
+		let detailID = this.props.info.detailID;
+		let gold = this.props.info.gold;
+		let xpRates = []
+		if (edition === 'Alpha') {
+  			xpRates = gold ? combineRateGoldA : combineRateA;
+  		} else if (edition === 'Beta' || edition === 'Promo' || (edition === 'Reward' && detailID <= 223)) {
+  			xpRates = gold ? combineRateGoldB : combineRateB;
+  		} else {
+  			xpRates = gold ? combineRateGoldU : combineRateU;
+  		}
+
+  		return xpRates[rarity - 1][lvl - 1];
 	}
 
 	combine() {
@@ -597,6 +615,7 @@ class Collectionmodal extends React.Component {
 				    					<thead>
 				    						<tr className='modal-table-header'>
 				    							<th>Level</th>
+				    							<th>Cards</th>
 				    							<th>{this.props.info.attackType === 'attack' ? 'Melee' : this.props.info.attackType === 'ranged' ? 'Ranged' : 'Magic'}</th>
 				    							<th>Speed</th>
 				    							<th>Health</th>
@@ -609,6 +628,7 @@ class Collectionmodal extends React.Component {
 				    							return (
 				    								<tr>
 				    									<td className='center'>{level.lvl}</td>
+				    									<td className='center'>{this.getCombine(level.lvl)}</td>
 				    									<td className='center'>{level[this.props.info.attackType]}</td>
 				    									<td className='center'>{level.speed}</td>
 				    									<td className='center'>{level.health}</td>
@@ -645,6 +665,7 @@ class Collectionmodal extends React.Component {
 					    					<thead>
 					    						<tr className='modal-table-header'>
 					    							<th>Level</th>
+					    							<th>Cards</th>
 					    							<th>Common</th>
 					    							<th>Rare</th>
 					    							<th>Epic</th>
@@ -655,9 +676,12 @@ class Collectionmodal extends React.Component {
 					    						{summoner[(this.props.info.rarity === 'Common' ? 1 : this.props.info.rarity === 'Rare' ? 2 : this.props.info.rarity === 'Epic' ? 3 : 4) - 1].map(level => {
 					    							return (
 					    								<tr>
-					    									{level.map(data => {
-					    										return <td className='center'>{data}</td>
-					    									})}
+					    									<td className='center'>{level[0]}</td>
+					    									<td className='center'>{this.getCombine(level[0]) === 0 ? 'N/A' : this.getCombine(level[0])}</td>
+					    									<td className='center'>{level[1]}</td>
+					    									<td className='center'>{level[2]}</td>
+					    									<td className='center'>{level[3]}</td>
+					    									<td className='center'>{level[4]}</td>
 					    								</tr>
 					    							);
 					    						})}
@@ -704,9 +728,9 @@ class Collectionmodal extends React.Component {
 					<i className='fas fa-times'></i>One or more cards are ineligible.
 				</div>
 				{this.state.renderTransfer ? <TransferModal updateCollection={this.props.updateCollection} closeParentModal={this.props.closeModal} closeModal={this.toggleTransfer} info={this.props.info} cards={this.state.selected}/> : ''}
-	    		{this.state.renderSell ? <SellModal updateCollection={this.props.updateCollection} clearSelected={this.clearSelected} closeParentModal={this.props.closeModal} closeModal={this.toggleSell} info={this.props.info} cards={this.state.selected}/> : ''}
-	    		{this.state.renderProgress ? <ActionProgress action='Burning Cards' message={this.state.progressMsg} /> : '' }
-	    		{this.state.renderCombineProgress ? <ActionProgress action='Combining Cards' message={this.state.progressMsg} /> : '' }
+	    	{this.state.renderSell ? <SellModal updateCollection={this.props.updateCollection} clearSelected={this.clearSelected} closeParentModal={this.props.closeModal} closeModal={this.toggleSell} info={this.props.info} cards={this.state.selected}/> : ''}
+        {this.state.renderProgress ? <ActionProgress action='Burning Cards' message={this.state.progressMsg} /> : '' }
+	    	{this.state.renderCombineProgress ? <ActionProgress action='Combining Cards' message={this.state.progressMsg} /> : '' }
 	    	</div>
 	    );
 	}

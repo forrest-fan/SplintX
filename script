@@ -1,0 +1,16 @@
+#!/bin/bash
+
+update() {
+	git clone https://github.com/ 
+	# change the github link to your repository
+	cd SplintX
+	npm install react-scripts
+	npm run build
+	scp -r build root@142.93.179.99:/var/www/
+	ssh root@142.93.179.99 'bash script'
+	cd ..
+	rm -rf SplintX
+	exit
+}
+
+update

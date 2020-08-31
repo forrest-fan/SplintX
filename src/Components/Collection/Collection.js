@@ -215,7 +215,7 @@ class Collection extends React.Component {
 	getBCX(xp, edition, rarity, detailID, gold) {
 		if (xp === 0) {
 			return 1;
-		} else if (edition === 4 || (edition === 3 && detailID > 223)) {
+		} else if (edition === 5 || edition === 4 || (edition === 3 && detailID > 223)) {
 			return xp;
 		}
 
@@ -253,7 +253,7 @@ class Collection extends React.Component {
 				    var detailID = Eelement.cards[l].card_detail_id;
 		            let cardData = this.props.cardDetails[detailID - 1];
 		          	let gold = Eelement.cards[l].gold;
-		          	let edition = Eelement.cards[l].edition === 0 ? 'Alpha' : Eelement.cards[l].edition === 1 ? 'Beta' : Eelement.cards[l].edition === 3 ? 'Reward' : Eelement.cards[l].edition === 4 ? 'Untamed' : 'Promo';
+		          	let edition = Eelement.cards[l].edition === 0 ? 'Alpha' : Eelement.cards[l].edition === 1 ? 'Beta' : Eelement.cards[l].edition === 2 ? 'Promo' : Eelement.cards[l].edition === 3 ? 'Reward' : Eelement.cards[l].edition === 4 ? 'Untamed' : 'Dice';
 		          	let distinctID = (gold ? 'G' : 'C') + (edition === 'Alpha' ? 'A' : edition === 'Beta' ? 'B' : edition === 'Reward' ? 'R' : edition === 'Untamed' ? 'U' : 'P') + detailID;
 		          	let name = cardData.name;
 		          	let type = cardData.type;
@@ -272,7 +272,7 @@ class Collection extends React.Component {
 	          			xpRates = gold ? combineRateGoldA[cardData.rarity - 1] : combineRateA[cardData.rarity - 1];
 	          		} else if (Eelement.cards[l].edition === 1 || Eelement.cards[l].edition === 2 || (Eelement.cards[l].edition === 3 && detailID <= 223)) {
 	          			xpRates = gold ? combineRateGoldB[cardData.rarity - 1] : combineRateB[cardData.rarity - 1];
-	          		} else if (Eelement.cards[l].edition === 4 || (Eelement.cards[l].edition === 3 && detailID > 223)) {
+	          		} else {
 	          			xpRates = gold ? combineRateGoldU[cardData.rarity - 1] : combineRateU[cardData.rarity - 1];
 	          		}
 					let bcx = this.getBCX(Eelement.cards[l].xp, Eelement.cards[l].edition, cardData.rarity, detailID, gold);
