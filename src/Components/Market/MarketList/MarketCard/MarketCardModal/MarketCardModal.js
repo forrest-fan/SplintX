@@ -579,7 +579,7 @@ class MarketCardModal extends React.Component {
 				    								<tr>
 				    									<td className='center'>{level.lvl}</td>
 				    									<td className='center'>{this.getCombine(level.lvl) === 0 ? 'N/A' : this.getCombine(level.lvl)}</td>
-                              <td className='center'>{this.props.info.attackType !== 'none' ? level[this.props.info.attackType] : 'N/A'}</td>
+                              							<td className='center'>{this.props.info.attackType !== 'none' ? level[this.props.info.attackType] : 'N/A'}</td>
 				    									<td className='center'>{level[this.props.info.attackType]}</td>
 				    									<td className='center'>{level.speed}</td>
 				    									<td className='center'>{level.health}</td>

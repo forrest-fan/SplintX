@@ -616,7 +616,7 @@ class Collectionmodal extends React.Component {
 				    						<tr className='modal-table-header'>
 				    							<th>Level</th>
 				    							<th>Cards</th>
-				    							<th>{this.props.info.attackType === 'attack' ? 'Melee' : this.props.info.attackType === 'ranged' ? 'Ranged' : 'Magic'}</th>
+				    							<th>{this.props.info.attackType === 'attack' ? 'Melee' : this.props.info.attackType === 'ranged' ? 'Ranged' : this.props.info.attackType === 'magic' ? 'Magic' : 'Attack'}</th>
 				    							<th>Speed</th>
 				    							<th>Health</th>
 				    							<th>Armor</th>
@@ -629,7 +629,7 @@ class Collectionmodal extends React.Component {
 				    								<tr>
 				    									<td className='center'>{level.lvl}</td>
 				    									<td className='center'>{this.getCombine(level.lvl)}</td>
-				    									<td className='center'>{level[this.props.info.attackType]}</td>
+				    									<td className='center'>{this.props.info.attackType !== 'none' ? level[this.props.info.attackType] : 'N/A'}</td>
 				    									<td className='center'>{level.speed}</td>
 				    									<td className='center'>{level.health}</td>
 				    									<td className='center'>{level.armor}</td>
