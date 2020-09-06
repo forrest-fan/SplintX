@@ -54,7 +54,7 @@ class MarketCardModal extends React.Component {
 			sortMethod: 'priceBcxAsc',
 			panel: 'forSale',
 			loading: true,
-			history: null
+			historyRange: 'all'
 		};
 		this.updateSort = this.updateSort.bind(this);
 		this.getBCX = this.getBCX.bind(this);
@@ -324,49 +324,73 @@ class MarketCardModal extends React.Component {
 		if (this.state.panel === 'forSale' && prevState.panel === 'multiSelect' && this.state.selected !== prevState.selected) {
 			this.updateSort('selected');
 		} else if (this.state.panel === 'history' && prevState.panel !== 'history') {
-			let edition = this.props.info.edition === 'Alpha' ? 0 : this.props.info.edition === 'Beta' ? 1 : this.props.info.edition === 'Promo' ? 2 : this.props.info.edition === 'Reward' ? 3 : 4;
-			let target = "sm.card_value.card_id=" + this.props.info.detailID + ";edition=" + edition + ";gold=" + this.props.info.gold.toString().charAt(0).toUpperCase() + this.props.info.gold.toString().substring(1);
-			if (sessionStorage.getItem('history') && Date.parse(JSON.parse(sessionStorage.getItem('history')).expiry) > (new Date())) {
-				let history = JSON.parse(sessionStorage.getItem('history')).data;
-				for (let i = 0; i < history.length; i++) {
-					if (history[i].target === target) {
-						let data = [];
-						let labelArray = [];
-						for (let j = 0; j < history[i].datapoints.length; j++) {
-					        let milliseconds = history[i].datapoints[j][1] * 1000;
-					        let date = new Date(milliseconds).toLocaleDateString('en-US', { timeZone: 'GMT' });
-					        labelArray.push(date);
-					        data.push({
-					        	t: new Date(),
-					        	y: history[i].datapoints[j][0]
-					        });
-				        }
-				        let config = {
-						  type: 'line',
-						  data: {
-						    labels: labelArray,
-						    datasets: [{
-						      label: 'Price(USD)',
-						      data: data,
-						      fill: false,
-						      borderColor: ['rgba(13, 33, 64, 1)'],
-						      borderWidth: 3
-						    }]
-						  },
-						  options: {
-						    responsive: true,
-						    maintainAspectRatio: false
-						  }
-						};
-						let ctx = document.getElementById('myChart').getContext('2d');
-						let myChart = new Chart(ctx, config);
-						break;
+			let edition = this.props.info.edition === 'Alpha' ? 0 : this.props.info.edition === 'Beta' ? 1 : this.props.info.edition === 'Promo' ? 2 : this.props.info.edition === 'Reward' ? 3 : this.props.info.edition === 'Untamed' ? 4 : 5;
+			let foilInt = this.props.info.gold ? 1 : 0;
+			let id = this.props.info.detailID;
+			let priceData = JSON.stringify([{
+				id: id,
+				foil: foilInt,
+				edition: edition
+			}]);
+			let storageSearch = 'history-' + priceData;
+			if (sessionStorage.getItem(storageSearch) && new Date(Date.parse(JSON.parse(sessionStorage.getItem('history')).expiry)) > (new Date())) {
+				let prices = JSON.parse(sessionStorage.getItem(storageSearch)).data[1];
+				let dates = JSON.parse(sessionStorage.getItem(storageSearch)).data[0];
+		  		let newPrices = [];
+		  		let newDates = [];
+		  		if (this.state.historyRange === 'week') {
+					for (let i = (prices.length < 7 ? 0 : prices.length - 7); i < prices.length; i++) {
+						newPrices.push(prices[i]);
+						newDates.push(dates[i]);
 					}
+				} else if (this.state.historyRange === 'month') {
+					for (let i = (prices.length < 30 ? 0 : prices.length - 30); i < prices.length; i++) {
+						newPrices.push(prices[i]);
+						newDates.push(dates[i]);
+					}
+				} else if (this.state.historyRange === '3month') {
+					for (let i = (prices.length < 90 ? 0 : prices.length - 90); i < prices.length; i++) {
+						newPrices.push(prices[i]);
+						newDates.push(dates[i]);
+					}
+				} else if (this.state.historyRange === 'all') {
+					newPrices = prices;
+					newDates = dates;
 				}
+				for (let i = 0; i < newDates.length; i++) {
+		  			newDates[i] = newDates[i].slice(0, newDates[i].length - 11);
+		  		}
+		  		let config = {
+		  			type: 'line',
+		  			data: {
+		  				labels: newDates,
+		  				datasets: [{
+		  					fill: true,
+							borderColor: '#0d2140',
+							borderWidth: 2,
+							pointBorderColor: '#0d2140',
+							pointRadius: 3,
+							pointBackgroundColor: '#eba82d',
+							pointHoverRadius: 5,
+		  					label: 'Price(USD)',
+		  					data: newPrices
+		  				}]
+		  			},
+		  			options: {
+					    responsive: true,
+					    maintainAspectRatio: false,
+					    legend: {
+					    	display: false
+					    }
+					}
+		  		};
+				let ctx = document.getElementById('myChart').getContext('2d');
+				let myChart = new Chart(ctx, config);
 			} else {
 				$.ajax({
-					type: 'GET',
-					url: 'http://18.223.152.60:8080/history',
+					type: 'POST',
+					url: 'https://splintx.com/db.php',
+					data: {card: priceData},
 					jsonpCallback: 'testing',
 				  	dataType: 'json',
 				  	success: function(history) {
@@ -377,48 +401,128 @@ class MarketCardModal extends React.Component {
 				  			expiry: expiry,
 				  			data: history
 				  		};
-				  		sessionStorage.setItem('history', JSON.stringify(historyObj));
-				  		for (let i = 0; i < history.length; i++) {
-							if (history[i].target === target) {
-								let data = [];
-								let labelArray = [];
-								for (let j = 0; j < history[i].datapoints.length; j++) {
-							        let milliseconds = history[i].datapoints[j][1] * 1000;
-							        let date = new Date(milliseconds).toLocaleDateString('en-US', { timeZone: 'GMT' });
-							        labelArray.push(date);
-							        data.push({
-							        	t: new Date(),
-							        	y: history[i].datapoints[j][0]
-							        });
-						        }
-						        let config = {
-								  type: 'line',
-								  data: {
-								    labels: labelArray,
-								    datasets: [{
-								      label: 'Price(USD)',
-								      data: data,
-								      fill: false,
-								      borderColor: ['rgba(13, 33, 64, 1)'],
-								      borderWidth: 3
-								    }]
-								  },
-								  options: {
-								    responsive: true,
-								    maintainAspectRatio: false
-								  }
-								};
-								let ctx = document.getElementById('myChart').getContext('2d');
-								let myChart = new Chart(ctx, config);
-								break;
+				  		let storageName = 'history-' + priceData;
+				  		sessionStorage.setItem(storageName, JSON.stringify(historyObj));
+				  		let prices = history[1];
+				  		let dates = history[0];
+				  		let newPrices = [];
+				  		let newDates = [];
+				  		if (this.state.historyRange === 'week') {
+							for (let i = (prices.length < 7 ? 0 : prices.length - 7); i < prices.length; i++) {
+								newPrices.push(prices[i]);
+								newDates.push(dates[i]);
 							}
+						} else if (this.state.historyRange === 'month') {
+							for (let i = (prices.length < 30 ? 0 : prices.length - 30); i < prices.length; i++) {
+								newPrices.push(prices[i]);
+								newDates.push(dates[i]);
+							}
+						} else if (this.state.historyRange === '3month') {
+							for (let i = (prices.length < 90 ? 0 : prices.length - 90); i < prices.length; i++) {
+								newPrices.push(prices[i]);
+								newDates.push(dates[i]);
+							}
+						} else if (this.state.historyRange === 'all') {
+							newPrices = prices;
+							newDates = dates;
 						}
-				  	},
+						for (let i = 0; i < newDates.length; i++) {
+				  			newDates[i] = newDates[i].slice(0, newDates[i].length - 11);
+				  		}
+				  		let config = {
+				  			type: 'line',
+				  			data: {
+				  				labels: dates,
+				  				datasets: [{
+				  					fill: true,
+									borderColor: '#0d2140',
+									borderWidth: 2,
+									pointBorderColor: '#0d2140',
+									pointRadius: 3,
+									pointBackgroundColor: '#eba82d',
+									pointHoverRadius: 5,
+				  					label: 'Price(USD)',
+				  					data: prices
+				  				}]
+				  			},
+				  			options: {
+							    responsive: true,
+							    maintainAspectRatio: false,
+							    legend: {
+							    	display: false
+							    }
+							}
+				  		};
+						let ctx = document.getElementById('myChart').getContext('2d');
+						let myChart = new Chart(ctx, config);
+				  	}.bind(this),
 				  	error: function(e) {
 				  		console.log('There was an error retrieving the price history');
 				  	}
 				});
 			}
+		} else if (prevState.historyRange !== this.state.historyRange) {
+			let edition = this.props.info.edition === 'Alpha' ? 0 : this.props.info.edition === 'Beta' ? 1 : this.props.info.edition === 'Promo' ? 2 : this.props.info.edition === 'Reward' ? 3 : this.props.info.edition === 'Untamed' ? 4 : 5;
+			let foilInt = this.props.info.gold ? 1 : 0;
+			let id = this.props.info.detailID;
+			let priceData = JSON.stringify([{
+				id: id,
+				foil: foilInt,
+				edition: edition
+			}]);
+			let storageSearch = 'history-' + priceData;
+			let prices = JSON.parse(sessionStorage.getItem(storageSearch)).data[1];
+			let newPrices = [];
+			let dates = JSON.parse(sessionStorage.getItem(storageSearch)).data[0];
+			let newDates = [];
+			if (this.state.historyRange === 'week') {
+				for (let i = (prices.length < 7 ? 0 : prices.length - 7); i < prices.length; i++) {
+					newPrices.push(prices[i]);
+					newDates.push(dates[i]);
+				}
+			} else if (this.state.historyRange === 'month') {
+				for (let i = (prices.length < 30 ? 0 : prices.length - 30); i < prices.length; i++) {
+					newPrices.push(prices[i]);
+					newDates.push(dates[i]);
+				}
+			} else if (this.state.historyRange === '3month') {
+				for (let i = (prices.length < 90 ? 0 : prices.length - 90); i < prices.length; i++) {
+					newPrices.push(prices[i]);
+					newDates.push(dates[i]);
+				}
+			} else if (this.state.historyRange === 'all') {
+				newPrices = prices;
+				newDates = dates;
+			}
+			for (let i = 0; i < newDates.length; i++) {
+	  			newDates[i] = newDates[i].slice(0, newDates[i].length - 11);
+	  		}
+			let config = {
+	  			type: 'line',
+	  			data: {
+	  				labels: newDates,
+	  				datasets: [{
+	  					fill: true,
+						borderColor: '#0d2140',
+						borderWidth: 2,
+						pointBorderColor: '#0d2140',
+						pointRadius: 3,
+						pointBackgroundColor: '#eba82d',
+						pointHoverRadius: 5,
+	  					label: 'Price(USD)',
+	  					data: newPrices
+	  				}]
+	  			},
+	  			options: {
+				    responsive: true,
+				    maintainAspectRatio: false,
+				    legend: {
+				    	display: false
+				    }
+				}
+	  		};
+			let ctx = document.getElementById('myChart').getContext('2d');
+			let myChart = new Chart(ctx, config); 
 		}
 	}
 
@@ -463,7 +567,7 @@ class MarketCardModal extends React.Component {
 										this.setState({panel: 'stats'});
 									}
 				    			}}>Stats</h3>
-				    			{/* <h3 id='panelhistory' className={this.state.panel === 'history' ? 'modal-panel-header activePanel': 'modal-panel-header'} onClick={() => {
+				    			{ <h3 id='panelhistory' className={this.state.panel === 'history' ? 'modal-panel-header activePanel': 'modal-panel-header'} onClick={() => {
 									let currentPanel = this.state.panel;
 									let currentId = 'panel' + currentPanel;
 									if (currentPanel !== 'history') {
@@ -471,14 +575,14 @@ class MarketCardModal extends React.Component {
 										document.getElementById('panelhistory').className = 'modal-panel-header activePanel';
 										this.setState({panel: 'history'});
 									}
-				    			}}>Price History</h3>*/}
+				    			}}>Price History</h3>}
 				    			<span className='modal-panel-small-container'>
 				    				Panel: 
 					    			<select className='modal-panel-small' onChange={this.handlePanelChange}>
 							            <option value='forSale' selected={this.state.panel === 'forSale'}>Cards For Sale</option>
 							            <option value='multiSelect' selected={this.state.panel === 'multiSelect'}>MultiSelect</option>
 							            <option value='stats' selected={this.state.panel === 'stats'}>Stats</option>
-							            {/* <option value='history' selected={this.state.panel === 'history'}>Price History</option>*/}
+							            { <option value='history' selected={this.state.panel === 'history'}>Price History</option>}
 							        </select>
 						        </span>
 			    			</div>
@@ -641,7 +745,24 @@ class MarketCardModal extends React.Component {
 				    				</div> : ''}
 				    			</div>
 			    			</div> : this.state.panel === 'history' ? <div className='modal-table-container'>
-			    				<canvas id="myChart"></canvas>
+			    				<div className='date-container'>
+			    					<span style={{marginRight:'5px'}}>Date Range: </span>
+			    					<span className={'date-selector' + (this.state.historyRange === 'week' ? ' active' : '')} onClick={() => {
+			    						this.setState({historyRange: 'week'});
+			    					}}>Week</span>
+			    					<span className={'date-selector' + (this.state.historyRange === 'month' ? ' active' : '')} onClick={() => {
+			    						this.setState({historyRange: 'month'});
+			    					}}>Month</span>
+			    					<span className={'date-selector' + (this.state.historyRange === '3month' ? ' active' : '')} onClick={() => {
+			    						this.setState({historyRange: '3month'});
+			    					}}>3 Months</span>
+			    					<span className={'date-selector' + (this.state.historyRange === 'all' ? ' active' : '')} onClick={() => {
+			    						this.setState({historyRange: 'all'});
+			    					}}>All-Time</span>
+			    				</div>
+			    				<div className='canvas-container'>
+			    					<canvas id="myChart"></canvas>
+			    				</div>
 			    			</div> : ''}
 			    		</div>	
 			    	</div>

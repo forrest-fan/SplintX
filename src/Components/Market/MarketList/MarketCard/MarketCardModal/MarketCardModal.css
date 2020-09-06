@@ -250,8 +250,41 @@
 	font-size: 17px;
 }
 
-.modal-table-container canvas {
+.date-container {
+	padding: 5px 10px;
+}
+
+.date-container span {
+	vertical-align: middle;
+}
+
+.date-selector {
+	padding: 5px 10px;
+	margin: 0px 5px;
+	font-weight: bold;
+	font-size: 18px;
+	color: #888;
+	border-radius: 10px;
+	cursor: pointer;
+	transition: 0.3s;
+}
+
+.date-selector.active {
+	background: #ccc;
+	color: var(--navbar-bg);
+	cursor: default;
+	pointer-events: none;
+}
+
+.date-selector:hover {
+	color: #fff;
+	background: var(--navbar-bg);
+	opacity: 0.4;
+}
+
+.canvas-container {
 	max-width: 100%;
+	height: 90%;
 }
 
 .modal-summary {
@@ -317,6 +350,10 @@
 }
 
 @media (max-width: 750px) {
+	.modal-content {
+		padding: 10px;
+	}
+
 	.modal-content h2 {
 		font-size: 20px;
 	}
@@ -331,6 +368,7 @@
 
 	.modal-table-container {
 		height: 40vh;
+		padding: 0;
 	}
 
 	.modal-multiselect .multiselect-half {
