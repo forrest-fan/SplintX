@@ -258,6 +258,10 @@
 	vertical-align: middle;
 }
 
+.date-container.small {
+	display: none;
+}
+
 .date-selector {
 	padding: 5px 10px;
 	margin: 0px 5px;
@@ -383,6 +387,14 @@
 	}
 
 	.modal-stats span {
+		display: block;
+	}
+
+	.date-container.large {
+		display: none;
+	}
+
+	.date-container.small {
 		display: block;
 	}
 

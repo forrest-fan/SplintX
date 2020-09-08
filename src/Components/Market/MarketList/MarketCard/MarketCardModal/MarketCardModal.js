@@ -745,7 +745,7 @@ class MarketCardModal extends React.Component {
 				    				</div> : ''}
 				    			</div>
 			    			</div> : this.state.panel === 'history' ? <div className='modal-table-container'>
-			    				<div className='date-container'>
+			    				<div className='date-container large'>
 			    					<span style={{marginRight:'5px'}}>Date Range: </span>
 			    					<span className={'date-selector' + (this.state.historyRange === 'week' ? ' active' : '')} onClick={() => {
 			    						this.setState({historyRange: 'week'});
@@ -753,12 +753,27 @@ class MarketCardModal extends React.Component {
 			    					<span className={'date-selector' + (this.state.historyRange === 'month' ? ' active' : '')} onClick={() => {
 			    						this.setState({historyRange: 'month'});
 			    					}}>Month</span>
-			    					<span className={'date-selector' + (this.state.historyRange === '3month' ? ' active' : '')} onClick={() => {
+			    					{/*<span className={'date-selector' + (this.state.historyRange === '3month' ? ' active' : '')} onClick={() => {
 			    						this.setState({historyRange: '3month'});
-			    					}}>3 Months</span>
+			    					}}>3 Months</span>*/}
 			    					<span className={'date-selector' + (this.state.historyRange === 'all' ? ' active' : '')} onClick={() => {
 			    						this.setState({historyRange: 'all'});
 			    					}}>All-Time</span>
+			    				</div>
+			    				<div className='date-container small'>
+			    					<span style={{marginRight:'5px'}}>Date Range: </span>
+			    					<span className={'date-selector' + (this.state.historyRange === 'week' ? ' active' : '')} onClick={() => {
+			    						this.setState({historyRange: 'week'});
+			    					}}>W</span>
+			    					<span className={'date-selector' + (this.state.historyRange === 'month' ? ' active' : '')} onClick={() => {
+			    						this.setState({historyRange: 'month'});
+			    					}}>M</span>
+			    					{/*<span className={'date-selector' + (this.state.historyRange === '3month' ? ' active' : '')} onClick={() => {
+			    						this.setState({historyRange: '3month'});
+			    					}}>3M</span>*/}
+			    					<span className={'date-selector' + (this.state.historyRange === 'all' ? ' active' : '')} onClick={() => {
+			    						this.setState({historyRange: 'all'});
+			    					}}>ALL</span>
 			    				</div>
 			    				<div className='canvas-container'>
 			    					<canvas id="myChart"></canvas>
